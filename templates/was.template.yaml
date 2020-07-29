@@ -1,0 +1,491 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  This WAS template deploys an ASG behind an ELB load balancer in two private
+  subnets. The cluster is configured to use an S3 bucket for storage **WARNING** This
+  template creates EC2 instances and related resources. You will be billed for the
+  AWS resources used if you create a stack from this template. (qs-1o2sf5bg5)
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Network Configuration
+        Parameters:
+          - VPCID
+          - PrivateSubnet1ID
+          - PrivateSubnet2ID
+          - PublicSubnet1ID
+          - PublicSubnet2ID
+      - Label:
+          default: Bastion Host Details
+        Parameters:
+          - KeyPairName
+          - BastionSecurityGroupID
+      - Label:
+          default: WAS Nodes Configuration
+        Parameters:
+          - WASInstanceType
+          - WASNodesMinSize
+          - WASNodesMaxSize
+          - WASNodesDesiredCapacity
+      - Label:
+          default: SSL Configuration
+        Parameters:
+          - ALBSSLCertificateARN
+          - HostedZoneName
+      - Label:
+          default: AWS Quick Start Configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3BucketRegion
+          - QSS3KeyPrefix
+      - Label:
+          default: Oracle RDS Configuration
+          Parameters:
+            - DBName
+            - DBUser
+            - DBPassword
+            - EndpointAddress
+            - EndpointPort
+            - MaximoFilesLocation
+    ParameterLabels:
+      ALBSSLCertificateARN:
+        default: ARN of ACM certificate for Application Load Balancer
+      BastionSecurityGroupID:
+        default: Bastion Security Group ID
+      HostedZoneName:
+        default: Hosted Zone Name in Route 53 corresponding to the domain name of
+          the web site
+      KeyPairName:
+        default: SSH Key Name
+      WASInstanceType:
+        default: WAS Servers Instance Type
+      WASNodesDesiredCapacity:
+        default: WAS Nodes Desired Capacity
+      WASNodesMaxSize:
+        default: WAS Nodes Max Size
+      WASNodesMinSize:
+        default: WAS Nodes Min Size
+      PrivateSubnet1ID:
+        default: Private Subnet 1 ID
+      PrivateSubnet2ID:
+        default: Private Subnet 2 ID
+      PublicSubnet1ID:
+        default: Public Subnet 1 ID
+      PublicSubnet2ID:
+        default: Public Subnet 2 ID
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      QSS3BucketRegion:
+        default: Quick Start S3 bucket region
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      DBName:
+        default: !Ref DBName
+        description: The database name
+        type: String
+      DBUser:
+        default: !Ref DBUser
+        description: The database admin account username
+        type: String
+      DBPassword:
+        default: !Ref DBPassword
+        description: The database admin account password
+        type: String
+      EndpointAddress:
+        description: Endpoint address of the Master database
+        type: String
+        default: !Ref EndpointAddress
+      EndpointPort:
+        description: Endpoint port number of the Master database
+        type: String
+        default: !Ref EndpointPort
+      MaximoFilesLocation:
+        Description: Provide the S3 location of the downloaded Oracle client files.
+          E.g., s3://ibm-fncm-assets/oracle_client_files
+          Refer to the deployment guide for more information on downloading the client files and obtaining the location
+        Type: String
+      VPCID:
+        default: VPC ID
+Parameters:
+  ALBSSLCertificateARN:
+    Default: ''
+    Description: '[Optional] The ARN of the SSL certificate to be used for the Application
+      Load Balancer'
+    Type: String
+  BastionSecurityGroupID:
+    Description: ID of the bastion host security group to enable SSH connections (e.g.,
+      sg-7f16e910)
+    Type: AWS::EC2::SecurityGroup::Id
+  HostedZoneName:
+    AllowedPattern: ^$|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
+    Default: ''
+    Description: The domain name of a valid Hosted Zone on AWS.
+    Type: String
+  KeyPairName:
+    Description: Name of an existing EC2 key pair. All instances will launch with
+      this key pair.
+    Type: AWS::EC2::KeyPair::KeyName
+  WASInstanceType:
+    AllowedValues:
+      - t2.nano
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - t2.large
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+      - m4.10xlarge
+      - m3.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - c4.large
+      - c4.xlarge
+      - c4.2xlarge
+      - c4.4xlarge
+      - c4.8xlarge
+      - c3.large
+      - c3.xlarge
+      - c3.2xlarge
+      - c3.4xlarge
+      - c3.8xlarge
+      - r3.large
+      - r3.xlarge
+    ConstraintDescription: Must contain valid instance type
+    Default: t2.micro
+    Description: Type of EC2 instance for the WAS instances
+    Type: String
+  WASNodesDesiredCapacity:
+    Default: '2'
+    Description: The desired capacity for the WAS nodes Auto Scaling group
+    Type: String
+  WASNodesMaxSize:
+    Default: '4'
+    Description: The maximum size of the Auto Scaling group
+    Type: String
+  WASNodesMinSize:
+    Default: '2'
+    Description: The minimum size of the Auto Scaling group
+    Type: String
+  PrivateSubnet1ID:
+    Description: ID of private subnet 1 in Availability Zone 1 for the WAS (e.g.,
+      subnet-a0246dcd)
+    Type: AWS::EC2::Subnet::Id
+  PrivateSubnet2ID:
+    Description: ID of private subnet 2 in Availability Zone 2 for the WAS (e.g.,
+      subnet-b1f432cd)
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnet1ID:
+    Description: ID of public subnet 1 in Availability Zone 1 for the ELB load balancer
+      (e.g., subnet-9bc642ac)
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnet2ID:
+    Description: ID of public subnet 2 in Availability Zone 2 for the ELB load balancer
+      (e.g., subnet-e3246d8e)
+    Type: AWS::EC2::Subnet::Id
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: aws-quickstart
+    Description: S3 bucket name for the Quick Start assets. This string can include
+      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
+      or end with a hyphen (-).
+    Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slash (/).
+    Default: quickstart-ibm-websphere-was/
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+  VPCID:
+    Description: ID of your existing VPC for deployment
+    Type: AWS::EC2::VPC::Id
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  UseALBSSL: !Not
+    - !Equals
+      - !Ref 'ALBSSLCertificateARN'
+      - ''
+Rules:
+  KeyPairsNotEmpty:
+    Assertions:
+      - Assert: !Not
+          - !EachMemberEquals
+            - !RefAll 'AWS::EC2::KeyPair::KeyName'
+            - ''
+        AssertDescription: All key pair parameters must not be empty
+  SubnetsInVPC:
+    Assertions:
+      - Assert: !EachMemberIn
+          - !ValueOfAll
+            - AWS::EC2::Subnet::Id
+            - VpcId
+          - !RefAll 'AWS::EC2::VPC::Id'
+        AssertDescription: All subnets must in the VPC
+  ValidateHostedZone:
+    RuleCondition: !Not
+      - !Equals
+        - !Ref 'ALBSSLCertificateARN'
+        - ''
+    Assertions:
+      - Assert: !Not
+          - !Equals
+            - !Ref 'HostedZoneName'
+            - ''
+        AssertDescription: Route53 Hosted Zone Name is mandatory when ACM certificate
+          is used
+Mappings:
+  AWSAMIRegionMap:
+    AMI:
+      RHELHVM: RHEL-7.2_HVM_GA-20151112-x86_64-1-Hourly2-GP2
+    ap-northeast-1:
+      RHELHVM: ami-0dd8f963
+    ap-northeast-2:
+      RHELHVM: ami-44db152a
+    ap-southeast-1:
+      RHELHVM: ami-3f03c55c
+    ap-southeast-2:
+      RHELHVM: ami-e0c19f8
+    eu-central-1:
+      RHELHVM: ami-875042eb
+    eu-west-1:
+      RHELHVM: ami-8b8c57f8
+    sa-east-1:
+      RHELHVM: ami-27b3094b
+    us-east-1:
+      RHELHVM: ami-2051294a
+    us-east-2:
+      RHELHVM: ami-e4537381
+    us-west-1:
+      RHELHVM: ami-d1315fb1
+    us-west-2:
+      RHELHVM: ami-775e4f16
+Resources:
+  ELBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access to the ELB
+      VpcId: !Ref 'VPCID'
+      SecurityGroupIngress:
+        - !If
+          - UseALBSSL
+          - IpProtocol: tcp
+            FromPort: '443'
+            ToPort: '443'
+            CidrIp: '0.0.0.0/0'
+          - IpProtocol: tcp
+            FromPort: '80'
+            ToPort: '80'
+            CidrIp: '0.0.0.0/0'
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Subnets:
+        - !Ref 'PublicSubnet1ID'
+        - !Ref 'PublicSubnet2ID'
+      SecurityGroups:
+        - !Ref 'ELBSecurityGroup'
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref 'ALBTargetGroup'
+      LoadBalancerArn: !Ref 'ApplicationLoadBalancer'
+      Port: !If
+        - UseALBSSL
+        - 443
+        - 80
+      Protocol: !If
+        - UseALBSSL
+        - HTTPS
+        - HTTP
+      Certificates:
+        - !If
+          - UseALBSSL
+          - CertificateArn: !Ref 'ALBSSLCertificateARN'
+          - !Ref 'AWS::NoValue'
+  ALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Port: !If
+        - UseALBSSL
+        - 9443
+        - 9080
+      Protocol: !If
+        - UseALBSSL
+        - HTTPS
+        - HTTP
+      UnhealthyThresholdCount: 5
+      VpcId: !Ref 'VPCID'
+      TargetGroupAttributes:
+        - Key: stickiness.enabled
+          Value: 'true'
+        - Key: stickiness.type
+          Value: lb_cookie
+        - Key: stickiness.lb_cookie.duration_seconds
+          Value: '30'
+  WASRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - s3:GetObject
+                Resource: !Sub
+                  - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
+                  - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+                Effect: Allow
+          PolicyName: aws-quick-start-s3-policy
+  WASProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+        - !Ref 'WASRole'
+  WASSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow access to the WAS instances
+      VpcId: !Ref 'VPCID'
+      SecurityGroupIngress:
+        - !If
+          - UseALBSSL
+          - IpProtocol: tcp
+            FromPort: '9443'
+            ToPort: '9443'
+            SourceSecurityGroupId: !Ref 'ELBSecurityGroup'
+          - IpProtocol: tcp
+            FromPort: '9080'
+            ToPort: '9080'
+            SourceSecurityGroupId: !Ref 'ELBSecurityGroup'
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          SourceSecurityGroupId: !Ref 'BastionSecurityGroupID'
+  WASASLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      AWS::CloudFormation::Authentication:
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref 'WASRole'
+          buckets: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      AWS::CloudFormation::Init:
+        configSets:
+          quickstart:
+            - install
+        install:
+          files:
+            /home/ec2-user/CreateApplications.py:
+              source:
+                !Sub
+                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/CreateApplications.py'
+                  - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                    S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              mode: '000755'
+              owner: root
+              group: root
+              authentication: S3AccessCreds
+            /home/ec2-user/maximo_was_commands.sh:
+              source:
+                !Sub
+                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/maximo_was_commands.sh'
+                  - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                    S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              mode: '000700'
+              owner: root
+              group: root
+              authentication: S3AccessCreds
+          commands:
+            '01_create_Server':
+              command: /home/ec2-user/maximo_was_commands.sh
+                - !Join
+                - ' '
+                - - '"/home/ec2-user/maximo_was_commands.sh"'
+                - '{{DBUser}}'
+                - '{{DBPassword}}'
+                - '{{EndpointAddress}}'
+                - '{{EndpointPort}}'
+                - '{{DBName}}'
+                - '{{MaximoFilesLocation}}'
+        cleanup: {}
+    Properties:
+      KeyName: !Ref 'KeyPairName'
+      ImageId: !FindInMap
+        - AWSAMIRegionMap
+        - !Ref 'AWS::Region'
+        - RHELHVM
+      InstanceMonitoring: 'true'
+      IamInstanceProfile: !Ref 'WASProfile'
+      InstanceType: !Ref 'WASInstanceType'
+      SecurityGroups:
+        - !Ref 'WASSecurityGroup'
+  WASTargetTrackingScalingPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AutoScalingGroupName: !Ref 'WASAutoScalingGroup'
+      Cooldown: '60'
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ASGAverageCPUUtilization
+        TargetValue: 75
+  WASAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - !Ref 'PublicSubnet1ID'
+        - !Ref 'PublicSubnet2ID'
+      Cooldown: '300'
+      DesiredCapacity: !Ref 'WASNodesDesiredCapacity'
+      TargetGroupARNs:
+        - !Ref 'ALBTargetGroup'
+      HealthCheckGracePeriod: '300'
+      HealthCheckType: EC2
+      LaunchConfigurationName: !Ref 'WASASLaunchConfig'
+      MaxSize: !Ref 'WASNodesMaxSize'
+      MinSize: !Ref 'WASNodesMinSize'
+      Tags:
+        - Key: Name
+          Value: WAS Server cluster node
+          PropagateAtLaunch: 'true'
+    CreationPolicy:
+      ResourceSignal:
+        Count: !Ref 'WASNodesDesiredCapacity'
+        Timeout: PT2H
+   
+Outputs:
+  WebsiteURL:
+    Description: URL for newly created WAS stack
+    Value: !Join
+      - ''
+      - - http://
+        - !GetAtt 'ApplicationLoadBalancer.DNSName'
+        - '/maximo'
+
