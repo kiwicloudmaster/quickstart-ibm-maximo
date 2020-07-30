@@ -79,31 +79,18 @@ Metadata:
         default: Quick Start S3 bucket region
       QSS3KeyPrefix:
         default: Quick Start S3 Key Prefix
+      BastionASGName:
+        default: Auto Scaling Group Name of the Bastion Host
       DBName:
-        default: !Ref DBName
-        description: The database name
-        type: String
+        default: The database name
       DBUser:
-        default: !Ref DBUser
-        description: The database admin account username
-        type: String
+        default: The database admin account username
       DBPassword:
-        default: !Ref DBPassword
-        description: The database admin account password
-        type: String
+        default: The database admin account password
       EndpointAddress:
-        description: Endpoint address of the Master database
-        type: String
-        default: !Ref EndpointAddress
+        default: Endpoint address of the Master database
       EndpointPort:
-        description: Endpoint port number of the Master database
-        type: String
-        default: !Ref EndpointPort
-      MaximoFilesLocation:
-        Description: Provide the S3 location of the downloaded Oracle client files.
-          E.g., s3://ibm-fncm-assets/oracle_client_files
-          Refer to the deployment guide for more information on downloading the client files and obtaining the location
-        Type: String
+        default: Endpoint port number of the Master database
       VPCID:
         default: VPC ID
 Parameters:
@@ -211,40 +198,48 @@ Parameters:
   VPCID:
     Description: ID of your existing VPC for deployment
     Type: AWS::EC2::VPC::Id
+  DBName:
+    Description: The database name
+    Type: String
+    MinLength: '1'
+    MaxLength: '8'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DBUser:
+    Description: The database admin account username
+    Type: String
+    MinLength: '1'
+    MaxLength: '16'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DBPassword:
+    NoEcho: 'true'
+    Description: The database admin account password
+    Type: String
+    MinLength: '8'
+    MaxLength: '41'
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: must contain only alphanumeric characters.
+  BastionASGName:
+    Description: Auto Scaling Group Name of the Bastion Host
+    Type: String
+  EndpointAddress:
+    Description: Endpoint address of the Master database
+    Type: String
+  EndpointPort:
+    Description: Endpoint port number of the Master database
+    Type: String
+  MaximoFilesLocation:
+    Description: Provide the S3 location of the downloaded Oracle client files.
+      E.g., s3://ibm-fncm-assets/oracle_client_files
+      Refer to the deployment guide for more information on downloading the client files and obtaining the location
+    Type: String
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   UseALBSSL: !Not
     - !Equals
       - !Ref 'ALBSSLCertificateARN'
       - ''
-Rules:
-  KeyPairsNotEmpty:
-    Assertions:
-      - Assert: !Not
-          - !EachMemberEquals
-            - !RefAll 'AWS::EC2::KeyPair::KeyName'
-            - ''
-        AssertDescription: All key pair parameters must not be empty
-  SubnetsInVPC:
-    Assertions:
-      - Assert: !EachMemberIn
-          - !ValueOfAll
-            - AWS::EC2::Subnet::Id
-            - VpcId
-          - !RefAll 'AWS::EC2::VPC::Id'
-        AssertDescription: All subnets must in the VPC
-  ValidateHostedZone:
-    RuleCondition: !Not
-      - !Equals
-        - !Ref 'ALBSSLCertificateARN'
-        - ''
-    Assertions:
-      - Assert: !Not
-          - !Equals
-            - !Ref 'HostedZoneName'
-            - ''
-        AssertDescription: Route53 Hosted Zone Name is mandatory when ACM certificate
-          is used
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -405,9 +400,9 @@ Resources:
             /home/ec2-user/CreateApplications.py:
               source:
                 !Sub
-                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/CreateApplications.py'
-                  - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-                    S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+                - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/CreateApplications.py'
+                - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
               owner: root
               group: root
@@ -415,26 +410,25 @@ Resources:
             /home/ec2-user/maximo_was_commands.sh:
               source:
                 !Sub
-                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/maximo_was_commands.sh'
-                  - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-                    S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+                - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/maximo_was_commands.sh'
+                - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000700'
               owner: root
               group: root
               authentication: S3AccessCreds
           commands:
             '01_create_Server':
-              command: /home/ec2-user/maximo_was_commands.sh
+              command:
                 - !Join
-                - ' '
-                - - '"/home/ec2-user/maximo_was_commands.sh"'
-                - '{{DBUser}}'
-                - '{{DBPassword}}'
-                - '{{EndpointAddress}}'
-                - '{{EndpointPort}}'
-                - '{{DBName}}'
-                - '{{MaximoFilesLocation}}'
-        cleanup: {}
+                  - ' '
+                  - - '"/home/ec2-user/maximo_was_commands.sh"'
+                    - '{{DBUser}}'
+                    - '{{DBPassword}}'
+                    - '{{EndpointAddress}}'
+                    - '{{EndpointPort}}'
+                    - '{{DBName}}'
+                    - '{{MaximoFilesLocation}}'
     Properties:
       KeyName: !Ref 'KeyPairName'
       ImageId: !FindInMap
@@ -479,13 +473,14 @@ Resources:
       ResourceSignal:
         Count: !Ref 'WASNodesDesiredCapacity'
         Timeout: PT2H
-   
+
 Outputs:
   WebsiteURL:
     Description: URL for newly created WAS stack
-    Value: !Join
+    Value:
+      -!Join
       - ''
       - - http://
-        - !GetAtt 'ApplicationLoadBalancer.DNSName'
-        - '/maximo'
+      - !GetAtt 'ApplicationLoadBalancer.DNSName'
+      - '/maximo'
 

@@ -1,4 +1,4 @@
-;lAWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Oracle Database Objects Template'
 Metadata:
   AWS::CloudFormation::Interface:
@@ -56,8 +56,8 @@ Parameters:
     Type: String
   ORAFilesLocation:
     Description: Provide the S3 location of the downloaded Oracle client files.
-        E.g., s3://ibm-fncm-assets/oracle_client_files
-        Refer to the deployment guide for more information on downloading the client files and obtaining the location
+      E.g., s3://ibm-fncm-assets/oracle_client_files
+      Refer to the deployment guide for more information on downloading the client files and obtaining the location
     Type: String
   DBName:
     Description: The database name
@@ -110,7 +110,7 @@ Resources:
           - Action:
               - 'ssm:SendCommand'
             Effect: Allow
-            Resource: !Sub "arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/${GetStackResources.bastion_instance_id}"
+            Resource: !Sub "arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*"
 
   MaximoSSMSendCommandLambdaRole:
     DependsOn:
@@ -252,76 +252,8 @@ Resources:
                     - '{{EndpointPort}}'
                     - '{{DBName}}'
               workingDirectory: '/home/ec2-user'
-  MiddlewareConfigDocument:
-    Type: 'AWS::SSM::Document'
-    DependsOn:
-      - RDSSchemasConfigDocument
-    Properties:
-      DocumentType: Command
-      Content:
-        schemaVersion: '2.2'
-        description: Create middleware war files
-        parameters:
-          QSS3BucketName:
-            default: !Ref QSS3BucketName
-            description: The AWS S3 Bucket Name
-            type: String
-          QSS3KeyPrefix:
-            default: !Ref QSS3KeyPrefix
-            description: The AWS S3 Key Prefix
-            type: String
-          ORAFilesLocation:
-            default: !Ref ORAFilesLocation
-            description: Location of Oracle client files
-            type: String
-        mainSteps:
-          - action: 'aws:runShellScript'
-            name: downloadScriptFile
-            maxAttempts: 3
-            onFailure: Abort
-            inputs:
-              runCommand:
-                - !Join
-                  - ' '
-                  - - '"aws"'
-                    - 's3 cp'
-                    - 's3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_was_commands.sh'
-                    - '/home/ec2-user/maximo_was_commands.sh'
-              workingDirectory: '/home/ec2-user'
-          - action: 'aws:runShellScript'
-            name: setFilePermissions
-            maxAttempts: 3
-            onFailure: Abort
-            inputs:
-              runCommand:
-                - !Join
-                  - ' '
-                  - - '"chown"'
-                    - '-R ec2-user:ec2-user /home/ec2-user'
-                    - ';'
-                    - '"chmod"'
-                    - '755 /home/ec2-user/maximo_was_commands.sh'
-              workingDirectory: '/home/ec2-user'
-          - action: 'aws:runShellScript'
-            name: createObjects
-            maxAttempts: 3
-            onFailure: Abort
-            inputs:
-              runCommand:
-                - !Join
-                  - ' '
-                  - - '"/home/ec2-user/maximo_was_commands.sh"'
-                    - '{{DBUser}}'
-                    - '{{DBPassword}}'
-                    - '{{EndpointAddress}}'
-                    - '{{EndpointPort}}'
-                    - '{{DBName}}'
-                    - '{{ORAFilesLocation}}'
-              workingDirectory: '/home/ec2-user'
   ExecuteRDSSchemasDocumentLambda:
     Type: 'AWS::Lambda::Function'
-    DependsOn:
-      - MiddlewareConfigDocument
     Properties:
       Handler: index.lambda_handler
       Runtime: python3.7
@@ -372,7 +304,7 @@ Resources:
       Description: Executes Oracle Schema creation SQL script on Bastion host
       MemorySize: 320
       Timeout: 180
-      Role: !Ref MaximoSSMSendCommandLambdaRole
+      Role: !GetAtt MaximoSSMSendCommandLambdaRole.Arn
   ExecuteRDSObjectsDocument:
     Type: 'Custom::ExecuteRDSObjectsDocument'
     Version: '1.0'
@@ -381,15 +313,5 @@ Resources:
         - ExecuteRDSSchemasDocumentLambda
         - Arn
       SSMDocument: !Ref RDSSchemasConfigDocument
-      BastionASGName: !Ref BastionASGName
-      QuickStartLogs: !Ref QuickStartLogs
-  ExecuteMiddlewareObjectsDocument:
-    Type: 'Custom::MiddlewareConfigDocument'
-    Version: '1.0'
-    Properties:
-      ServiceToken: !GetAtt
-        - ExecuteRDSSchemasDocumentLambda
-        - Arn
-      SSMDocument: !Ref MiddlewareConfigDocument
       BastionASGName: !Ref BastionASGName
       QuickStartLogs: !Ref QuickStartLogs
