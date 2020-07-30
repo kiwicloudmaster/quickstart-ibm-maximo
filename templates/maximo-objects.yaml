@@ -20,7 +20,7 @@ Metadata:
           - DBPassword
           - EndpointAddress
           - EndpointPort
-          - ORAFilesLocation
+          - MaximoFilesLocation
     ParameterLabels:
       BastionASGName:
         default: Auto Scaling Group Name of the Bastion Host
@@ -49,15 +49,15 @@ Parameters:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
     ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and forward slash (/).
-    Default: quickstart-ibm-filenet-content-manager/
+    Default: quickstart-ibm-maximo/
     Description: The S3 key prefix for the Quick Start assets. Quick Start key prefix
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
     Type: String
-  ORAFilesLocation:
-    Description: Provide the S3 location of the downloaded Oracle client files.
-      E.g., s3://ibm-fncm-assets/oracle_client_files
-      Refer to the deployment guide for more information on downloading the client files and obtaining the location
+  MaximoFilesLocation:
+    Description: Provide the S3 location of the downloaded maximo , WAS  and Oracle client files (please do not include the s3:// and the trailing forward slash).
+      E.g., if the location is "s3://ibm-maximo-assets/instllation_files", then enter "ibm-maximo-assets/instllation_files".
+      Refer to the deployment guide for more information on downloading the client files and obtaining the location.
     Type: String
   DBName:
     Description: The database name
@@ -146,8 +146,8 @@ Resources:
             default: !Ref QSS3KeyPrefix
             description: The AWS S3 Key Prefix
             type: String
-          ORAFilesLocation:
-            default: !Ref ORAFilesLocation
+          MaximoFilesLocation:
+            default: !Ref MaximoFilesLocation
             description: Location of Oracle client files
             type: String
           DBName:
@@ -181,7 +181,7 @@ Resources:
                   - ' '
                   - - '"aws"'
                     - 's3 cp'
-                    - 's3://{{ORAFilesLocation}}/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip'
+                    - 's3://{{MaximoFilesLocation}}/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip'
                     - '/home/ec2-user/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
@@ -194,7 +194,7 @@ Resources:
                   - ' '
                   - - '"aws"'
                     - 's3 cp'
-                    - 's3://{{ORAFilesLocation}}/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip'
+                    - 's3://{{MaximoFilesLocation}}/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip'
                     - '/home/ec2-user/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
@@ -208,7 +208,7 @@ Resources:
                   - - '"aws"'
                     - 's3 cp'
                     - 's3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_commands.sh'
-                    - '/home/ec2-user/FNCM_oracle_commands.sh'
+                    - '/home/ec2-user/maximo_oracle_commands.sh'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: downloadSqlscript
@@ -221,7 +221,7 @@ Resources:
                   - - '"aws"'
                     - 's3 cp'
                     - 's3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_database_objects.sql'
-                    - '/home/ec2-user/FNCM_oracle_database_objects.sql'
+                    - '/home/ec2-user/maximo_oracle_database_objects.sql'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: setFilePermissions

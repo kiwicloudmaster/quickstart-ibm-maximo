@@ -216,10 +216,10 @@ Parameters:
     Type: AWS::EC2::VPC::Id
   MaximoFilesLocation:
     Description: Provide the S3 location of the downloaded maximo , WAS  and Oracle client files (please do not include the s3:// and the trailing forward slash).
-      E.g., if the location is "s3://ibm-maximo-assets/instllation_files", then enter "ibm-maximo-assets/instllation_files".
-      Refer to the deployment guide for more information on downloading the client files and obtaining the location.
+        E.g., if the location is "s3://ibm-maximo-assets/instllation_files", then enter "ibm-maximo-assets/instllation_files".
+        Refer to the deployment guide for more information on downloading the client files and obtaining the location.
     Type: String
-    # Oracle RDS Database Parameters
+   # Oracle RDS Database Parameters
   ORAVersion:
     AllowedValues: [ "11.2" ]
     Default: "11.2"
@@ -236,7 +236,7 @@ Parameters:
     Description: Amazon RDS instance type for the Oracle database instance.
     Type: String
   DBInstanceIdentifier:
-    Default: FNCMORCL
+    Default: MXMORCL
     Description: The database instance name.
     Type: String
     MinLength: '1'
@@ -244,7 +244,7 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
   DBName:
-    Default: P8DB
+    Default: maximo
     Description: The database name.
     Type: String
     MinLength: '1'
@@ -252,7 +252,7 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
   DBUser:
-    Default: P8Admin
+    Default: MXAdmin
     Description: The database admin account user name.
     Type: String
     MinLength: '1'
@@ -269,7 +269,7 @@ Parameters:
     ConstraintDescription: must contain only alphanumeric characters.
   DBMultiZone:
     Description: Choose false to disable high availability (Multi-AZ) configuration for Oracle RDS.
-      More information is available here - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
+        More information is available here - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
     Type: String
     AllowedValues:
       - 'true'
@@ -299,14 +299,25 @@ Resources:
         BastionSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
         NodeSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
         ControlPlaneSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
+  MaximoIAMStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/maximo-iam.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+        MaximoFilesLocation: !Ref MaximoFilesLocation
   BastionStack:
+    DependsOn: "MaximoIAMStack"
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
         !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template.yaml'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template.yaml'
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         BastionAMIOS: !Ref 'BastionAMIOS'
         BastionInstanceType: !Ref 'BastionInstanceType'
@@ -318,6 +329,7 @@ Resources:
         QSS3KeyPrefix: 'quickstart-linux-bastion/'
         RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
         VPCID: !Ref 'VPCID'
+        AlternativeIAMRole: !GetAtt MaximoIAMStack.Outputs.BastionRole
   # Create the Oracle tablespaces and users for Maximo
   MaximoObjectCreation:
     DependsOn:
@@ -336,7 +348,7 @@ Resources:
         EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
         EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
         BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
-        ORAFilesLocation: !Ref 'MaximoFilesLocation'
+        MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
         QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
   WASStack:
@@ -345,9 +357,9 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/was.template.yaml'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/was.template.yaml'
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         ALBSSLCertificateARN: !Ref 'ALBSSLCertificateARN'
         BastionSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
@@ -372,7 +384,7 @@ Resources:
         BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         VPCID: !Ref 'VPCID'
-
+  
 
 Outputs:
   WebsiteURL:

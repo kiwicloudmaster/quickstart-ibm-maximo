@@ -400,9 +400,9 @@ Resources:
             /home/ec2-user/CreateApplications.py:
               source:
                 !Sub
-                - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/CreateApplications.py'
-                - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/CreateApplications.py'
+                  - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                    S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
               owner: root
               group: root
@@ -410,9 +410,9 @@ Resources:
             /home/ec2-user/maximo_was_commands.sh:
               source:
                 !Sub
-                - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/maximo_was_commands.sh'
-                - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/maximo_was_commands.sh'
+                  - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                    S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000700'
               owner: root
               group: root
@@ -422,7 +422,7 @@ Resources:
               command:
                 - !Join
                   - ' '
-                  - - '"/home/ec2-user/maximo_was_commands.sh"'
+                  - - '" sudo sh /home/ec2-user/maximo_was_commands.sh"'
                     - '{{DBUser}}'
                     - '{{DBPassword}}'
                     - '{{EndpointAddress}}'
@@ -473,14 +473,14 @@ Resources:
       ResourceSignal:
         Count: !Ref 'WASNodesDesiredCapacity'
         Timeout: PT2H
-
+   
 Outputs:
   WebsiteURL:
     Description: URL for newly created WAS stack
     Value:
       -!Join
-      - ''
-      - - http://
-      - !GetAtt 'ApplicationLoadBalancer.DNSName'
-      - '/maximo'
+        - ''
+        - - http://
+          - !GetAtt 'ApplicationLoadBalancer.DNSName'
+          - '/maximo'
 
