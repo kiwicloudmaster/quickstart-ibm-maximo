@@ -356,6 +356,11 @@ Resources:
                   - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
                   - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
                 Effect: Allow
+              - Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource: !Sub 'arn:aws:s3:::${MaximoFilesLocation}/*'
+                Effect: Allow
           PolicyName: aws-quick-start-s3-policy
   WASProfile:
     Type: AWS::IAM::InstanceProfile
@@ -395,6 +400,8 @@ Resources:
         configSets:
           quickstart:
             - install
+          quickstartwithSSL:
+            - install
         install:
           files:
             /home/ec2-user/CreateApplications.py:
@@ -419,16 +426,9 @@ Resources:
               authentication: S3AccessCreds
           commands:
             '01_create_Server':
-              command:
-                - !Join
-                  - ' '
-                  - - '" sudo sh /home/ec2-user/maximo_was_commands.sh"'
-                    - '{{DBUser}}'
-                    - '{{DBPassword}}'
-                    - '{{EndpointAddress}}'
-                    - '{{EndpointPort}}'
-                    - '{{DBName}}'
-                    - '{{MaximoFilesLocation}}'
+              command: !Sub |
+                sudo sh /home/ec2-user/maximo_was_commands.sh ${DBUser} ${DBPassword} ${EndpointAddress} ${EndpointPort} ${DBName} ${MaximoFilesLocation} > run.out
+
     Properties:
       KeyName: !Ref 'KeyPairName'
       ImageId: !FindInMap
@@ -440,6 +440,18 @@ Resources:
       InstanceType: !Ref 'WASInstanceType'
       SecurityGroups:
         - !Ref 'WASSecurityGroup'
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -x
+          yum install -y git
+          until git clone https://github.com/aws-quickstart/quickstart-linux-utilities.git; do echo "Retrying"; done
+          cd /quickstart-linux-utilities
+          source quickstart-cfn-tools.source
+          qs_update-os || qs_err
+          qs_bootstrap_pip || qs_err
+          qs_aws-cfn-bootstrap || qs_err
+          cfn-init  --stack ${AWS::StackName} --resource WASASLaunchConfig --configsets quickstart --region ${AWS::Region}
+          cfn-signal -e $? --stack ${AWS::StackName} --region ${AWS::Region} --resource WASASLaunchConfig
   WASTargetTrackingScalingPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
