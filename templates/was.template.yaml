@@ -31,7 +31,6 @@ Metadata:
           default: SSL Configuration
         Parameters:
           - ALBSSLCertificateARN
-          - HostedZoneName
       - Label:
           default: AWS Quick Start Configuration
         Parameters:
@@ -52,9 +51,6 @@ Metadata:
         default: ARN of ACM certificate for Application Load Balancer
       BastionSecurityGroupID:
         default: Bastion Security Group ID
-      HostedZoneName:
-        default: Hosted Zone Name in Route 53 corresponding to the domain name of
-          the web site
       KeyPairName:
         default: SSH Key Name
       WASInstanceType:
@@ -79,8 +75,6 @@ Metadata:
         default: Quick Start S3 bucket region
       QSS3KeyPrefix:
         default: Quick Start S3 Key Prefix
-      BastionASGName:
-        default: Auto Scaling Group Name of the Bastion Host
       DBName:
         default: The database name
       DBUser:
@@ -103,11 +97,6 @@ Parameters:
     Description: ID of the bastion host security group to enable SSH connections (e.g.,
       sg-7f16e910)
     Type: AWS::EC2::SecurityGroup::Id
-  HostedZoneName:
-    AllowedPattern: ^$|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
-    Default: ''
-    Description: The domain name of a valid Hosted Zone on AWS.
-    Type: String
   KeyPairName:
     Description: Name of an existing EC2 key pair. All instances will launch with
       this key pair.
@@ -220,9 +209,6 @@ Parameters:
     MaxLength: '41'
     AllowedPattern: '[a-zA-Z0-9]*'
     ConstraintDescription: must contain only alphanumeric characters.
-  BastionASGName:
-    Description: Auto Scaling Group Name of the Bastion Host
-    Type: String
   EndpointAddress:
     Description: Endpoint address of the Master database
     Type: String
@@ -276,12 +262,12 @@ Resources:
         - !If
           - UseALBSSL
           - IpProtocol: tcp
-            FromPort: '443'
-            ToPort: '443'
+            FromPort: 443
+            ToPort: 443
             CidrIp: '0.0.0.0/0'
           - IpProtocol: tcp
-            FromPort: '80'
-            ToPort: '80'
+            FromPort: 80
+            ToPort: 80
             CidrIp: '0.0.0.0/0'
   ApplicationLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -377,16 +363,16 @@ Resources:
         - !If
           - UseALBSSL
           - IpProtocol: tcp
-            FromPort: '9443'
-            ToPort: '9443'
+            FromPort: 9443
+            ToPort: 9443
             SourceSecurityGroupId: !Ref 'ELBSecurityGroup'
           - IpProtocol: tcp
-            FromPort: '9080'
-            ToPort: '9080'
+            FromPort: 9080
+            ToPort: 9080
             SourceSecurityGroupId: !Ref 'ELBSecurityGroup'
         - IpProtocol: tcp
-          FromPort: '22'
-          ToPort: '22'
+          FromPort: 22
+          ToPort: 22
           SourceSecurityGroupId: !Ref 'BastionSecurityGroupID'
   WASASLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
@@ -435,7 +421,7 @@ Resources:
         - AWSAMIRegionMap
         - !Ref 'AWS::Region'
         - RHELHVM
-      InstanceMonitoring: 'true'
+      InstanceMonitoring: true
       IamInstanceProfile: !Ref 'WASProfile'
       InstanceType: !Ref 'WASInstanceType'
       SecurityGroups:
@@ -466,13 +452,13 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-        - !Ref 'PublicSubnet1ID'
-        - !Ref 'PublicSubnet2ID'
+        - !Ref 'PrivateSubnet1ID'
+        - !Ref 'PrivateSubnet2ID'
       Cooldown: '300'
       DesiredCapacity: !Ref 'WASNodesDesiredCapacity'
       TargetGroupARNs:
         - !Ref 'ALBTargetGroup'
-      HealthCheckGracePeriod: '300'
+      HealthCheckGracePeriod: 300
       HealthCheckType: EC2
       LaunchConfigurationName: !Ref 'WASASLaunchConfig'
       MaxSize: !Ref 'WASNodesMaxSize'
@@ -480,7 +466,7 @@ Resources:
       Tags:
         - Key: Name
           Value: WAS Server cluster node
-          PropagateAtLaunch: 'true'
+          PropagateAtLaunch: true
     CreationPolicy:
       ResourceSignal:
         Count: !Ref 'WASNodesDesiredCapacity'

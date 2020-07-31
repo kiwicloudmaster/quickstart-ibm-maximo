@@ -32,7 +32,6 @@ Metadata:
           default: SSL Configuration
         Parameters:
           - ALBSSLCertificateARN
-          - HostedZoneName
       - Label:
           default: Location of the downloaded Maximo , Websphere and  Oracle client
           Parameters:
@@ -62,9 +61,6 @@ Metadata:
         default: Bastion AMI Operating System
       BastionInstanceType:
         default: Bastion Instance Type
-      HostedZoneName:
-        default: Hosted Zone Name in Route 53 corresponding to the domain name of
-          the web site
       KeyPairName:
         default: Key Pair Name
       # WAS Parameters
@@ -143,11 +139,6 @@ Parameters:
       - m4.4xlarge
     Default: t2.micro
     Description: Amazon EC2 instance type for the bastion instances
-    Type: String
-  HostedZoneName:
-    AllowedPattern: ^$|(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$
-    Default: ''
-    Description: The domain name of a valid Hosted Zone on AWS.
     Type: String
   KeyPairName:
     Description: The name of an existing public/private key pair, which allows you
@@ -305,28 +296,7 @@ Resources:
         PublicSubnet1CIDR: !Ref 'PublicSubnet1CIDR'
         PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
         VPCCIDR: !Ref 'VPCCIDR'
-  BastionStack:
-    DependsOn: VPCStack
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL:
-        !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template.yaml'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-      Parameters:
-        BastionAMIOS: !Ref 'BastionAMIOS'
-        BastionInstanceType: !Ref 'BastionInstanceType'
-        KeyPairName: !Ref 'KeyPairName'
-        PublicSubnet1ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
-        PublicSubnet2ID: !GetAtt 'VPCStack.Outputs.PublicSubnet2ID'
-        QSS3BucketName: 'aws-quickstart'
-        QSS3BucketRegion: !Ref 'QSS3BucketRegion'
-        QSS3KeyPrefix: 'quickstart-linux-bastion/'
-        RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
-        VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
   RDSStack:
-    DependsOn: VPCStack
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
@@ -347,8 +317,59 @@ Resources:
         BastionSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
         NodeSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
         ControlPlaneSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
+  MaximoIAMStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/maximo-iam.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+        MaximoFilesLocation: !Ref MaximoFilesLocation
+  BastionStack:
+    DependsOn: "MaximoIAMStack"
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        BastionAMIOS: !Ref 'BastionAMIOS'
+        BastionInstanceType: !Ref 'BastionInstanceType'
+        KeyPairName: !Ref 'KeyPairName'
+        PublicSubnet1ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
+        PublicSubnet2ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
+        QSS3BucketName: 'aws-quickstart'
+        QSS3BucketRegion: !Ref 'QSS3BucketRegion'
+        QSS3KeyPrefix: 'quickstart-linux-bastion/'
+        RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
+        VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
+        AlternativeIAMRole: !GetAtt MaximoIAMStack.Outputs.BastionRole
+  MaximoObjectCreation:
+    DependsOn:
+      - RDSStack
+      - BastionStack
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/maximo-objects.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        DBName: !Ref 'DBName'
+        DBUser: !Ref 'DBUser'
+        DBPassword: !Ref 'DBPassword'
+        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
+        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
+        BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
+        MaximoFilesLocation: !Ref 'MaximoFilesLocation'
+        QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+        QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
   WASStack:
-    DependsOn: RDSStack
+    DependsOn: MaximoObjectCreation
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
@@ -359,9 +380,11 @@ Resources:
       Parameters:
         ALBSSLCertificateARN: !Ref 'ALBSSLCertificateARN'
         BastionSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
-        HostedZoneName: !Ref 'HostedZoneName'
         KeyPairName: !Ref 'KeyPairName'
         WASInstanceType: !Ref 'WASInstanceType'
+        WASNodesDesiredCapacity: '1'
+        WASNodesMaxSize: '1'
+        WASNodesMinSize: '1'
         PrivateSubnet1ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet1AID'
         PrivateSubnet2ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet2AID'
         PublicSubnet1ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
@@ -369,6 +392,13 @@ Resources:
         QSS3BucketName: !Ref 'QSS3BucketName'
         QSS3BucketRegion: !Ref 'QSS3BucketRegion'
         QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
+        DBName: !Ref 'DBName'
+        DBUser: !Ref 'DBUser'
+        DBPassword: !Ref 'DBPassword'
+        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
+        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
+        BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
+        MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
 
 
