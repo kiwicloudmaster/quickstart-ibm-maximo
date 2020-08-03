@@ -426,6 +426,13 @@ Resources:
       InstanceType: !Ref 'WASInstanceType'
       SecurityGroups:
         - !Ref 'WASSecurityGroup'
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 40
+            VolumeType: gp2
+            Encrypted: true
+            DeleteOnTermination: true
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -x

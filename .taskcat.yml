@@ -22,25 +22,15 @@ tests:
     parameters:
       AvailabilityZones: $[taskcat_genaz_3]
       DBPassword: $[taskcat_genpass_8A]
-      DockerRegistryEntitlementKey: override
-      DomainAdminPassword: $[taskcat_genpass_12A]
-      KeyPairName: $[taskcat_getkeypair]
-      MaximoFilesLocation: override
+      KeyPairName:  cidb
+      MaximoFilesLocation: rajasegu-maximo-binaries
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
       RDGWCIDR: 10.0.0.0/16
       RemoteAccessCIDR: 10.0.0.0/16
       SSLCertARN: override
-      VPCCIDR: 10.0.0.0/16
     regions:
     - us-east-1
-    - us-east-2
-    - us-west-2
-    - eu-central-1
-    - eu-west-1
-    - eu-west-2
-    - ap-northeast-1
-    - ap-southeast-1
-    - ap-southeast-2
-    s3_bucket: ''
+    s3_bucket: 'rajasegu-quickstart1'
     template: templates/maximo-master.template.yaml
+

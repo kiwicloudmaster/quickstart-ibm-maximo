@@ -235,7 +235,7 @@ Parameters:
     Description: Amazon RDS instance type for the Oracle database instance.
     Type: String
   DBInstanceIdentifier:
-    Default: FNCMORCL
+    Default: ORCL
     Description: The database instance name.
     Type: String
     MinLength: '1'
@@ -243,7 +243,7 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
   DBName:
-    Default: P8DB
+    Default: maximo
     Description: The database name.
     Type: String
     MinLength: '1'
@@ -251,7 +251,7 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
   DBUser:
-    Default: P8Admin
+    Default: Admin
     Description: The database admin account user name.
     Type: String
     MinLength: '1'
@@ -282,7 +282,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template.yaml'
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -333,7 +333,7 @@ Resources:
     Properties:
       TemplateURL:
         !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template.yaml'
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
@@ -397,7 +397,6 @@ Resources:
         DBPassword: !Ref 'DBPassword'
         EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
         EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
-        BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
 

@@ -371,7 +371,6 @@ Resources:
         DBPassword: !Ref 'DBPassword'
         EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
         EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
-        BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         VPCID: !Ref 'VPCID'
   
