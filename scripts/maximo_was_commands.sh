@@ -20,10 +20,10 @@ cd /work
 
 # Download the installer files from S3
 /usr/local/bin/aws s3 cp s3://$Maximos3location/IED_V1.8.8_Wins_Linux_86.zip .
-/usr/local/bin/aws s3 cp s3://Maximos3location/WAS_ND_V9.0_MP_ML.zip .
-/usr/local/bin/aws s3 cp s3://Maximos3location/was.repo.9000.java8_part1.zip .
-/usr/local/bin/aws s3 cp s3://Maximos3location/was.repo.9000.java8_part2.zip .
-/usr/local/bin/aws s3 cp s3://Maximos3location/was.repo.9000.java8_part3.zip .
+/usr/local/bin/aws s3 cp s3://$Maximos3location/WAS_ND_V9.0_MP_ML.zip .
+/usr/local/bin/aws s3 cp s3://$Maximos3location/was.repo.9000.java8_part1.zip .
+/usr/local/bin/aws s3 cp s3://$Maximos3location/was.repo.9000.java8_part2.zip .
+/usr/local/bin/aws s3 cp s3://$Maximos3location/was.repo.9000.java8_part3.zip .
 
 # Install IBM Installation manager
 unzip IED_V1.8.8_Wins_Linux_86.zip
@@ -65,7 +65,7 @@ sh $WAS_HOME/profiles/mxAppSrv01/bin/startServer.sh server1
 # Download  and install the maximo
 mkdir /Launchpad
 cd /Launchpad
-/usr/local/bin/aws s3 cp s3://Maximos3location/MAM_7.6.1.0_LINUX64.tar.gz .
+/usr/local/bin/aws s3 cp s3://$Maximos3location/MAM_7.6.1.0_LINUX64.tar.gz .
 tar -xvf MAM_7.6.1.0_LINUX64.tar.gz
 export BYPASS_PRS=True # Bypass the prechecks
 /opt/IBM/InstallationManager/eclipse/tools/imcl input /Launchpad/SilentResponseFiles/Unix/ResponseFile_MAM_Install_Unix.xml -log /tmp/MAM_Install_log.xml -acceptLicense
