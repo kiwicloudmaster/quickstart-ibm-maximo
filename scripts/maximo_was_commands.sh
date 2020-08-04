@@ -12,7 +12,7 @@ Maximos3location=$6
 yum -y install  unzip telnet
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
+unzip -q awscliv2.zip
 ./aws/install
 
 mkdir /work
@@ -26,15 +26,15 @@ cd /work
 /usr/local/bin/aws s3 cp s3://$Maximos3location/was.repo.9000.java8_part3.zip .
 
 # Install IBM Installation manager
-unzip IED_V1.8.8_Wins_Linux_86.zip
+unzip -q IED_V1.8.8_Wins_Linux_86.zip
 ./EnterpriseDVD/Linux_x86_64/EnterpriseCD-Linux-x86_64/InstallationManager/installc -log /tmp/IM_Install_Unix.xml -acceptLicense
 
 # Extract java8 repositories
 cd /work
 mkdir java8
-unzip was.repo.9000.java8_part1.zip -d java8
-unzip was.repo.9000.java8_part2.zip -d java8
-unzip was.repo.9000.java8_part3.zip -d java8
+unzip -q was.repo.9000.java8_part1.zip -d java8
+unzip -q was.repo.9000.java8_part2.zip -d java8
+unzip -q was.repo.9000.java8_part3.zip -d java8
 
 
 # Install the Websphere 9.0 and IBM java sdk 8
@@ -59,14 +59,15 @@ sh $WAS_HOME/profiles/mxAppSrv01/bin/startNode.sh
 
 # Create the app server
 
-sh $WAS_HOME/bin/wsadmin.sh -lang jython -username "wasadmin" -password "wasadmin" -c "AdminServerManagement.createApplicationServer('mxNode01', 'server1','default')"
-sh $WAS_HOME/profiles/mxAppSrv01/bin/startServer.sh server1
+sh $WAS_HOME/bin/wsadmin.sh -lang jython -username "wasadmin" -password "wasadmin" -c "AdminServerManagement.createApplicationServer('mxNode01', 'server1','default')" &
+
+
 
 # Download  and install the maximo
 mkdir /Launchpad
 cd /Launchpad
 /usr/local/bin/aws s3 cp s3://$Maximos3location/MAM_7.6.1.0_LINUX64.tar.gz .
-tar -xvf MAM_7.6.1.0_LINUX64.tar.gz
+tar -xf MAM_7.6.1.0_LINUX64.tar.gz
 export BYPASS_PRS=True # Bypass the prechecks
 /opt/IBM/InstallationManager/eclipse/tools/imcl input /Launchpad/SilentResponseFiles/Unix/ResponseFile_MAM_Install_Unix.xml -log /tmp/MAM_Install_log.xml -acceptLicense
 
@@ -74,12 +75,12 @@ cp /opt/IBM/SMP/maximo/applications/maximo/properties/maximo.properties.orig/max
 sed -i "s/^[[:blank:]]*mxe.db.url=jdbc:oracle:thin:/mxe.db.url=jdbc:oracle:thin:@$Endpoint:$Port:$DBName/" /opt/IBM/SMP/maximo/applications/maximo/properties/maximo.properties
 
 
-# Deploy the database schema and tables
-cd /opt/IBM/SMP/maximo/tools/maximo/en
-unzip maxdemp.ora.zip
+# Deploy the empty database schema and tables
 cd /opt/IBM/SMP/maximo/tools/maximo
-./maxinst.sh -sMAXINDEX -tMAXDATA
+./maxinst.sh -sMAXINDEX -tMAXDATA -imaximo
 
+# Start the app server
+sh $WAS_HOME/profiles/mxAppSrv01/bin/startServer.sh server1
 
 # Generate the maximo ear files
 cd /opt/IBM/SMP/maximo/deployment

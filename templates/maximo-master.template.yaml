@@ -296,14 +296,27 @@ Resources:
         PublicSubnet1CIDR: !Ref 'PublicSubnet1CIDR'
         PublicSubnet2CIDR: !Ref 'PublicSubnet2CIDR'
         VPCCIDR: !Ref 'VPCCIDR'
-  RDSStack:
+  MaximoStack:
+    DependsOn: VPCStack
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/oracle.template.yaml'
+      TemplateURL:
+        !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/maximo.template.yaml'
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
+        VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
+        PrivateSubnet1ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet1AID'
+        PrivateSubnet2ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet2AID'
+        PublicSubnet1ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
+        PublicSubnet2ID: !GetAtt 'VPCStack.Outputs.PublicSubnet2ID'
+        KeyPairName: !Ref 'KeyPairName'
+        BastionAMIOS: !Ref 'BastionAMIOS'
+        BastionInstanceType: !Ref 'BastionInstanceType'
+        WASInstanceType: !Ref 'WASInstanceType'
+        ALBSSLCertificateARN: !Ref 'ALBSSLCertificateARN'
+        MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         DBInstanceClass: !Ref 'DBInstanceClass'
         DBInstanceIdentifier: !Ref 'DBInstanceIdentifier'
         DBName: !Ref 'DBName'
@@ -311,100 +324,16 @@ Resources:
         DBUser: !Ref 'DBUser'
         DBPassword: !Ref 'DBPassword'
         DBMultiZone: !Ref 'DBMultiZone'
-        VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
-        PrivateSubnet1AID: !GetAtt 'VPCStack.Outputs.PrivateSubnet1AID'
-        PrivateSubnet2AID: !GetAtt 'VPCStack.Outputs.PrivateSubnet2AID'
-        BastionSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
-        NodeSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
-        ControlPlaneSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
-  MaximoIAMStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/maximo-iam.template.yaml'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-      Parameters:
-        QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-        MaximoFilesLocation: !Ref MaximoFilesLocation
-  BastionStack:
-    DependsOn: "MaximoIAMStack"
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL:
-        !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-      Parameters:
-        BastionAMIOS: !Ref 'BastionAMIOS'
-        BastionInstanceType: !Ref 'BastionInstanceType'
-        KeyPairName: !Ref 'KeyPairName'
-        PublicSubnet1ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
-        PublicSubnet2ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
-        QSS3BucketName: 'aws-quickstart'
-        QSS3BucketRegion: !Ref 'QSS3BucketRegion'
-        QSS3KeyPrefix: 'quickstart-linux-bastion/'
-        RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
-        VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
-        AlternativeIAMRole: !GetAtt MaximoIAMStack.Outputs.BastionRole
-  MaximoObjectCreation:
-    DependsOn:
-      - RDSStack
-      - BastionStack
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/maximo-objects.yaml'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-      Parameters:
-        DBName: !Ref 'DBName'
-        DBUser: !Ref 'DBUser'
-        DBPassword: !Ref 'DBPassword'
-        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
-        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
-        BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
-        MaximoFilesLocation: !Ref 'MaximoFilesLocation'
-        QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-        QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
-  WASStack:
-    DependsOn: MaximoObjectCreation
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL:
-        !Sub
-        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/was.template.yaml'
-        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
-          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
-      Parameters:
-        ALBSSLCertificateARN: !Ref 'ALBSSLCertificateARN'
-        BastionSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
-        KeyPairName: !Ref 'KeyPairName'
-        WASInstanceType: !Ref 'WASInstanceType'
-        WASNodesDesiredCapacity: '1'
-        WASNodesMaxSize: '1'
-        WASNodesMinSize: '1'
-        PrivateSubnet1ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet1AID'
-        PrivateSubnet2ID: !GetAtt 'VPCStack.Outputs.PrivateSubnet2AID'
-        PublicSubnet1ID: !GetAtt 'VPCStack.Outputs.PublicSubnet1ID'
-        PublicSubnet2ID: !GetAtt 'VPCStack.Outputs.PublicSubnet2ID'
         QSS3BucketName: !Ref 'QSS3BucketName'
         QSS3BucketRegion: !Ref 'QSS3BucketRegion'
         QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
-        DBName: !Ref 'DBName'
-        DBUser: !Ref 'DBUser'
-        DBPassword: !Ref 'DBPassword'
-        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
-        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
-        MaximoFilesLocation: !Ref 'MaximoFilesLocation'
-        VPCID: !GetAtt 'VPCStack.Outputs.VPCID'
+        RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
 
 
 Outputs:
   WebsiteURL:
     Description: URL for newly created WAS stack
-    Value: !GetAtt 'WASStack.Outputs.WebsiteURL'
+    Value: !GetAtt 'MaximoStack.Outputs.WebsiteURL'
   MasterJDBCConnectionString:
     Description: JDBC connection string for the master database
-    Value: !GetAtt 'RDSStack.Outputs.MasterJDBCConnectionString'
+    Value: !GetAtt 'MaximoStack.Outputs.MasterJDBCConnectionString'

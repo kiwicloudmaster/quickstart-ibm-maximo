@@ -46,6 +46,7 @@ Metadata:
             - EndpointAddress
             - EndpointPort
             - MaximoFilesLocation
+            - OracleServerAccessSecurityGroup
     ParameterLabels:
       ALBSSLCertificateARN:
         default: ARN of ACM certificate for Application Load Balancer
@@ -81,6 +82,8 @@ Metadata:
         default: The database admin account username
       DBPassword:
         default: The database admin account password
+      OracleServerAccessSecurityGroup:
+        default: Oracle Security Group ID
       EndpointAddress:
         default: Endpoint address of the Master database
       EndpointPort:
@@ -220,6 +223,10 @@ Parameters:
       E.g., s3://ibm-fncm-assets/oracle_client_files
       Refer to the deployment guide for more information on downloading the client files and obtaining the location
     Type: String
+  OracleServerAccessSecurityGroup:
+    Description: ID of the bastion host security group to enable SSH connections (e.g.,
+      sg-7f16e910)
+    Type: AWS::EC2::SecurityGroup::Id
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
   UseALBSSL: !Not
@@ -303,6 +310,9 @@ Resources:
       HealthCheckIntervalSeconds: 30
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
+      HealthCheckPath: /maximo
+      Matcher:
+        HttpCode: '200,302'
       Port: !If
         - UseALBSSL
         - 9443
@@ -374,6 +384,14 @@ Resources:
           FromPort: 22
           ToPort: 22
           SourceSecurityGroupId: !Ref 'BastionSecurityGroupID'
+  WASOracleSecurityGroupIngress:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref OracleServerAccessSecurityGroup
+      IpProtocol: tcp
+      FromPort: !Ref EndpointPort
+      ToPort: !Ref EndpointPort
+      SourceSecurityGroupId: !Ref WASSecurityGroup
   WASASLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Metadata:
@@ -444,7 +462,7 @@ Resources:
           qs_bootstrap_pip || qs_err
           qs_aws-cfn-bootstrap || qs_err
           cfn-init  --stack ${AWS::StackName} --resource WASASLaunchConfig --configsets quickstart --region ${AWS::Region}
-          cfn-signal -e $? --stack ${AWS::StackName} --region ${AWS::Region} --resource WASASLaunchConfig
+          cfn-signal -e $? --stack ${AWS::StackName} --region ${AWS::Region} --resource WASAutoScalingGroup
   WASTargetTrackingScalingPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
@@ -477,7 +495,7 @@ Resources:
     CreationPolicy:
       ResourceSignal:
         Count: !Ref 'WASNodesDesiredCapacity'
-        Timeout: PT2H
+        Timeout: PT3H
    
 Outputs:
   WebsiteURL:

@@ -72,7 +72,7 @@ Parameters:
     Description: Amazon RDS instance type for the Oracle Database instance
     Type: String
   DBInstanceIdentifier:
-    Default: FNCMORCL
+    Default: ORCL
     Description: The database instance name
     Type: String
     MinLength: '1'
@@ -80,7 +80,7 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
   DBName:
-    Default: P8DB
+    Default: maximo
     Description: The database name
     Type: String
     MinLength: '1'
@@ -88,7 +88,7 @@ Parameters:
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
     ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
   DBUser:
-    Default: P8Admin
+    Default: Admin
     Description: The database admin account username
     Type: String
     MinLength: '1'
@@ -224,8 +224,8 @@ Resources:
       DBInstanceClass: !Ref 'DBInstanceClass'
       DBInstanceIdentifier: !Ref 'DBInstanceIdentifier'
       DBName: !Ref 'DBName'
-      DBParameterGroupName: !Ref 'P8DBParamGroup'
-      DBSubnetGroupName: !Ref 'P8DBSubnetGroup'
+      DBParameterGroupName: !Ref  'MaximoDBParamGroup'
+      DBSubnetGroupName: !Ref 'MaximoDBSubnetGroup'
       Engine: oracle-ee
       EngineVersion: !Ref 'ORAVersion'
       LicenseModel: bring-your-own-license
@@ -233,22 +233,27 @@ Resources:
       MasterUserPassword: !Ref 'DBPassword'
       MultiAZ: !Ref 'DBMultiZone'
       VPCSecurityGroups: !Split [ ",", !Join [ ",", [!Ref OracleServerAccessSecurityGroup, !Ref OracleServerSecurityGroup, !Ref OracleServersSecurityGroup, !Ref NodeSecurityGroupID, !Ref ControlPlaneSecurityGroupID] ] ]
-  P8DBParamGroup:
+  MaximoDBParamGroup:
     Type: AWS::RDS::DBParameterGroup
     Properties:
-      Description: FileNet P8 Oracle Database Parameter Group
+      Description: Maximo Oracle Database Parameter Group
       Family: oracle-ee-11.2
       Tags:
         - Key: Name
-          Value: "P8DBParamGroup"
-  P8DBSubnetGroup:
+          Value: "MaximoDBParamGroup"
+  MaximoDBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
-      DBSubnetGroupDescription: FileNet P8 Oracle Database Subnet Group
+      DBSubnetGroupDescription: Maximo Oracle Database Subnet Group
       SubnetIds:
         - !Ref 'PrivateSubnet1AID'
         - !Ref 'PrivateSubnet2AID'
 Outputs:
+  OracleServerAccessSecurityGroup:
+    Description: Endpoint Address for the master database
+    Value: !Ref OracleServerAccessSecurityGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-OracleServerAccessSecurityGroup'
   MasterEndpointAddress:
     Description: Endpoint Address for the master database
     Value: !GetAtt 'MasterDBInstance.Endpoint.Address'
