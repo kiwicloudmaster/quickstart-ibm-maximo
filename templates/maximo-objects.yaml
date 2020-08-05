@@ -175,12 +175,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-                - !Join
-                  - ' '
-                  - - '"aws"'
-                    - 's3 cp'
-                    - 's3://{{MaximoFilesLocation}}/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip'
-                    - '/home/ec2-user/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip'
+              - !Sub 'aws s3 cp s3://{{MaximoFilesLocation}}/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip /home/ec2-user/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: downloadSqlclient
@@ -188,12 +183,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-                - !Join
-                  - ' '
-                  - - '"aws"'
-                    - 's3 cp'
-                    - 's3://{{MaximoFilesLocation}}/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip'
-                    - '/home/ec2-user/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip'
+              - !Sub 'aws s3 cp s3://{{MaximoFilesLocation}}/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip /home/ec2-user/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: downloadScriptFile
@@ -201,12 +191,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-                - !Join
-                  - ' '
-                  - - '"aws"'
-                    - 's3 cp'
-                    - 's3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_commands.sh'
-                    - '/home/ec2-user/maximo_oracle_commands.sh'
+              - !Sub 'aws s3 cp s3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_commands.sh /home/ec2-user/maximo_oracle_commands.sh'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: downloadSqlscript
@@ -214,12 +199,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-                - !Join
-                  - ' '
-                  - - '"aws"'
-                    - 's3 cp'
-                    - 's3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_database_objects.sql'
-                    - '/home/ec2-user/maximo_oracle_database_objects.sql'
+              - !Sub 'aws s3 cp s3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_database_objects.sql /home/ec2-user/maximo_oracle_database_objects.sql'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: setFilePermissions
@@ -227,13 +207,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-                - !Join
-                  - ' '
-                  - - '"chown"'
-                    - '-R ec2-user:ec2-user /home/ec2-user'
-                    - ';'
-                    - '"chmod"'
-                    - '755 /home/ec2-user/maximo_oracle_commands.sh'
+              - !Sub 'chown -R ec2-user:ec2-user /home/ec2-user ; chmod 755 /home/ec2-user/maximo_oracle_commands.sh'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: createObjects
@@ -241,14 +215,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-                - !Join
-                  - ' '
-                  - - '"/home/ec2-user/maximo_oracle_commands.sh"'
-                    - '{{DBUser}}'
-                    - '{{DBPassword}}'
-                    - '{{EndpointAddress}}'
-                    - '{{EndpointPort}}'
-                    - '{{DBName}}'
+              - !Sub 'sh /home/ec2-user/maximo_oracle_commands.sh {{DBUser}} {{DBPassword}} {{EndpointAddress}} {{EndpointPort}} {{DBName}}'
               workingDirectory: '/home/ec2-user'
   ExecuteRDSSchemasDocumentLambda:
     Type: 'AWS::Lambda::Function'
@@ -256,49 +223,47 @@ Resources:
       Handler: index.lambda_handler
       Runtime: python3.7
       Code:
-        ZipFile: !Join
-          - |+
+        ZipFile: !Sub |
+          import boto3
+          import os, time,json
+          import cfnresponse
+          import logging
 
-          - - import boto3
-            - 'import os, time,json'
-            - import cfnresponse
-            - import logging
-            - ''
-            - 'def lambda_handler(event, context):'
-            - '    print(''Received event: %s'' % json.dumps(event))'
-            - '    status = cfnresponse.SUCCESS'
-            - '    try:'
-            - '        if event[''RequestType''] == ''Delete'':'
-            - '            cfnresponse.send(event, context, status, {})'
-            - '        else:'
-            - '            ssm = boto3.client(''ssm'')'
-            - ''
-            - '            asg = boto3.client(''autoscaling'')'
-            - '            asg_name = event[''ResourceProperties''][''BastionASGName'']'
-            - '            responseAsg = asg.describe_auto_scaling_groups(AutoScalingGroupNames=[asg_name])'
-            - '            instanceId = responseAsg[''AutoScalingGroups''][0][''Instances''][0][''InstanceId'']'
-            - '            ssmDocument = event[''ResourceProperties''][''SSMDocument'']'
-            - '            responseData = {}'
-            - ''
-            - '            response=ssm.send_command('
-            - '                InstanceIds = [instanceId],'
-            - '                DocumentName=ssmDocument,'
-            - '                TimeoutSeconds=3600,'
-            - '                Comment=''Create maximo configurations'','
-            - '                CloudWatchOutputConfig={''CloudWatchOutputEnabled'': True, ''CloudWatchLogGroupName'': ''QuickStartLogs''},'
-            - '                MaxConcurrency=''50'','
-            - '                MaxErrors=''5'','
-            - '            )'
-            - ''
-            - '            cmdId = response[''Command''][''CommandId'']'
-            - '            responseData[''CommandId''] = cmdId'
-            - '            print(''Started object creation in CommandId: '' + cmdId)'
-            - '            print(''Bastion Host Instance: '' + instanceId)'
-            - '            cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)'
-            - '    except Exception as e:'
-            - '        logging.error(''Exception: %s'' % e, exc_info=True)'
-            - '        status = cfnresponse.FAILED'
-            - '        cfnresponse.send(event, context, status, {}, None)'
+          def lambda_handler(event, context):
+          	print('Received event: %s' % json.dumps(event))
+          	status = cfnresponse.SUCCESS
+          	try:
+          		if event['RequestType'] == 'Delete':
+          			cfnresponse.send(event, context, status, {})
+          		else:
+          			ssm = boto3.client('ssm')
+
+          			asg = boto3.client('autoscaling')
+          			asg_name = event['ResourceProperties']['BastionASGName']
+          			responseAsg = asg.describe_auto_scaling_groups(AutoScalingGroupNames=[asg_name])
+          			instanceId = responseAsg['AutoScalingGroups'][0]['Instances'][0]['InstanceId']
+          			ssmDocument = event['ResourceProperties']['SSMDocument']
+          			responseData = {}
+
+          			response=ssm.send_command(
+          				InstanceIds = [instanceId],
+          				DocumentName=ssmDocument,
+          				TimeoutSeconds=3600,
+          				Comment='Create maximo configurations',
+          				CloudWatchOutputConfig={'CloudWatchOutputEnabled': True, 'CloudWatchLogGroupName': 'QuickStartLogs'},
+          				MaxConcurrency='50',
+          				MaxErrors='5',
+          			)
+
+          			cmdId = response['Command']['CommandId']
+          			responseData['CommandId'] = cmdId
+          			print('Started object creation in CommandId: ' + cmdId)
+          			print('Bastion Host Instance: ' + instanceId)
+          			cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData)
+          	except Exception as e:
+          		logging.error('Exception: %s' % e, exc_info=True)
+          		status = cfnresponse.FAILED
+          		cfnresponse.send(event, context, status, {}, None)
       Description: Executes Oracle Schema creation SQL script on Bastion host
       MemorySize: 320
       Timeout: 180

@@ -1,12 +1,13 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # extract command-line options into variables.
-DBUser=$1
-DBPassword=$2
-Endpoint=$3
-Port=$4
-DBName=$5
-Maximos3location=$6
+Endpoint=$1
+Port=$2
+DBName=$3
+Maximos3location=$4
+DeployUtilities=$5
+
+
 
 # Install aws cli
 yum -y install  unzip telnet
@@ -70,6 +71,15 @@ cd /Launchpad
 tar -xf MAM_7.6.1.0_LINUX64.tar.gz
 export BYPASS_PRS=True # Bypass the prechecks
 /opt/IBM/InstallationManager/eclipse/tools/imcl input /Launchpad/SilentResponseFiles/Unix/ResponseFile_MAM_Install_Unix.xml -log /tmp/MAM_Install_log.xml -acceptLicense
+
+if [ $DeployUtilities = "Yes" ];
+then
+  mkdir /Launchpad/utilities
+  cd /Launchpad/utilities
+  /usr/local/bin/aws s3 cp s3://$Maximos3location/MAXIMO_UTILITIES_7.6_MP_ML.zip
+  unzip -q MAXIMO_UTILITIES_7.6_MP_ML.zip
+  /opt/IBM/InstallationManager/eclipse/tools/imcl input /Launchpad/utilities/Utilities_Silent_ResponseFile.xml -log /tmp/UtilitiesInstall_log.xml -acceptLicense
+fi
 
 cp /opt/IBM/SMP/maximo/applications/maximo/properties/maximo.properties.orig/maximo.properties /opt/IBM/SMP/maximo/applications/maximo/properties/
 sed -i "s/^[[:blank:]]*mxe.db.url=jdbc:oracle:thin:/mxe.db.url=jdbc:oracle:thin:@$Endpoint:$Port:$DBName/" /opt/IBM/SMP/maximo/applications/maximo/properties/maximo.properties

@@ -27,6 +27,7 @@ Metadata:
           - WASNodesMinSize
           - WASNodesMaxSize
           - WASNodesDesiredCapacity
+          - DeployUtilities
       - Label:
           default: SSL Configuration
         Parameters:
@@ -62,6 +63,8 @@ Metadata:
         default: WAS Nodes Max Size
       WASNodesMinSize:
         default: WAS Nodes Min Size
+      DeployUtilities:
+        default: Deploy utilities modules along with Maximo ?
       PrivateSubnet1ID:
         default: Private Subnet 1 ID
       PrivateSubnet2ID:
@@ -106,17 +109,9 @@ Parameters:
     Type: AWS::EC2::KeyPair::KeyName
   WASInstanceType:
     AllowedValues:
-      - t2.nano
       - t2.micro
       - t2.small
       - t2.medium
-      - t2.large
-      - m4.large
-      - m4.xlarge
-      - m4.2xlarge
-      - m4.4xlarge
-      - m4.10xlarge
-      - m3.medium
       - m3.large
       - m3.xlarge
       - m3.2xlarge
@@ -147,6 +142,14 @@ Parameters:
   WASNodesMinSize:
     Default: '2'
     Description: The minimum size of the Auto Scaling group
+    Type: String
+  DeployUtilities:
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    ConstraintDescription: Select Yes to deploy utilities modules
+    Default: 'No'
+    Description: Select "Yes" to deploy a utilities modules, "No" to skip (default).
     Type: String
   PrivateSubnet1ID:
     Description: ID of private subnet 1 in Availability Zone 1 for the WAS (e.g.,
@@ -431,8 +434,7 @@ Resources:
           commands:
             '01_create_Server':
               command: !Sub |
-                sudo sh /home/ec2-user/maximo_was_commands.sh ${DBUser} ${DBPassword} ${EndpointAddress} ${EndpointPort} ${DBName} ${MaximoFilesLocation} > run.out
-
+                sudo sh /home/ec2-user/maximo_was_commands.sh  ${EndpointAddress} ${EndpointPort} ${DBName} ${MaximoFilesLocation} ${DeployUtilities} &> /tmp/install.txt
     Properties:
       KeyName: !Ref 'KeyPairName'
       ImageId: !FindInMap

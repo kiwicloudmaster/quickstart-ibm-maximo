@@ -27,6 +27,7 @@ Metadata:
           default: WAS Nodes Configuration
         Parameters:
           - WASInstanceType
+          - DeployUtilities
       - Label:
           default: SSL Configuration
         Parameters:
@@ -63,14 +64,8 @@ Metadata:
       # WAS Parameters
       WASInstanceType:
         default: WAS Server Instance Type
-      PrivateSubnet1CIDR:
-        default: Private Subnet 1 CIDR
-      PrivateSubnet2CIDR:
-        default: Private Subnet 2 CIDR
-      PublicSubnet1CIDR:
-        default: Public Subnet 1 CIDR
-      PublicSubnet2CIDR:
-        default: Public Subnet 2 CIDR
+      DeployUtilities:
+        default: Deploy utilities modules along with Maximo ?
       # Oracle RDS Parameters
       ORAVersion:
         default: Oracle database version
@@ -125,18 +120,24 @@ Parameters:
     Type: String
   BastionInstanceType:
     AllowedValues:
-      - t2.nano
       - t2.micro
       - t2.small
       - t2.medium
-      - t2.large
       - m3.large
       - m3.xlarge
       - m3.2xlarge
-      - m4.large
-      - m4.xlarge
-      - m4.2xlarge
-      - m4.4xlarge
+      - c4.large
+      - c4.xlarge
+      - c4.2xlarge
+      - c4.4xlarge
+      - c4.8xlarge
+      - c3.large
+      - c3.xlarge
+      - c3.2xlarge
+      - c3.4xlarge
+      - c3.8xlarge
+      - r3.large
+      - r3.xlarge
     Default: t2.micro
     Description: Amazon EC2 instance type for the bastion instances
     Type: String
@@ -151,6 +152,14 @@ Parameters:
     ConstraintDescription: Must contain valid instance type
     Default: m3.xlarge
     Description: EC2 instance type for the WAS instances
+    Type: String
+  DeployUtilities:
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    ConstraintDescription: Select Yes to deploy utilities modules
+    Default: 'No'
+    Description: Select "Yes" to deploy a utilities modules, "No" to skip (default).
     Type: String
   PrivateSubnet1ID:
     Description: ID of private subnet 1 in Availability Zone 1 for the WAS (e.g.,
@@ -351,6 +360,7 @@ Resources:
         BastionSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
         KeyPairName: !Ref 'KeyPairName'
         WASInstanceType: !Ref 'WASInstanceType'
+        DeployUtilities:  !Ref 'DeployUtilities'
         WASNodesDesiredCapacity: '1'
         WASNodesMaxSize: '1'
         WASNodesMinSize: '1'

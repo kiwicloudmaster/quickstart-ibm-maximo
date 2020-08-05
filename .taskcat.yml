@@ -29,6 +29,7 @@ tests:
       RDGWCIDR: 10.0.0.0/16
       RemoteAccessCIDR: 10.0.0.0/16
       SSLCertARN: override
+      DeployUtilities: 'Yes'
     regions:
     - us-east-1
     s3_bucket: 'rajasegu-quickstart1'
