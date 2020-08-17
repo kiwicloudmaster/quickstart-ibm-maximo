@@ -1,0 +1,390 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  This master template creates a VPC infrastructure for a multi-AZ, multi-tier deployment
+  of a WAS on AWS. It deploys a VPC with bastions and a WAS cluster behind
+  an ELB. The cluster is configured to use an S3 bucket for storage  **WARNING** This
+  template creates EC2 instances and related resources. You will be billed for the
+  AWS resources used if you create a stack from this template. (qs-1o2sf5bfu)
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Network Configuration
+        Parameters:
+          - VPCID
+          - PrivateSubnet1ID
+          - PrivateSubnet2ID
+          - PublicSubnet1ID
+          - PublicSubnet2ID
+          - RemoteAccessCIDR
+      - Label:
+          default: Bastion Host Configuration
+        Parameters:
+          - KeyPairName
+          - BastionAMIOS
+          - BastionInstanceType
+      - Label:
+          default: WAS Nodes Configuration
+        Parameters:
+          - WASInstanceType
+          - DeployUtilities
+      - Label:
+          default: SSL Configuration
+        Parameters:
+          - ALBSSLCertificateARN
+      - Label:
+          default : Location of the downloaded Maximo , Websphere and  Oracle client
+        Parameters:
+          - MaximoFilesLocation
+      - Label:
+          default: Oracle RDS configuration
+        Parameters:
+          - ORAVersion
+          - DBInstanceIdentifier
+          - DBInstanceClass
+          - DBName
+          - DBUser
+          - DBPassword
+          - DBMultiZone
+      - Label:
+          default: AWS Quick Start Configuration
+        Parameters:
+          - QSS3BucketName
+          - QSS3BucketRegion
+          - QSS3KeyPrefix
+    ParameterLabels:
+      ALBSSLCertificateARN:
+        default: ARN of ACM certificate for Application Load Balancer
+      BastionAMIOS:
+        default: Bastion AMI Operating System
+      BastionInstanceType:
+        default: Bastion Instance Type
+      KeyPairName:
+        default: Key Pair Name
+      # WAS Parameters
+      WASInstanceType:
+        default: WAS Server Instance Type
+      DeployUtilities:
+        default: Deploy utilities modules along with Maximo ?
+      # Oracle RDS Parameters
+      ORAVersion:
+        default: Oracle database version
+      DBInstanceIdentifier:
+        default: Oracle database instance name
+      DBInstanceClass:
+        default: Oracle database instance type
+      DBName:
+        default: Oracle database name
+      DBUser:
+        default: Oracle database admin user name
+      DBPassword:
+        default: Oracle database admin password
+      DBMultiZone:
+        default: High Availability (Multi-AZ) for Oracle RDS
+      # S3 Bucket  Parameters
+      MaximoFilesLocation:
+        default: Location of the downloaded Maximo , Websphere and  Oracle client
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      QSS3BucketRegion:
+        default: Quick Start S3 bucket region
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      RemoteAccessCIDR:
+        default: Allowed Bastion External Access CIDR
+      PrivateSubnet1ID:
+        default: Private Subnet 1 ID
+      PrivateSubnet2ID:
+        default: Private Subnet 2 ID
+      PublicSubnet1ID:
+        default: Public Subnet 1 ID
+      PublicSubnet2ID:
+        default: Public Subnet 2 ID
+      VPCID:
+        default: VPC ID
+Parameters:
+  ALBSSLCertificateARN:
+    Default: ''
+    Description: '[Optional] The ARN of the SSL certificate to be used for the Application
+      Load Balancer'
+    Type: String
+  BastionAMIOS:
+    AllowedValues:
+      - Amazon-Linux2-HVM
+      - Amazon-Linux-HVM
+      - CentOS-7-HVM
+      - Ubuntu-Server-14.04-LTS-HVM
+      - Ubuntu-Server-16.04-LTS-HVM
+    Default: Amazon-Linux2-HVM
+    Description: The Linux distribution for the AMI to be used for the bastion instances
+    Type: String
+  BastionInstanceType:
+    AllowedValues:
+      - t2.micro
+      - t2.small
+      - t2.medium
+      - m3.large
+      - m3.xlarge
+      - m3.2xlarge
+      - c4.large
+      - c4.xlarge
+      - c4.2xlarge
+      - c4.4xlarge
+      - c4.8xlarge
+      - c3.large
+      - c3.xlarge
+      - c3.2xlarge
+      - c3.4xlarge
+      - c3.8xlarge
+      - r3.large
+      - r3.xlarge
+    Default: t2.micro
+    Description: Amazon EC2 instance type for the bastion instances
+    Type: String
+  KeyPairName:
+    Description: The name of an existing public/private key pair, which allows you
+      to securely connect to your instance after it launches
+    Type: AWS::EC2::KeyPair::KeyName
+  WASInstanceType:
+    AllowedValues:
+      - m3.xlarge
+      - m3.2xlarge
+    ConstraintDescription: Must contain valid instance type
+    Default: m3.xlarge
+    Description: EC2 instance type for the WAS instances
+    Type: String
+  DeployUtilities:
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    ConstraintDescription: Select Yes to deploy utilities modules
+    Default: 'No'
+    Description: Select "Yes" to deploy a utilities modules, "No" to skip (default).
+    Type: String
+  PrivateSubnet1ID:
+    Description: ID of private subnet 1 in Availability Zone 1 for the WAS (e.g.,
+      subnet-a0246dcd)
+    Type: AWS::EC2::Subnet::Id
+  PrivateSubnet2ID:
+    Description: ID of private subnet 2 in Availability Zone 2 for the WAS (e.g.,
+      subnet-b1f432cd)
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnet1ID:
+    Description: ID of public subnet 1 in Availability Zone 1 for the ELB load balancer
+      (e.g., subnet-9bc642ac)
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnet2ID:
+    Description: ID of public subnet 2 in Availability Zone 2 for the ELB load balancer
+      (e.g., subnet-e3246d8e)
+    Type: AWS::EC2::Subnet::Id
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: aws-quickstart
+    Description: S3 bucket name for the Quick Start assets. This string can include
+      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
+      or end with a hyphen (-).
+    Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and forward slash (/).
+    Default: quickstart-ibm-maximo/
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+  RemoteAccessCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
+    Description: The CIDR IP range that is permitted to access the bastions. We recommend
+      that you set this value to a trusted IP range.
+    Type: String
+  VPCID:
+    Description: ID of your existing VPC for deployment
+    Type: AWS::EC2::VPC::Id
+  MaximoFilesLocation:
+    Description: Provide the S3 location of the downloaded maximo , WAS  and Oracle client files (please do not include the s3:// and the trailing forward slash).
+        E.g., if the location is "s3://ibm-maximo-assets/instllation_files", then enter "ibm-maximo-assets/instllation_files".
+        Refer to the deployment guide for more information on downloading the client files and obtaining the location.
+    Type: String
+   # Oracle RDS Database Parameters
+  ORAVersion:
+    AllowedValues: [ "11.2" ]
+    Default: "11.2"
+    Description: Amazon RDS Oracle version.
+    Type: String
+  DBInstanceClass:
+    AllowedValues:
+      - db.m4.xlarge
+      - db.m4.2xlarge
+      - db.m5.large
+      - db.m5.xlarge
+      - db.m5.2xlarge
+    Default: db.m5.large
+    Description: Amazon RDS instance type for the Oracle database instance.
+    Type: String
+  DBInstanceIdentifier:
+    Default: MXMORCL
+    Description: The database instance name.
+    Type: String
+    MinLength: '1'
+    MaxLength: '8'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DBName:
+    Default: maximo
+    Description: The database name.
+    Type: String
+    MinLength: '1'
+    MaxLength: '8'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DBUser:
+    Default: MXAdmin
+    Description: The database admin account user name.
+    Type: String
+    MinLength: '1'
+    MaxLength: '16'
+    AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  DBPassword:
+    NoEcho: 'true'
+    Description: The database admin account password. Must be at least 8 characters containing letters, numbers only.
+    Type: String
+    MinLength: '8'
+    MaxLength: '41'
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: must contain only alphanumeric characters.
+  DBMultiZone:
+    Description: Choose false to disable high availability (Multi-AZ) configuration for Oracle RDS.
+        More information is available here - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
+    Type: String
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'true'
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+Resources:
+  RDSStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/oracle.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        DBInstanceClass: !Ref 'DBInstanceClass'
+        DBInstanceIdentifier: !Ref 'DBInstanceIdentifier'
+        DBName: !Ref 'DBName'
+        ORAVersion: !Ref 'ORAVersion'
+        DBUser: !Ref 'DBUser'
+        DBPassword: !Ref 'DBPassword'
+        DBMultiZone: !Ref 'DBMultiZone'
+        VPCID: !Ref 'VPCID'
+        PrivateSubnet1AID: !Ref 'PrivateSubnet1ID'
+        PrivateSubnet2AID: !Ref 'PrivateSubnet2ID'
+        BastionSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
+        NodeSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
+        ControlPlaneSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
+  MaximoIAMStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/maximo-iam.template.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+        MaximoFilesLocation: !Ref MaximoFilesLocation
+  BastionStack:
+    DependsOn: "MaximoIAMStack"
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        !Sub
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}submodules/quickstart-linux-bastion/templates/linux-bastion.template'
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        BastionAMIOS: !Ref 'BastionAMIOS'
+        BastionInstanceType: !Ref 'BastionInstanceType'
+        KeyPairName: !Ref 'KeyPairName'
+        PublicSubnet1ID: !Ref 'PublicSubnet1ID'
+        PublicSubnet2ID: !Ref 'PublicSubnet2ID'
+        QSS3BucketName: 'aws-quickstart'
+        QSS3BucketRegion: !Ref 'QSS3BucketRegion'
+        QSS3KeyPrefix: 'quickstart-linux-bastion/'
+        RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
+        VPCID: !Ref 'VPCID'
+        AlternativeIAMRole: !GetAtt MaximoIAMStack.Outputs.BastionRole
+  # Create the Oracle tablespaces and users for Maximo
+  MaximoObjectCreation:
+    DependsOn:
+      - RDSStack
+      - BastionStack
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub
+        - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/maximo-objects.yaml'
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        DBName: !Ref 'DBName'
+        DBUser: !Ref 'DBUser'
+        DBPassword: !Ref 'DBPassword'
+        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
+        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
+        BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
+        MaximoFilesLocation: !Ref 'MaximoFilesLocation'
+        QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+        QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
+  WASStack:
+    DependsOn: MaximoObjectCreation
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        !Sub
+          - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/was.template.yaml'
+          - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+            S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      Parameters:
+        ALBSSLCertificateARN: !Ref 'ALBSSLCertificateARN'
+        BastionSecurityGroupID: !GetAtt 'BastionStack.Outputs.BastionSecurityGroupID'
+        KeyPairName: !Ref 'KeyPairName'
+        WASInstanceType: !Ref 'WASInstanceType'
+        DeployUtilities:  !Ref 'DeployUtilities'
+        WASNodesDesiredCapacity: '1'
+        WASNodesMaxSize: '1'
+        WASNodesMinSize: '1'
+        PrivateSubnet1ID: !Ref 'PrivateSubnet1ID'
+        PrivateSubnet2ID: !Ref 'PrivateSubnet2ID'
+        PublicSubnet1ID: !Ref 'PublicSubnet1ID'
+        PublicSubnet2ID: !Ref 'PublicSubnet2ID'
+        QSS3BucketName: !Ref 'QSS3BucketName'
+        QSS3BucketRegion: !Ref 'QSS3BucketRegion'
+        QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
+        DBName: !Ref 'DBName'
+        DBUser: !Ref 'DBUser'
+        DBPassword: !Ref 'DBPassword'
+        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
+        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
+        MaximoFilesLocation: !Ref 'MaximoFilesLocation'
+        OracleServerAccessSecurityGroup:  !GetAtt 'RDSStack.Outputs.OracleServerAccessSecurityGroup'
+        VPCID: !Ref 'VPCID'
+  
+
+Outputs:
+  WebsiteURL:
+    Description: URL for newly created WAS stack
+    Value: !GetAtt 'WASStack.Outputs.WebsiteURL'
+  MasterJDBCConnectionString:
+    Description: JDBC connection string for the master database
+    Value: !GetAtt 'RDSStack.Outputs.MasterJDBCConnectionString'
