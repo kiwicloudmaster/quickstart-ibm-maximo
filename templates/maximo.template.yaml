@@ -379,12 +379,12 @@ Resources:
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         OracleServerAccessSecurityGroup:  !GetAtt 'RDSStack.Outputs.OracleServerAccessSecurityGroup'
         VPCID: !Ref 'VPCID'
-  
+
 
 Outputs:
-  WebsiteURL:
-    Description: URL for newly created WAS stack
-    Value: !GetAtt 'WASStack.Outputs.WebsiteURL'
+#  WebsiteURL:
+#    Description: URL for newly created WAS stack
+#    Value: !GetAtt 'WASStack.Outputs.WebsiteURL'
   MasterJDBCConnectionString:
     Description: JDBC connection string for the master database
     Value: !GetAtt 'RDSStack.Outputs.MasterJDBCConnectionString'

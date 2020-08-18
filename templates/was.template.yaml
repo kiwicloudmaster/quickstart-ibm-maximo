@@ -128,7 +128,7 @@ Parameters:
       - r3.large
       - r3.xlarge
     ConstraintDescription: Must contain valid instance type
-    Default: t2.micro
+    Default: m3.xlarge
     Description: Type of EC2 instance for the WAS instances
     Type: String
   WASNodesDesiredCapacity:
@@ -292,7 +292,7 @@ Resources:
     Properties:
       DefaultActions:
         - Type: forward
-          TargetGroupArn: !Ref 'ALBTargetGroup'
+          TargetGroupArn: !Ref 'AppALBTargetGroup'
       LoadBalancerArn: !Ref 'ApplicationLoadBalancer'
       Port: !If
         - UseALBSSL
@@ -307,7 +307,7 @@ Resources:
           - UseALBSSL
           - CertificateArn: !Ref 'ALBSSLCertificateARN'
           - !Ref 'AWS::NoValue'
-  ALBTargetGroup:
+  AppALBTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       HealthCheckIntervalSeconds: 30
@@ -316,14 +316,28 @@ Resources:
       HealthCheckPath: /maximo
       Matcher:
         HttpCode: '200,302'
-      Port: !If
-        - UseALBSSL
-        - 9443
-        - 9080
-      Protocol: !If
-        - UseALBSSL
-        - HTTPS
-        - HTTP
+      Port: 9080
+      Protocol: HTTP
+      UnhealthyThresholdCount: 5
+      VpcId: !Ref 'VPCID'
+      TargetGroupAttributes:
+        - Key: stickiness.enabled
+          Value: 'true'
+        - Key: stickiness.type
+          Value: lb_cookie
+        - Key: stickiness.lb_cookie.duration_seconds
+          Value: '30'
+  DMGRALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      HealthCheckPath: /ibm/console
+      Matcher:
+        HttpCode: '200,302'
+      Port: 9063
+      Protocol: HTTPS
       UnhealthyThresholdCount: 5
       VpcId: !Ref 'VPCID'
       TargetGroupAttributes:
@@ -360,6 +374,46 @@ Resources:
                   - s3:PutObject
                 Resource: !Sub 'arn:aws:s3:::${MaximoFilesLocation}/*'
                 Effect: Allow
+              - Action:
+                  - ec2:Describe*
+                  - elasticloadbalancing:Describe*
+                  - autoscaling:Describe*
+                Resource: "*"
+                Effect: Allow
+          PolicyName: aws-quick-start-maximo-policy
+  WASDMGRRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                  - s3:GetObject
+                Resource: !Sub
+                  - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
+                  - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+                Effect: Allow
+              - Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource: !Sub 'arn:aws:s3:::${MaximoFilesLocation}/*'
+                Effect: Allow
+              - Action:
+                  - ec2:Describe*
+                  - elasticloadbalancing:Describe*
+                  - autoscaling:Describe*
+                Resource: !Sub "arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*"
+                Effect: Allow
           PolicyName: aws-quick-start-s3-policy
   WASProfile:
     Type: AWS::IAM::InstanceProfile
@@ -367,10 +421,16 @@ Resources:
       Path: /
       Roles:
         - !Ref 'WASRole'
+  WASDMGRProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+        - !Ref 'WASDMGRRole'
   WASSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Allow access to the WAS instances
+      GroupDescription: Allow access to the WAS DMGR & APPServer instances
       VpcId: !Ref 'VPCID'
       SecurityGroupIngress:
         - !If
@@ -384,10 +444,22 @@ Resources:
             ToPort: 9080
             SourceSecurityGroupId: !Ref 'ELBSecurityGroup'
         - IpProtocol: tcp
+          FromPort: 9063
+          ToPort: 9063
+          SourceSecurityGroupId: !Ref 'ELBSecurityGroup'
+        - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
           SourceSecurityGroupId: !Ref 'BastionSecurityGroupID'
-  WASOracleSecurityGroupIngress:
+  WASSecurityGroupIngress:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      GroupId: !Ref WASSecurityGroup
+      IpProtocol: tcp
+      FromPort: 0
+      ToPort: 65535
+      SourceSecurityGroupId: !Ref WASSecurityGroup
+  WASDMGROracleSecurityGroupIngress:
     Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
       GroupId: !Ref OracleServerAccessSecurityGroup
@@ -395,7 +467,110 @@ Resources:
       FromPort: !Ref EndpointPort
       ToPort: !Ref EndpointPort
       SourceSecurityGroupId: !Ref WASSecurityGroup
-  WASASLaunchConfig:
+  WASDMGRASLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      AWS::CloudFormation::Authentication:
+        S3AccessCreds:
+          type: S3
+          roleName: !Ref 'WASDMGRRole'
+          buckets: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+      AWS::CloudFormation::Init:
+        configSets:
+          quickstart:
+            - install
+          quickstartwithSSL:
+            - install
+        install:
+          files:
+            /home/ec2-user/DeployApplications.py:
+              source:
+                !Sub
+                - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/DeployApplications.py'
+                - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              mode: '000755'
+              owner: root
+              group: root
+              authentication: S3AccessCreds
+            /home/ec2-user/maximo_was_dmgr_commands.sh:
+              source:
+                !Sub
+                - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/maximo_was_dmgr_commands.sh'
+                - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+                  S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
+              mode: '000700'
+              owner: root
+              group: root
+              authentication: S3AccessCreds
+          commands:
+            '01_create_Server':
+              command: !Sub |
+                sudo sh /home/ec2-user/maximo_was_dmgr_commands.sh  ${EndpointAddress} ${EndpointPort} ${DBName} ${MaximoFilesLocation} ${DeployUtilities} &> /tmp/install.txt
+    Properties:
+      KeyName: !Ref 'KeyPairName'
+      ImageId: !FindInMap
+        - AWSAMIRegionMap
+        - !Ref 'AWS::Region'
+        - RHELHVM
+      InstanceMonitoring: true
+      IamInstanceProfile: !Ref 'WASDMGRProfile'
+      InstanceType: !Ref 'WASInstanceType'
+      SecurityGroups:
+        - !Ref 'WASSecurityGroup'
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeSize: 40
+            VolumeType: gp2
+            Encrypted: true
+            DeleteOnTermination: true
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -x
+          yum install -y git
+          until git clone https://github.com/aws-quickstart/quickstart-linux-utilities.git; do echo "Retrying"; done
+          cd /quickstart-linux-utilities
+          source quickstart-cfn-tools.source
+          qs_update-os || qs_err
+          qs_bootstrap_pip || qs_err
+          qs_aws-cfn-bootstrap || qs_err
+          cfn-init  --stack ${AWS::StackName} --resource WASDMGRASLaunchConfig --configsets quickstart --region ${AWS::Region}
+          cfn-signal -e $? --stack ${AWS::StackName} --region ${AWS::Region} --resource WASDMGRAutoScalingGroup
+  WASDMGRTargetTrackingScalingPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AutoScalingGroupName: !Ref 'WASDMGRAutoScalingGroup'
+      Cooldown: '60'
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ASGAverageCPUUtilization
+        TargetValue: 75
+  WASDMGRAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier:
+        - !Ref 'PublicSubnet1ID'
+        - !Ref 'PublicSubnet2ID'
+      Cooldown: '300'
+      DesiredCapacity: '1'
+      TargetGroupARNs:
+        - !Ref 'DMGRALBTargetGroup'
+      HealthCheckGracePeriod: 300
+      HealthCheckType: EC2
+      LaunchConfigurationName: !Ref 'WASDMGRASLaunchConfig'
+      MaxSize:  '1'
+      MinSize:  '1'
+      Tags:
+        - Key: Name
+          Value: WAS DMGR Server cluster node
+          PropagateAtLaunch: true
+    CreationPolicy:
+      ResourceSignal:
+        Count: '1'
+        Timeout: PT3H
+  WASAppASLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Metadata:
       AWS::CloudFormation::Authentication:
@@ -411,20 +586,20 @@ Resources:
             - install
         install:
           files:
-            /home/ec2-user/CreateApplications.py:
+            /home/ec2-user/CreateAppServer.py:
               source:
                 !Sub
-                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/CreateApplications.py'
+                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/CreateAppServer.py'
                   - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
                     S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000755'
               owner: root
               group: root
               authentication: S3AccessCreds
-            /home/ec2-user/maximo_was_commands.sh:
+            /home/ec2-user/maximo_was_appserver_commands.sh:
               source:
                 !Sub
-                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/maximo_was_commands.sh'
+                  - 'https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}scripts/maximo_was_appserver_commands.sh'
                   - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
                     S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
               mode: '000700'
@@ -433,8 +608,9 @@ Resources:
               authentication: S3AccessCreds
           commands:
             '01_create_Server':
-              command: !Sub |
-                sudo sh /home/ec2-user/maximo_was_commands.sh  ${EndpointAddress} ${EndpointPort} ${DBName} ${MaximoFilesLocation} ${DeployUtilities} &> /tmp/install.txt
+              command: !Sub
+                - 'sudo sh /home/ec2-user/maximo_was_appserver_commands.sh  ${MaximoFilesLocation}  ${DMGRASGroupName} &> /tmp/install.txt'
+                - DMGRASGroupName:  !Ref 'WASDMGRAutoScalingGroup'
     Properties:
       KeyName: !Ref 'KeyPairName'
       ImageId: !FindInMap
@@ -463,49 +639,52 @@ Resources:
           qs_update-os || qs_err
           qs_bootstrap_pip || qs_err
           qs_aws-cfn-bootstrap || qs_err
-          cfn-init  --stack ${AWS::StackName} --resource WASASLaunchConfig --configsets quickstart --region ${AWS::Region}
-          cfn-signal -e $? --stack ${AWS::StackName} --region ${AWS::Region} --resource WASAutoScalingGroup
-  WASTargetTrackingScalingPolicy:
+          cfn-init  --stack ${AWS::StackName} --resource WASAppASLaunchConfig --configsets quickstart --region ${AWS::Region}
+          cfn-signal -e 0 --stack ${AWS::StackName} --region ${AWS::Region} --resource WASAppAutoScalingGroup
+  WASAppTargetTrackingScalingPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
-      AutoScalingGroupName: !Ref 'WASAutoScalingGroup'
+      AutoScalingGroupName: !Ref 'WASAppAutoScalingGroup'
       Cooldown: '60'
       PolicyType: TargetTrackingScaling
       TargetTrackingConfiguration:
         PredefinedMetricSpecification:
           PredefinedMetricType: ASGAverageCPUUtilization
         TargetValue: 75
-  WASAutoScalingGroup:
+  WASAppAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
         - !Ref 'PrivateSubnet1ID'
         - !Ref 'PrivateSubnet2ID'
       Cooldown: '300'
-      DesiredCapacity: !Ref 'WASNodesDesiredCapacity'
+      DesiredCapacity: '2'
       TargetGroupARNs:
-        - !Ref 'ALBTargetGroup'
+        - !Ref 'AppALBTargetGroup'
       HealthCheckGracePeriod: 300
       HealthCheckType: EC2
-      LaunchConfigurationName: !Ref 'WASASLaunchConfig'
-      MaxSize: !Ref 'WASNodesMaxSize'
-      MinSize: !Ref 'WASNodesMinSize'
+      LaunchConfigurationName: !Ref 'WASAppASLaunchConfig'
+      MaxSize: '4'
+      MinSize: '2'
       Tags:
         - Key: Name
           Value: WAS Server cluster node
           PropagateAtLaunch: true
     CreationPolicy:
       ResourceSignal:
-        Count: !Ref 'WASNodesDesiredCapacity'
+        Count: '2'
         Timeout: PT3H
-   
+
 Outputs:
   WebsiteURL:
     Description: URL for newly created WAS stack
     Value:
       -!Join
         - ''
-        - - http://
+        - - !If
+            - UseALBSSL
+            - https://
+            - http://
           - !GetAtt 'ApplicationLoadBalancer.DNSName'
           - '/maximo'
 

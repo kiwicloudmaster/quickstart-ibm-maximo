@@ -359,9 +359,9 @@ Resources:
 
 
 Outputs:
-  WebsiteURL:
-    Description: URL for newly created WAS stack
-    Value: !GetAtt 'MaximoStack.Outputs.WebsiteURL'
+#  WebsiteURL:
+#    Description: URL for newly created WAS stack
+#    Value: !GetAtt 'MaximoStack.Outputs.WebsiteURL'
   MasterJDBCConnectionString:
     Description: JDBC connection string for the master database
     Value: !GetAtt 'MaximoStack.Outputs.MasterJDBCConnectionString'

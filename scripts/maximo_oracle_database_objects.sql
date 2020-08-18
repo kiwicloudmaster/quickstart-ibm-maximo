@@ -28,7 +28,6 @@ ALTER USER maximo QUOTA UNLIMITED ON maxindex;
  grant create procedure to maximo;
  grant alter session to maximo;
  grant execute on ctxsys.ctx_ddl to maximo;
- grant execute on DBMS_XA to maximo;
  grant select_catalog_role to maximo;
 
 
