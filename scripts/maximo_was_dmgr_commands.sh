@@ -8,6 +8,7 @@ Maximos3location=$4
 DeployUtilities=$5
 
 
+
 # Install aws cli
 yum -y install  unzip telnet
 
@@ -41,7 +42,10 @@ unzip -q was.repo.9000.java8_part3.zip -d java8
 # Install the Websphere 9.0 and IBM java sdk 8
 
 /opt/IBM/InstallationManager/eclipse/tools/imcl -acceptLicense install com.ibm.websphere.ND.v90 com.ibm.java.jdk.v8 -repositories WAS_ND_V9.0_MP_ML.zip,java8 -installationDirectory /opt/IBM/WebSphere/AppServer -preferences com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts=false
+
 export WAS_HOME=/opt/IBM/WebSphere/AppServer
+
+
 
 
 # Download  and install the maximo
@@ -75,6 +79,10 @@ dos2unix *
 #sed -i '/xercesImpl-2.7.1.jar/d' buildmaximoui-war.xml
 sh buildmaximoear.sh
 sh buildmaximo-xwar.sh
+
+
+#/usr/local/bin/aws s3 cp /opt/IBM/SMP/maximo/deployment/default/maximo.ear s3://$Maximos3location/qs-files/maximo.ear
+#/usr/local/bin/aws s3 cp /opt/IBM/SMP/maximo/deployment/default/maximo-x.war s3://$Maximos3location/qs-files/maximo-x.war
 
 
 # Create the DMGR profile and start the deployment manager

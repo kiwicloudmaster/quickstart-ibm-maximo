@@ -30,6 +30,10 @@ tests:
       RemoteAccessCIDR: 10.0.0.0/16
       SSLCertARN: override
       DeployUtilities: 'Yes'
+      WASNodesMinSize:  '2'
+      WASNodesMaxSize:  '4'
+      WASNodesDesiredCapacity:  '2'
+
     regions:
     - us-east-1
     s3_bucket: 'rajasegu-quickstart1'

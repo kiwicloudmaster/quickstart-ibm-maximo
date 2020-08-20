@@ -28,6 +28,10 @@ Metadata:
           default: WAS Nodes Configuration
         Parameters:
           - WASInstanceType
+          - WASNodesMinSize
+          - WASNodesMaxSize
+          - WASNodesDesiredCapacity
+          - DeployUtilities
       - Label:
           default: SSL Configuration
         Parameters:
@@ -36,7 +40,6 @@ Metadata:
           default: Location of the downloaded Maximo , Websphere and  Oracle client
           Parameters:
             - MaximoFilesLocation
-            - DeployUtilities
       - Label:
           default: Oracle RDS configuration
         Parameters:
@@ -67,6 +70,12 @@ Metadata:
       # WAS Parameters
       WASInstanceType:
         default: WAS Server Instance Type
+      WASNodesDesiredCapacity:
+        default: WAS Nodes Desired Capacity
+      WASNodesMaxSize:
+        default: WAS Nodes Max Size
+      WASNodesMinSize:
+        default: WAS Nodes Min Size
       DeployUtilities:
         default: Deploy utilities modules along with Maximo ?
       PrivateSubnet1CIDR:
@@ -170,6 +179,18 @@ Parameters:
     ConstraintDescription: Must contain valid instance type
     Default: m3.xlarge
     Description: EC2 instance type for the WAS instances
+    Type: String
+  WASNodesDesiredCapacity:
+    Default: '2'
+    Description: The desired capacity for the WAS nodes Auto Scaling group
+    Type: String
+  WASNodesMaxSize:
+    Default: '4'
+    Description: The maximum size of the Auto Scaling group
+    Type: String
+  WASNodesMinSize:
+    Default: '2'
+    Description: The minimum size of the Auto Scaling group
     Type: String
   DeployUtilities:
     AllowedValues:
@@ -342,6 +363,9 @@ Resources:
         BastionAMIOS: !Ref 'BastionAMIOS'
         BastionInstanceType: !Ref 'BastionInstanceType'
         WASInstanceType: !Ref 'WASInstanceType'
+        WASNodesDesiredCapacity: !Ref 'WASNodesDesiredCapacity'
+        WASNodesMaxSize: !Ref 'WASNodesMaxSize'
+        WASNodesMinSize: !Ref 'WASNodesMinSize'
         DeployUtilities:  !Ref 'DeployUtilities'
         ALBSSLCertificateARN: !Ref 'ALBSSLCertificateARN'
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
@@ -359,9 +383,9 @@ Resources:
 
 
 Outputs:
-#  WebsiteURL:
-#    Description: URL for newly created WAS stack
-#    Value: !GetAtt 'MaximoStack.Outputs.WebsiteURL'
+  WebsiteURL:
+    Description: URL for newly created WAS stack
+    Value: !GetAtt 'MaximoStack.Outputs.WebsiteURL'
   MasterJDBCConnectionString:
     Description: JDBC connection string for the master database
     Value: !GetAtt 'MaximoStack.Outputs.MasterJDBCConnectionString'

@@ -71,4 +71,10 @@ sed -i "s/node_name/$nodeName/" /home/ec2-user/CreateAppServer.py
 
 
 sh $WAS_HOME/profiles/mxClusterAppSrv/bin/wsadmin.sh -lang jython -username "wasadmin" -password "wasadmin" -f /home/ec2-user/CreateAppServer.py
+sleep 10
+# restarting the app server
+sh $WAS_HOME/profiles/mxClusterAppSrv/bin/wsadmin.sh -lang jython -username "wasadmin" -password "wasadmin" -c "AdminControl.stopServer('appserver', '$nodeName', 'immediate')"
+sh $WAS_HOME/profiles/mxClusterAppSrv/bin/wsadmin.sh -lang jython -username "wasadmin" -password "wasadmin" -c "AdminControl.startServer('appserver', '$nodeName')"
+
+
 

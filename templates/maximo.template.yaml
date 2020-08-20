@@ -27,6 +27,9 @@ Metadata:
           default: WAS Nodes Configuration
         Parameters:
           - WASInstanceType
+          - WASNodesMinSize
+          - WASNodesMaxSize
+          - WASNodesDesiredCapacity
           - DeployUtilities
       - Label:
           default: SSL Configuration
@@ -64,6 +67,12 @@ Metadata:
       # WAS Parameters
       WASInstanceType:
         default: WAS Server Instance Type
+      WASNodesDesiredCapacity:
+        default: WAS Nodes Desired Capacity
+      WASNodesMaxSize:
+        default: WAS Nodes Max Size
+      WASNodesMinSize:
+        default: WAS Nodes Min Size
       DeployUtilities:
         default: Deploy utilities modules along with Maximo ?
       # Oracle RDS Parameters
@@ -152,6 +161,18 @@ Parameters:
     ConstraintDescription: Must contain valid instance type
     Default: m3.xlarge
     Description: EC2 instance type for the WAS instances
+    Type: String
+  WASNodesDesiredCapacity:
+    Default: '2'
+    Description: The desired capacity for the WAS nodes Auto Scaling group
+    Type: String
+  WASNodesMaxSize:
+    Default: '4'
+    Description: The maximum size of the Auto Scaling group
+    Type: String
+  WASNodesMinSize:
+    Default: '2'
+    Description: The minimum size of the Auto Scaling group
     Type: String
   DeployUtilities:
     AllowedValues:
@@ -361,9 +382,9 @@ Resources:
         KeyPairName: !Ref 'KeyPairName'
         WASInstanceType: !Ref 'WASInstanceType'
         DeployUtilities:  !Ref 'DeployUtilities'
-        WASNodesDesiredCapacity: '1'
-        WASNodesMaxSize: '1'
-        WASNodesMinSize: '1'
+        WASNodesDesiredCapacity: !Ref 'WASNodesDesiredCapacity'
+        WASNodesMaxSize: !Ref 'WASNodesMaxSize'
+        WASNodesMinSize: !Ref 'WASNodesMinSize'
         PrivateSubnet1ID: !Ref 'PrivateSubnet1ID'
         PrivateSubnet2ID: !Ref 'PrivateSubnet2ID'
         PublicSubnet1ID: !Ref 'PublicSubnet1ID'
@@ -382,9 +403,9 @@ Resources:
 
 
 Outputs:
-#  WebsiteURL:
-#    Description: URL for newly created WAS stack
-#    Value: !GetAtt 'WASStack.Outputs.WebsiteURL'
+  WebsiteURL:
+    Description: URL for newly created WAS stack
+    Value: !GetAtt 'WASStack.Outputs.WebsiteURL'
   MasterJDBCConnectionString:
     Description: JDBC connection string for the master database
     Value: !GetAtt 'RDSStack.Outputs.MasterJDBCConnectionString'

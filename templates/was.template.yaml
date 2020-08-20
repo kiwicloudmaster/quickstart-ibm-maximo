@@ -316,8 +316,14 @@ Resources:
       HealthCheckPath: /maximo
       Matcher:
         HttpCode: '200,302'
-      Port: 9080
-      Protocol: HTTP
+      Port: !If
+        - UseALBSSL
+        - 9443
+        - 9080
+      Protocol: !If
+        - UseALBSSL
+        - HTTPS
+        - HTTP
       UnhealthyThresholdCount: 5
       VpcId: !Ref 'VPCID'
       TargetGroupAttributes:
@@ -551,8 +557,8 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       VPCZoneIdentifier:
-        - !Ref 'PublicSubnet1ID'
-        - !Ref 'PublicSubnet2ID'
+        - !Ref 'PrivateSubnet1ID'
+        - !Ref 'PrivateSubnet2ID'
       Cooldown: '300'
       DesiredCapacity: '1'
       TargetGroupARNs:
@@ -564,7 +570,7 @@ Resources:
       MinSize:  '1'
       Tags:
         - Key: Name
-          Value: WAS DMGR Server cluster node
+          Value: WAS DMGR Server node
           PropagateAtLaunch: true
     CreationPolicy:
       ResourceSignal:
@@ -640,7 +646,7 @@ Resources:
           qs_bootstrap_pip || qs_err
           qs_aws-cfn-bootstrap || qs_err
           cfn-init  --stack ${AWS::StackName} --resource WASAppASLaunchConfig --configsets quickstart --region ${AWS::Region}
-          cfn-signal -e 0 --stack ${AWS::StackName} --region ${AWS::Region} --resource WASAppAutoScalingGroup
+          cfn-signal -e $? --stack ${AWS::StackName} --region ${AWS::Region} --resource WASAppAutoScalingGroup
   WASAppTargetTrackingScalingPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
@@ -658,33 +664,32 @@ Resources:
         - !Ref 'PrivateSubnet1ID'
         - !Ref 'PrivateSubnet2ID'
       Cooldown: '300'
-      DesiredCapacity: '2'
+      DesiredCapacity: !Ref 'WASNodesDesiredCapacity'
       TargetGroupARNs:
         - !Ref 'AppALBTargetGroup'
       HealthCheckGracePeriod: 300
       HealthCheckType: EC2
       LaunchConfigurationName: !Ref 'WASAppASLaunchConfig'
-      MaxSize: '4'
-      MinSize: '2'
+      MaxSize: !Ref 'WASNodesMaxSize'
+      MinSize: !Ref 'WASNodesMinSize'
       Tags:
         - Key: Name
-          Value: WAS Server cluster node
+          Value: WAS Application Server cluster node
           PropagateAtLaunch: true
     CreationPolicy:
       ResourceSignal:
-        Count: '2'
-        Timeout: PT3H
+        Count: !Ref 'WASNodesDesiredCapacity'
+        Timeout: PT1H
 
 Outputs:
   WebsiteURL:
     Description: URL for newly created WAS stack
-    Value:
-      -!Join
-        - ''
-        - - !If
-            - UseALBSSL
-            - https://
-            - http://
-          - !GetAtt 'ApplicationLoadBalancer.DNSName'
-          - '/maximo'
+    Value:  !Join
+      - ''
+      - - !If
+          - UseALBSSL
+          - https://
+          - http://
+        - !GetAtt 'ApplicationLoadBalancer.DNSName'
+        - '/maximo'
 
