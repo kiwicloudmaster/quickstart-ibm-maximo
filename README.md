@@ -21,7 +21,11 @@ Required packages
         was.repo.9000.java8_part1.zip
         was.repo.9000.java8_part2.zip
         was.repo.9000.java8_part3.zip
-
+        
+    Oracle sqlplus instant client:
+        instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip
+        instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip
+        
 Optional Packages
 
     Maximo Utilities module binaries:

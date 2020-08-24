@@ -27,6 +27,7 @@ Metadata:
           - WASNodesMinSize
           - WASNodesMaxSize
           - WASNodesDesiredCapacity
+          - WebAccessCIDR
           - DeployUtilities
       - Label:
           default: SSL Configuration
@@ -63,6 +64,8 @@ Metadata:
         default: WAS Nodes Max Size
       WASNodesMinSize:
         default: WAS Nodes Min Size
+      WebAccessCIDR:
+        default: Allowed Maximo Web External Access CIDR
       DeployUtilities:
         default: Deploy utilities modules along with Maximo ?
       PrivateSubnet1ID:
@@ -142,6 +145,12 @@ Parameters:
   WASNodesMinSize:
     Default: '2'
     Description: The minimum size of the Auto Scaling group
+    Type: String
+  WebAccessCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
+    Description: The CIDR IP range that is permitted to access the Maximo URL. We recommend
+      that you set this value to a trusted IP range.
     Type: String
   DeployUtilities:
     AllowedValues:
@@ -274,11 +283,11 @@ Resources:
           - IpProtocol: tcp
             FromPort: 443
             ToPort: 443
-            CidrIp: '0.0.0.0/0'
+            CidrIp: !Ref 'WebAccessCIDR'
           - IpProtocol: tcp
             FromPort: 80
             ToPort: 80
-            CidrIp: '0.0.0.0/0'
+            CidrIp: !Ref 'WebAccessCIDR'
   ApplicationLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:

@@ -54,8 +54,8 @@ Metadata:
         default: ID of the Node Group Security Group
 Parameters:
   ORAVersion:
-    AllowedValues: [ "12.1", "12.2" , "11.2" ]
-    Default: "11.2"
+    AllowedValues: [ "12.2"  , "18.0"]
+    Default: "12.2"
     Description: Amazon RDS Oracle version
     Type: String
   DBInstanceClass:
@@ -133,6 +133,8 @@ Parameters:
   ControlPlaneSecurityGroupID:
     Description: ID of the Node Group Security Group
     Type: 'AWS::EC2::SecurityGroup::Id'
+Conditions:
+  Oraversion18: !Equals [!Ref ORAVersion, '18.0']
 Resources:
   OracleServerAccessSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
@@ -227,7 +229,7 @@ Resources:
       DBParameterGroupName: !Ref  'MaximoDBParamGroup'
       DBSubnetGroupName: !Ref 'MaximoDBSubnetGroup'
       Engine: oracle-ee
-      EngineVersion: !Ref 'ORAVersion'
+      EngineVersion: !If [Oraversion18, '18.0.0.0.ru-2020-04.rur-2020-04.r1','12.2.0.1.ru-2020-04.rur-2020-04.r1']
       LicenseModel: bring-your-own-license
       MasterUsername: !Ref 'DBUser'
       MasterUserPassword: !Ref 'DBPassword'
@@ -237,7 +239,7 @@ Resources:
     Type: AWS::RDS::DBParameterGroup
     Properties:
       Description: Maximo Oracle Database Parameter Group
-      Family: oracle-ee-11.2
+      Family: !If [Oraversion18, 'oracle-ee-18','oracle-ee-12.2']
       Tags:
         - Key: Name
           Value: "MaximoDBParamGroup"
