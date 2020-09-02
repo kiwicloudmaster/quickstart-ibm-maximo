@@ -28,8 +28,14 @@ tests:
       QSS3BucketRegion: $[taskcat_current_region]
       RDGWCIDR: 10.0.0.0/16
       RemoteAccessCIDR: 10.0.0.0/16
-      SSLCertARN: override
+      WebAccessCIDR:  10.0.0.0/16
+      ALBSSLCertificateARN: 'arn:aws:acm:us-east-1:101292440289:certificate/701f618c-53aa-45fb-b152-3be177ecc97d'
       DeployUtilities: 'Yes'
+      WASNodesMinSize:  '2'
+      WASNodesMaxSize:  '4'
+      WASNodesDesiredCapacity:  '2'
+      ORAVersion: '18.0'
+
     regions:
     - us-east-1
     s3_bucket: 'rajasegu-quickstart1'

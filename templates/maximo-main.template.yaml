@@ -28,6 +28,11 @@ Metadata:
           default: WAS Nodes Configuration
         Parameters:
           - WASInstanceType
+          - WASNodesMinSize
+          - WASNodesMaxSize
+          - WASNodesDesiredCapacity
+          - WebAccessCIDR
+          - DeployUtilities
       - Label:
           default: SSL Configuration
         Parameters:
@@ -36,7 +41,6 @@ Metadata:
           default: Location of the downloaded Maximo , Websphere and  Oracle client
           Parameters:
             - MaximoFilesLocation
-            - DeployUtilities
       - Label:
           default: Oracle RDS configuration
         Parameters:
@@ -67,6 +71,14 @@ Metadata:
       # WAS Parameters
       WASInstanceType:
         default: WAS Server Instance Type
+      WASNodesDesiredCapacity:
+        default: WAS Nodes Desired Capacity
+      WASNodesMaxSize:
+        default: WAS Nodes Max Size
+      WASNodesMinSize:
+        default: WAS Nodes Min Size
+      WebAccessCIDR:
+        default: Allowed maximo web  External Access CIDR
       DeployUtilities:
         default: Deploy utilities modules along with Maximo ?
       PrivateSubnet1CIDR:
@@ -171,6 +183,24 @@ Parameters:
     Default: m3.xlarge
     Description: EC2 instance type for the WAS instances
     Type: String
+  WASNodesDesiredCapacity:
+    Default: '2'
+    Description: The desired capacity for the WAS nodes Auto Scaling group
+    Type: String
+  WASNodesMaxSize:
+    Default: '4'
+    Description: The maximum size of the Auto Scaling group
+    Type: String
+  WASNodesMinSize:
+    Default: '2'
+    Description: The minimum size of the Auto Scaling group
+    Type: String
+  WebAccessCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
+    Description: The CIDR IP range that is permitted to access the Maximo URL. We recommend
+      that you set this value to a trusted IP range.
+    Type: String
   DeployUtilities:
     AllowedValues:
       - 'Yes'
@@ -247,8 +277,8 @@ Parameters:
     Type: String
   # Oracle RDS Database Parameters
   ORAVersion:
-    AllowedValues: [ "11.2" ]
-    Default: "11.2"
+    AllowedValues: [ "12.2","18.0" ]
+    Default: "12.2"
     Description: Amazon RDS Oracle version.
     Type: String
   DBInstanceClass:
@@ -342,6 +372,9 @@ Resources:
         BastionAMIOS: !Ref 'BastionAMIOS'
         BastionInstanceType: !Ref 'BastionInstanceType'
         WASInstanceType: !Ref 'WASInstanceType'
+        WASNodesDesiredCapacity: !Ref 'WASNodesDesiredCapacity'
+        WASNodesMaxSize: !Ref 'WASNodesMaxSize'
+        WASNodesMinSize: !Ref 'WASNodesMinSize'
         DeployUtilities:  !Ref 'DeployUtilities'
         ALBSSLCertificateARN: !Ref 'ALBSSLCertificateARN'
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
@@ -356,6 +389,7 @@ Resources:
         QSS3BucketRegion: !Ref 'QSS3BucketRegion'
         QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
         RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
+        WebAccessCIDR: !Ref 'WebAccessCIDR'
 
 
 Outputs:
