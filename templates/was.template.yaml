@@ -5,6 +5,12 @@ Description: >-
   template creates EC2 instances and related resources. You will be billed for the
   AWS resources used if you create a stack from this template. (qs-1o2sf5bg5)
 Metadata:
+  AWSAMIRegionMap:
+    Filters:
+      RHELHVM:
+        # name: RHEL-7.2_HVM-????????-x86_64-?-Hourly2-GP2
+        name: RHEL-7.6_HVM-????????-x86_64-?-Hourly2-GP2
+        owner-id: '309956199498'
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -130,8 +136,24 @@ Parameters:
       - c3.8xlarge
       - r3.large
       - r3.xlarge
+      - m5.large
+      - m5.xlarge
+      - m5.2xlarge
+      - m5.4xlarge
+      - m5.8xlarge
+      - m5.12xlarge
+      - m5.16xlarge
+      - m5.24xlarge
+      - c5.large
+      - c5.xlarge
+      - c5.2xlarge
+      - c5.4xlarge
+      - c5.9xlarge
+      - c5.12xlarge
+      - c5.18xlarge
+      - c5.24xlarge
     ConstraintDescription: Must contain valid instance type
-    Default: m3.xlarge
+    Default: m5.xlarge
     Description: Type of EC2 instance for the WAS instances
     Type: String
   WASNodesDesiredCapacity:
@@ -248,29 +270,30 @@ Conditions:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      RHELHVM: RHEL-7.2_HVM_GA-20151112-x86_64-1-Hourly2-GP2
+      # RHELHVM: RHEL-7.2_HVM_GA-20151112-x86_64-1-Hourly2-GP2
+      RHELHVM: RHEL-7.6_HVM-????????-x86_64-?-Hourly2-GP2
     ap-northeast-1:
-      RHELHVM: ami-0dd8f963
+      RHELHVM: ami-0e3e6ca71a19ccf06
     ap-northeast-2:
-      RHELHVM: ami-44db152a
+      RHELHVM: ami-0f84aff229263c1fc
     ap-southeast-1:
-      RHELHVM: ami-3f03c55c
+      RHELHVM: ami-031290b4bd9eaa715
     ap-southeast-2:
-      RHELHVM: ami-e0c19f8
+      RHELHVM: ami-06d2821bfc76dcda3
     eu-central-1:
-      RHELHVM: ami-875042eb
+      RHELHVM: ami-0fc86555914f6a9f2
     eu-west-1:
-      RHELHVM: ami-8b8c57f8
+      RHELHVM: ami-04c89a19fea29f1f0
     sa-east-1:
-      RHELHVM: ami-27b3094b
+      RHELHVM: ami-06efd558d6a5fb959
     us-east-1:
-      RHELHVM: ami-2051294a
+      RHELHVM: ami-08a7d2bfef687328f
     us-east-2:
-      RHELHVM: ami-e4537381
+      RHELHVM: ami-0e166e72fda655c63
     us-west-1:
-      RHELHVM: ami-d1315fb1
+      RHELHVM: ami-056efb42b219f9abb
     us-west-2:
-      RHELHVM: ami-775e4f16
+      RHELHVM: ami-02deb4589e0f0d95e
 Resources:
   ELBSecurityGroup:
     Type: AWS::EC2::SecurityGroup

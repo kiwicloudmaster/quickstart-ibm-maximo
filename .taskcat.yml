@@ -1,11 +1,11 @@
 project:
   name: quickstart-ibm-maximo
   owner: quickstart-eng@amazon.com
-  package_lambda: true
+  package_lambda: false
   lambda_source_path: functions/source
   lambda_zip_path: functions/packages
   s3_regional_buckets: true
-  shorten_stack_name: false
+  shorten_stack_name: true
   regions:
   - us-east-1
   - us-east-2
@@ -22,14 +22,13 @@ tests:
     parameters:
       AvailabilityZones: $[taskcat_genaz_3]
       DBPassword: $[taskcat_genpass_8A]
-      KeyPairName:  cidb
-      MaximoFilesLocation: rajasegu-maximo-binaries
+      KeyPairName:  $[taskcat_getkeypair]
+      MaximoFilesLocation: override
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
-      RDGWCIDR: 10.0.0.0/16
       RemoteAccessCIDR: 10.0.0.0/16
       WebAccessCIDR:  10.0.0.0/16
-      ALBSSLCertificateARN: 'arn:aws:acm:us-east-1:101292440289:certificate/701f618c-53aa-45fb-b152-3be177ecc97d'
+      ALBSSLCertificateARN: override
       DeployUtilities: 'Yes'
       WASNodesMinSize:  '2'
       WASNodesMaxSize:  '4'
@@ -38,6 +37,7 @@ tests:
 
     regions:
     - us-east-1
-    s3_bucket: 'rajasegu-quickstart1'
-    template: templates/maximo-master.template.yaml
+    - us-east-2
+    s3_bucket: ''
+    template: templates/maximo-main.template.yaml
 

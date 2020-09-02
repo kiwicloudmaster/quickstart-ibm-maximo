@@ -177,8 +177,24 @@ Parameters:
       - c3.8xlarge
       - r3.large
       - r3.xlarge
+      - m5.large
+      - m5.xlarge
+      - m5.2xlarge
+      - m5.4xlarge
+      - m5.8xlarge
+      - m5.12xlarge
+      - m5.16xlarge
+      - m5.24xlarge
+      - c5.large
+      - c5.xlarge
+      - c5.2xlarge
+      - c5.4xlarge
+      - c5.9xlarge
+      - c5.12xlarge
+      - c5.18xlarge
+      - c5.24xlarge
     ConstraintDescription: Must contain valid instance type
-    Default: m3.xlarge
+    Default: m5.xlarge
     Description: EC2 instance type for the WAS instances
     Type: String
   WASNodesDesiredCapacity:
