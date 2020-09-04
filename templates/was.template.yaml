@@ -3,12 +3,11 @@ Description: >-
   This WAS template deploys an ASG behind an ELB load balancer in two private
   subnets. The cluster is configured to use an S3 bucket for storage **WARNING** This
   template creates EC2 instances and related resources. You will be billed for the
-  AWS resources used if you create a stack from this template. (qs-1o2sf5bg5)
+  AWS resources used if you create a stack from this template.
 Metadata:
   AWSAMIRegionMap:
     Filters:
       RHELHVM:
-        # name: RHEL-7.2_HVM-????????-x86_64-?-Hourly2-GP2
         name: RHEL-7.6_HVM-????????-x86_64-?-Hourly2-GP2
         owner-id: '309956199498'
   AWS::CloudFormation::Interface:
@@ -39,6 +38,8 @@ Metadata:
           default: SSL Configuration
         Parameters:
           - ALBSSLCertificateARN
+          - SiteDomain
+          - Route53HostedZoneId
       - Label:
           default: AWS Quick Start Configuration
         Parameters:
@@ -58,6 +59,10 @@ Metadata:
     ParameterLabels:
       ALBSSLCertificateARN:
         default: ARN of ACM certificate for Application Load Balancer
+      SiteDomain:
+        default: Maximo site domain
+      Route53HostedZoneId:
+        default: Route 53 hosted zone ID
       BastionSecurityGroupID:
         default: Bastion Security Group ID
       KeyPairName:
@@ -97,9 +102,9 @@ Metadata:
       OracleServerAccessSecurityGroup:
         default: Oracle Security Group ID
       EndpointAddress:
-        default: Endpoint address of the Master database
+        default: Endpoint address of the Primary database
       EndpointPort:
-        default: Endpoint port number of the Master database
+        default: Endpoint port number of the Primary database
       VPCID:
         default: VPC ID
 Parameters:
@@ -108,6 +113,18 @@ Parameters:
     Description: '[Optional] The ARN of the SSL certificate to be used for the Application
       Load Balancer'
     Type: String
+  SiteDomain:
+    Description:  "[Optional] Domain name of the maximo site. e.g. myexamplesite.com.
+        Valid FQDN required when using SSL."
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]*(?<!-)
+    ConstraintDescription: Must be a valid fully-qualified domain name.
+    Type: String
+    Default: ""
+  Route53HostedZoneId:
+    Description:  "[Optional] Route53 Hosted Zone ID where DNS record for Maximo
+        will be added."
+    Type: String
+    Default: ""
   BastionSecurityGroupID:
     Description: ID of the bastion host security group to enable SSH connections (e.g.,
       sg-7f16e910)
@@ -247,10 +264,10 @@ Parameters:
     AllowedPattern: '[a-zA-Z0-9]*'
     ConstraintDescription: must contain only alphanumeric characters.
   EndpointAddress:
-    Description: Endpoint address of the Master database
+    Description: Endpoint address of the Primary database
     Type: String
   EndpointPort:
-    Description: Endpoint port number of the Master database
+    Description: Endpoint port number of the Primary database
     Type: String
   MaximoFilesLocation:
     Description: Provide the S3 location of the downloaded Oracle client files.
@@ -267,6 +284,16 @@ Conditions:
     - !Equals
       - !Ref 'ALBSSLCertificateARN'
       - ''
+  MaximoDomainRoute53Condition:
+    Fn::And:
+      - Fn::Not:
+          - Fn::Equals:
+              - Ref: SiteDomain
+              - ""
+      - Fn::Not:
+          - Fn::Equals:
+              - Ref: Route53HostedZoneId
+              - ""
 Mappings:
   AWSAMIRegionMap:
     AMI:
@@ -712,16 +739,25 @@ Resources:
       ResourceSignal:
         Count: !Ref 'WASNodesDesiredCapacity'
         Timeout: PT1H
+  MaximoDomainRoute53Record:
+    Type: AWS::Route53::RecordSet
+    Condition: MaximoDomainRoute53Condition
+    Properties:
+      Name: !Ref  'SiteDomain'
+      Type: A
+      HostedZoneId: !Ref 'Route53HostedZoneId'
+      AliasTarget:
+        DNSName: !GetAtt 'ApplicationLoadBalancer.DNSName'
+        EvaluateTargetHealth: true
+        HostedZoneId: !GetAtt 'ApplicationLoadBalancer.CanonicalHostedZoneID'
+
 
 Outputs:
   WebsiteURL:
     Description: URL for newly created WAS stack
-    Value:  !Join
-      - ''
-      - - !If
-          - UseALBSSL
-          - https://
-          - http://
-        - !GetAtt 'ApplicationLoadBalancer.DNSName'
-        - '/maximo'
+    Value:  !Sub
+      - '${AppScheme}://${AppDomain}/maximo'
+      - AppScheme: !If [UseALBSSL, 'https', 'http']
+        AppDomain: !If [MaximoDomainRoute53Condition, !Ref 'SiteDomain', !GetAtt 'ApplicationLoadBalancer.DNSName']
+
 

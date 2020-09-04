@@ -31,9 +31,9 @@ Metadata:
       DBPassword:
         default: The database admin account password
       EndpointAddress:
-        default: Endpoint address of the Master database
+        default: Endpoint address of the Primary database
       EndpointPort:
-        default: Endpoint port number of the Master database
+        default: Endpoint port number of the Primary database
 Parameters:
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
@@ -85,10 +85,10 @@ Parameters:
     Description: Auto Scaling Group Name of the Bastion Host
     Type: String
   EndpointAddress:
-    Description: Endpoint address of the Master database
+    Description: Endpoint address of the Primary database
     Type: String
   EndpointPort:
-    Description: Endpoint port number of the Master database
+    Description: Endpoint port number of the Primary database
     Type: String
 Resources:
   QuickStartLogs:
@@ -161,11 +161,11 @@ Resources:
             description: The database admin account password
             type: String
           EndpointAddress:
-            description: Endpoint address of the Master database
+            description: Endpoint address of the Primary database
             type: String
             default: !Ref EndpointAddress
           EndpointPort:
-            description: Endpoint port number of the Master database
+            description: Endpoint port number of the Primary database
             type: String
             default: !Ref EndpointPort
         mainSteps:

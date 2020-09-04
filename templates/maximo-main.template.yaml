@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
-  This master template creates a VPC infrastructure for a multi-AZ, multi-tier deployment
+  This main template creates a VPC infrastructure for a multi-AZ, multi-tier deployment
   of a WAS on AWS. It deploys a VPC with bastions and a WAS cluster behind
   an ELB. The cluster is configured to use an S3 bucket for storage  **WARNING** This
   template creates EC2 instances and related resources. You will be billed for the
@@ -37,6 +37,8 @@ Metadata:
           default: SSL Configuration
         Parameters:
           - ALBSSLCertificateARN
+          - SiteDomain
+          - Route53HostedZoneId
       - Label:
           default: Location of the downloaded Maximo , Websphere and  Oracle client
           Parameters:
@@ -60,6 +62,10 @@ Metadata:
     ParameterLabels:
       ALBSSLCertificateARN:
         default: ARN of ACM certificate for Application Load Balancer
+      SiteDomain:
+        default: Maximo site domain
+      Route53HostedZoneId:
+        default: Route 53 hosted zone ID
       AvailabilityZones:
         default: Availability Zones
       BastionAMIOS:
@@ -123,6 +129,18 @@ Parameters:
     Description: '[Optional] The ARN of the SSL certificate to be used for the Application
       Load Balancer'
     Type: String
+  SiteDomain:
+    Description:  "[Optional] Domain name of the maximo site. e.g. maximo.example.com.
+        Valid FQDN required when using SSL."
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]*(?<!-)
+    ConstraintDescription: Must be a valid fully-qualified domain name.
+    Type: String
+    Default: ""
+  Route53HostedZoneId:
+    Description:  "[Optional] Route53 Hosted Zone ID where DNS record for Maximo
+        will be added."
+    Type: String
+    Default: ""
   AvailabilityZones:
     Description: List of Availability Zones to use for the subnets in the VPC. Only
       two Availability Zones are used for this deployment, and the logical order of
@@ -293,8 +311,12 @@ Parameters:
     Type: String
   # Oracle RDS Database Parameters
   ORAVersion:
-    AllowedValues: [ "12.2","18.0" ]
-    Default: "12.2"
+    AllowedValues:
+      - Enterprise-Edition-12.2-BYOL
+      - Enterprise-Edition-18.0-BYOL
+      - Standard-Edition-Two-12.2-License-Included
+      - Standard-Edition-Two-18.0-License-Included
+    Default: Standard-Edition-Two-12.2-License-Included
     Description: Amazon RDS Oracle version.
     Type: String
   DBInstanceClass:
@@ -406,6 +428,8 @@ Resources:
         QSS3KeyPrefix: !Ref 'QSS3KeyPrefix'
         RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
         WebAccessCIDR: !Ref 'WebAccessCIDR'
+        SiteDomain: !Ref 'SiteDomain'
+        Route53HostedZoneId:  !Ref 'Route53HostedZoneId'
 
 
 Outputs:
@@ -413,5 +437,5 @@ Outputs:
     Description: URL for newly created WAS stack
     Value: !GetAtt 'MaximoStack.Outputs.WebsiteURL'
   MasterJDBCConnectionString:
-    Description: JDBC connection string for the master database
+    Description: JDBC connection string for the Primary database
     Value: !GetAtt 'MaximoStack.Outputs.MasterJDBCConnectionString'

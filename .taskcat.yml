@@ -33,11 +33,12 @@ tests:
       WASNodesMinSize:  '2'
       WASNodesMaxSize:  '4'
       WASNodesDesiredCapacity:  '2'
-      ORAVersion: '18.0'
+      ORAVersion: 'Standard-Edition-Two-18.0-License-Included'
+      SiteDomain: override
+      Route53HostedZoneId:  override
 
     regions:
     - us-east-1
-    - us-east-2
-    s3_bucket: ''
+    s3_bucket: 'rajasegu-quickstart1'
     template: templates/maximo-main.template.yaml
 
