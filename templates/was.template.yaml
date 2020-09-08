@@ -436,7 +436,6 @@ Resources:
                 Effect: Allow
               - Action:
                   - s3:GetObject
-                  - s3:PutObject
                 Resource: !Sub 'arn:aws:s3:::${MaximoFilesLocation}/*'
                 Effect: Allow
               - Action:
@@ -470,8 +469,16 @@ Resources:
                 Effect: Allow
               - Action:
                   - s3:GetObject
-                  - s3:PutObject
                 Resource: !Sub 'arn:aws:s3:::${MaximoFilesLocation}/*'
+                Effect: Allow
+              - Action:
+                  - ssm:DescribeParameters
+                Resource: '*'
+                Effect: Allow
+              - Action:
+                  - ssm:GetParameter
+                  - ssm:PutParameter
+                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maximo-*'
                 Effect: Allow
               - Action:
                   - ec2:Describe*
@@ -524,6 +531,13 @@ Resources:
       FromPort: 0
       ToPort: 65535
       SourceSecurityGroupId: !Ref WASSecurityGroup
+  WASSSMParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: 'maximo-admin-db'
+      Type: String 
+      Value:  'Started'
+      Description:  'Parameter store keys related to maximo deployment'
   WASDMGROracleSecurityGroupIngress:
     Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
