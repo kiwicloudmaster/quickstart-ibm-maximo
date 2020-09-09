@@ -27,7 +27,7 @@ tests:
       QSS3BucketName: $[taskcat_autobucket]
       QSS3BucketRegion: $[taskcat_current_region]
       RemoteAccessCIDR: 10.0.0.0/16
-      WebAccessCIDR:  0.0.0.0/0
+      WebAccessCIDR:  override
       ALBSSLCertificateARN: override
       DeployUtilities: 'Yes'
       WASNodesMinSize:  '2'

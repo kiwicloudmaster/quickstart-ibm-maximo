@@ -59,7 +59,7 @@ Parameters:
       - Enterprise-Edition-18.0-BYOL
       - Standard-Edition-Two-12.2-License-Included
       - Standard-Edition-Two-18.0-License-Included
-    Default: Standard-Edition-Two-12.2-License-Included
+    Default: Standard-Edition-Two-18.0-License-Included
     Description: Amazon RDS Oracle version
     Type: String
   DBInstanceClass:
@@ -239,7 +239,7 @@ Resources:
           FromPort: 54508
           ToPort: 54508
           SourceSecurityGroupId: !Ref OracleServerSecurityGroup
-  MasterDBInstance:
+  PrimaryDBInstance:
     Type: AWS::RDS::DBInstance
     Properties:
       AllocatedStorage: '100'
@@ -273,27 +273,27 @@ Resources:
         - !Ref 'PrivateSubnet2AID'
 Outputs:
   OracleServerAccessSecurityGroup:
-    Description: Endpoint Address for the Primary database
+    Description: Security group to allow access to  primary database
     Value: !Ref OracleServerAccessSecurityGroup
     Export:
       Name: !Sub '${AWS::StackName}-OracleServerAccessSecurityGroup'
-  MasterEndpointAddress:
-    Description: Endpoint Address for the Primary database
-    Value: !GetAtt 'MasterDBInstance.Endpoint.Address'
-  MasterEndpointPort:
-    Description: Endpoint Port for the Primary database
-    Value: !GetAtt 'MasterDBInstance.Endpoint.Port'
-  MasterJDBCConnectionString:
-    Description: JDBC connection string for the Primary database
+  PrimaryEndpointAddress:
+    Description: Endpoint address for the primary database
+    Value: !GetAtt 'PrimaryDBInstance.Endpoint.Address'
+  PrimaryEndpointPort:
+    Description: Endpoint port for the primary database
+    Value: !GetAtt 'PrimaryDBInstance.Endpoint.Port'
+  PrimaryJDBCConnectionString:
+    Description: JDBC connection string for the primary database
     Value: !Join
       - ''
       - - 'jdbc:oracle:thin:@'
         - !GetAtt
-          - MasterDBInstance
+          - PrimaryDBInstance
           - Endpoint.Address
         - ':'
         - !GetAtt
-          - MasterDBInstance
+          - PrimaryDBInstance
           - Endpoint.Port
         - ':'
         - !Ref DBName

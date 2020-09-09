@@ -126,7 +126,7 @@ Parameters:
       Load Balancer'
     Type: String
   SiteDomain:
-    Description:  "[Optional] Domain name of the maximo site. e.g. myexamplesite.com.
+    Description:  "[Optional] Domain name of the maximo site. e.g. maximo.example.com.
         Valid FQDN required when using SSL."
     AllowedPattern: (?!-)[a-zA-Z0-9-.]*(?<!-)
     ConstraintDescription: Must be a valid fully-qualified domain name.
@@ -300,7 +300,7 @@ Parameters:
       - Enterprise-Edition-18.0-BYOL
       - Standard-Edition-Two-12.2-License-Included
       - Standard-Edition-Two-18.0-License-Included
-    Default: Standard-Edition-Two-12.2-License-Included
+    Default: Standard-Edition-Two-18.0-License-Included
     Description: Amazon RDS Oracle version.
     Type: String
   DBInstanceClass:
@@ -423,8 +423,8 @@ Resources:
         DBName: !Ref 'DBName'
         DBUser: !Ref 'DBUser'
         DBPassword: !Ref 'DBPassword'
-        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
-        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
+        EndpointAddress: !GetAtt 'RDSStack.Outputs.PrimaryEndpointAddress'
+        EndpointPort: !GetAtt 'RDSStack.Outputs.PrimaryEndpointPort'
         BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
@@ -457,8 +457,8 @@ Resources:
         DBName: !Ref 'DBName'
         DBUser: !Ref 'DBUser'
         DBPassword: !Ref 'DBPassword'
-        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
-        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
+        EndpointAddress: !GetAtt 'RDSStack.Outputs.PrimaryEndpointAddress'
+        EndpointPort: !GetAtt 'RDSStack.Outputs.PrimaryEndpointPort'
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         OracleServerAccessSecurityGroup:  !GetAtt 'RDSStack.Outputs.OracleServerAccessSecurityGroup'
         VPCID: !Ref 'VPCID'
@@ -471,6 +471,6 @@ Outputs:
   WebsiteURL:
     Description: URL for newly created WAS stack
     Value: !GetAtt 'WASStack.Outputs.WebsiteURL'
-  MasterJDBCConnectionString:
-    Description: JDBC connection string for the Primary database
-    Value: !GetAtt 'RDSStack.Outputs.MasterJDBCConnectionString'
+  PrimaryJDBCConnectionString:
+    Description: JDBC connection string for the primary database
+    Value: !GetAtt 'RDSStack.Outputs.PrimaryJDBCConnectionString'

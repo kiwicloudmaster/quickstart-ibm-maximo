@@ -102,9 +102,9 @@ Metadata:
       OracleServerAccessSecurityGroup:
         default: Oracle Security Group ID
       EndpointAddress:
-        default: Endpoint address of the Primary database
+        default: Endpoint address of the primary database
       EndpointPort:
-        default: Endpoint port number of the Primary database
+        default: Endpoint port number of the primary database
       VPCID:
         default: VPC ID
 Parameters:
@@ -114,7 +114,7 @@ Parameters:
       Load Balancer'
     Type: String
   SiteDomain:
-    Description:  "[Optional] Domain name of the maximo site. e.g. myexamplesite.com.
+    Description:  "[Optional] Domain name of the maximo site. e.g. maximo.example.com.
         Valid FQDN required when using SSL."
     AllowedPattern: (?!-)[a-zA-Z0-9-.]*(?<!-)
     ConstraintDescription: Must be a valid fully-qualified domain name.
@@ -264,10 +264,10 @@ Parameters:
     AllowedPattern: '[a-zA-Z0-9]*'
     ConstraintDescription: must contain only alphanumeric characters.
   EndpointAddress:
-    Description: Endpoint address of the Primary database
+    Description: Endpoint address of the primary database
     Type: String
   EndpointPort:
-    Description: Endpoint port number of the Primary database
+    Description: Endpoint port number of the primary database
     Type: String
   MaximoFilesLocation:
     Description: Provide the S3 location of the downloaded Oracle client files.

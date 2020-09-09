@@ -316,7 +316,7 @@ Parameters:
       - Enterprise-Edition-18.0-BYOL
       - Standard-Edition-Two-12.2-License-Included
       - Standard-Edition-Two-18.0-License-Included
-    Default: Standard-Edition-Two-12.2-License-Included
+    Default: Standard-Edition-Two-18.0-License-Included
     Description: Amazon RDS Oracle version.
     Type: String
   DBInstanceClass:
@@ -436,6 +436,6 @@ Outputs:
   WebsiteURL:
     Description: URL for newly created WAS stack
     Value: !GetAtt 'MaximoStack.Outputs.WebsiteURL'
-  MasterJDBCConnectionString:
-    Description: JDBC connection string for the Primary database
-    Value: !GetAtt 'MaximoStack.Outputs.MasterJDBCConnectionString'
+  PrimaryJDBCConnectionString:
+    Description: JDBC connection string for the primary database
+    Value: !GetAtt 'MaximoStack.Outputs.PrimaryJDBCConnectionString'
