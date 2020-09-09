@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Deploys IAM roles and policies required for the AWS EKS Quick Start (qs-1p7nknohl)
+Description: Deploys IAM roles and policies required for the IBM Maximo Quick Start (qs-1r4dcoihh)
 Parameters:
   MaximoFilesLocation:
     Description: Provide the S3 location of the downloaded maximo , WAS  and Oracle client files (please do not include the s3:// and the trailing forward slash).

@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'Oracle Database Objects Template'
+Description: 'Oracle Database Objects Template. (qs-1r4dcoihu)'
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
