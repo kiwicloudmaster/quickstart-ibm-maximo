@@ -1,10 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
-  This master template creates a VPC infrastructure for a multi-AZ, multi-tier deployment
-  of a WAS on AWS. It deploys a VPC with bastions and a WAS cluster behind
+  This  template  deploys  bastion host and a WAS cluster behind
   an ELB. The cluster is configured to use an S3 bucket for storage  **WARNING** This
   template creates EC2 instances and related resources. You will be billed for the
-  AWS resources used if you create a stack from this template. (qs-1o2sf5bfu)
+  AWS resources used if you create a stack from this template.
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -36,6 +35,8 @@ Metadata:
           default: SSL Configuration
         Parameters:
           - ALBSSLCertificateARN
+          - SiteDomain
+          - Route53HostedZoneId
       - Label:
           default : Location of the downloaded Maximo , Websphere and  Oracle client
         Parameters:
@@ -59,6 +60,10 @@ Metadata:
     ParameterLabels:
       ALBSSLCertificateARN:
         default: ARN of ACM certificate for Application Load Balancer
+      SiteDomain:
+        default: Maximo site domain
+      Route53HostedZoneId:
+        default: Route 53 hosted zone ID
       BastionAMIOS:
         default: Bastion AMI Operating System
       BastionInstanceType:
@@ -120,6 +125,18 @@ Parameters:
     Description: '[Optional] The ARN of the SSL certificate to be used for the Application
       Load Balancer'
     Type: String
+  SiteDomain:
+    Description:  "[Optional] Domain name of the maximo site. e.g. maximo.example.com.
+        Valid FQDN required when using SSL."
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]*(?<!-)
+    ConstraintDescription: Must be a valid fully-qualified domain name.
+    Type: String
+    Default: ""
+  Route53HostedZoneId:
+    Description:  "[Optional] Route53 Hosted Zone ID where DNS record for Maximo
+        will be added."
+    Type: String
+    Default: ""
   BastionAMIOS:
     AllowedValues:
       - Amazon-Linux2-HVM
@@ -278,8 +295,12 @@ Parameters:
     Type: String
    # Oracle RDS Database Parameters
   ORAVersion:
-    AllowedValues: [ "12.2","18.0" ]
-    Default: "12.2"
+    AllowedValues:
+      - Enterprise-Edition-12.2-BYOL
+      - Enterprise-Edition-18.0-BYOL
+      - Standard-Edition-Two-12.2-License-Included
+      - Standard-Edition-Two-18.0-License-Included
+    Default: Standard-Edition-Two-18.0-License-Included
     Description: Amazon RDS Oracle version.
     Type: String
   DBInstanceClass:
@@ -402,8 +423,8 @@ Resources:
         DBName: !Ref 'DBName'
         DBUser: !Ref 'DBUser'
         DBPassword: !Ref 'DBPassword'
-        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
-        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
+        EndpointAddress: !GetAtt 'RDSStack.Outputs.PrimaryEndpointAddress'
+        EndpointPort: !GetAtt 'RDSStack.Outputs.PrimaryEndpointPort'
         BastionASGName: !GetAtt 'BastionStack.Outputs.BastionAutoScalingGroup'
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
@@ -436,18 +457,20 @@ Resources:
         DBName: !Ref 'DBName'
         DBUser: !Ref 'DBUser'
         DBPassword: !Ref 'DBPassword'
-        EndpointAddress: !GetAtt 'RDSStack.Outputs.MasterEndpointAddress'
-        EndpointPort: !GetAtt 'RDSStack.Outputs.MasterEndpointPort'
+        EndpointAddress: !GetAtt 'RDSStack.Outputs.PrimaryEndpointAddress'
+        EndpointPort: !GetAtt 'RDSStack.Outputs.PrimaryEndpointPort'
         MaximoFilesLocation: !Ref 'MaximoFilesLocation'
         OracleServerAccessSecurityGroup:  !GetAtt 'RDSStack.Outputs.OracleServerAccessSecurityGroup'
         VPCID: !Ref 'VPCID'
         WebAccessCIDR: !Ref 'WebAccessCIDR'
+        SiteDomain: !Ref 'SiteDomain'
+        Route53HostedZoneId:  !Ref 'Route53HostedZoneId'
 
 
 Outputs:
   WebsiteURL:
     Description: URL for newly created WAS stack
     Value: !GetAtt 'WASStack.Outputs.WebsiteURL'
-  MasterJDBCConnectionString:
-    Description: JDBC connection string for the master database
-    Value: !GetAtt 'RDSStack.Outputs.MasterJDBCConnectionString'
+  PrimaryJDBCConnectionString:
+    Description: JDBC connection string for the primary database
+    Value: !GetAtt 'RDSStack.Outputs.PrimaryJDBCConnectionString'
