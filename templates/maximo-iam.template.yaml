@@ -34,12 +34,12 @@ Resources:
             Statement:
               - Effect: Allow
                 Action: s3:GetObject
-                Resource: !Sub "arn:aws:s3:::${QSS3BucketName}/*"
+                Resource: !Sub "arn:${AWS::Partition}:s3:::${QSS3BucketName}/*"
               - Effect: Allow
                 Action:
                   - s3:getObject
                   - s3:putObject
-                Resource: !Sub 'arn:aws:s3:::${MaximoFilesLocation}/*'
+                Resource: !Sub 'arn:${AWS::Partition}:s3:::${MaximoFilesLocation}/*'
               - Effect: Allow
                 Action:
                   - logs:CreateLogStream
@@ -50,7 +50,7 @@ Resources:
                   - logs:PutRetentionPolicy
                   - logs:PutMetricFilter
                   - logs:CreateLogGroup
-                Resource: !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*"
+                Resource: !Sub "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:*:*"
               - Effect: Allow
                 Action:
                   - ec2:AssociateAddress
@@ -58,8 +58,8 @@ Resources:
                   - eks:ListClusters
                 Resource: "*"
       ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore'
-        - 'arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy'
+        - 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/AmazonSSMManagedInstanceCore'
+        - 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/CloudWatchAgentServerPolicy'
 Outputs:
   BastionRole:
     Value: !Ref BastionRole

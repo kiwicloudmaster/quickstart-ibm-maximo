@@ -436,7 +436,7 @@ Resources:
                 Effect: Allow
               - Action:
                   - s3:GetObject
-                Resource: !Sub 'arn:aws:s3:::${MaximoFilesLocation}/*'
+                Resource: !Sub 'arn:${AWS::Partition}:s3:::${MaximoFilesLocation}/*'
                 Effect: Allow
               - Action:
                   - ec2:Describe*
@@ -469,7 +469,7 @@ Resources:
                 Effect: Allow
               - Action:
                   - s3:GetObject
-                Resource: !Sub 'arn:aws:s3:::${MaximoFilesLocation}/*'
+                Resource: !Sub 'arn:${AWS::Partition}:s3:::${MaximoFilesLocation}/*'
                 Effect: Allow
               - Action:
                   - ssm:DescribeParameters
@@ -478,13 +478,13 @@ Resources:
               - Action:
                   - ssm:GetParameter
                   - ssm:PutParameter
-                Resource: !Sub 'arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maximo-*'
+                Resource: !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maximo-*'
                 Effect: Allow
               - Action:
                   - ec2:Describe*
                   - elasticloadbalancing:Describe*
                   - autoscaling:Describe*
-                Resource: !Sub "arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:instance/*"
+                Resource: !Sub "arn:${AWS::Partition}:ec2:${AWS::Region}:${AWS::AccountId}:instance/*"
                 Effect: Allow
           PolicyName: aws-quick-start-s3-policy
   WASProfile:
