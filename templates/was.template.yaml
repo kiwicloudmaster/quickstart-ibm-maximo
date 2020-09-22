@@ -48,14 +48,14 @@ Metadata:
           - QSS3KeyPrefix
       - Label:
           default: Oracle RDS Configuration
-          Parameters:
-            - DBName
-            - DBUser
-            - DBPassword
-            - EndpointAddress
-            - EndpointPort
-            - MaximoFilesLocation
-            - OracleServerAccessSecurityGroup
+        Parameters:
+          - DBName
+          - DBUser
+          - DBPassword
+          - EndpointAddress
+          - EndpointPort
+          - MaximoFilesLocation
+          - OracleServerAccessSecurityGroup
     ParameterLabels:
       ALBSSLCertificateARN:
         default: ARN of ACM certificate for Application Load Balancer

@@ -58,8 +58,8 @@ Resources:
                   - eks:ListClusters
                 Resource: "*"
       ManagedPolicyArns:
-        - 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/AmazonSSMManagedInstanceCore'
-        - 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/CloudWatchAgentServerPolicy'
+        - !Sub 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/AmazonSSMManagedInstanceCore'
+        - !Sub 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/CloudWatchAgentServerPolicy'
 Outputs:
   BastionRole:
     Value: !Ref BastionRole
