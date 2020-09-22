@@ -1,0 +1,65 @@
+
+.Network configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|VPC ID
+(`VPCID`)|`**__Requires input__**`|ID of your existing VPC for deployment|Private subnet 1 ID
+(`PrivateSubnet1ID`)|`**__Requires input__**`|ID of private subnet 1 in Availability Zone 1 for the WAS (e.g., subnet-a0246dcd)|Private subnet 2 ID
+(`PrivateSubnet2ID`)|`**__Requires input__**`|ID of private subnet 2 in Availability Zone 2 for the WAS (e.g., subnet-b1f432cd)|Public subnet 1 ID
+(`PublicSubnet1ID`)|`**__Requires input__**`|ID of public subnet 1 in Availability Zone 1 for the ELB load balancer (e.g., subnet-9bc642ac)|Public subnet 2 ID
+(`PublicSubnet2ID`)|`**__Requires input__**`|ID of public subnet 2 in Availability Zone 2 for the ELB load balancer (e.g., subnet-e3246d8e)|Bastion external access CIDR
+(`RemoteAccessCIDR`)|`**__Requires input__**`|The CIDR IP range that is permitted to access the bastions. We recommend that you set this value to a trusted IP range.
+|===
+.Bastion host configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Key pair name
+(`KeyPairName`)|`**__Requires input__**`|The name of an existing public/private key pair, which allows you to securely connect to your instance after it launches|Bastion AMI operating system
+(`BastionAMIOS`)|`Amazon-Linux2-HVM`|The Linux distribution for the AMI to be used for the bastion instances|Bastion instance type
+(`BastionInstanceType`)|`t2.micro`|Amazon EC2 instance type for the bastion instances
+|===
+.WAS nodes configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|WAS server instance type
+(`WASInstanceType`)|`m5.xlarge`|EC2 instance type for the WAS instances|WAS nodes min size
+(`WASNodesMinSize`)|`2`|The minimum size of the Auto Scaling group|WAS nodes max size
+(`WASNodesMaxSize`)|`4`|The maximum size of the Auto Scaling group|WAS nodes desired capacity
+(`WASNodesDesiredCapacity`)|`2`|The desired capacity for the WAS nodes Auto Scaling group|Maximo web excess CIDR
+(`WebAccessCIDR`)|`**__Requires input__**`|The CIDR IP range that is permitted to access the Maximo URL. We recommend that you set this value to a trusted IP range.|Deploy utilities modules
+(`DeployUtilities`)|`No`|Choose Yes to deploy utilities modules.
+|===
+.SSL configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|ARN of ACM certificate for Application Load Balancer
+(`ALBSSLCertificateARN`)|`__Optional__`|[Optional] The ARN of the SSL certificate to be used for the Application Load Balancer|Maximo site domain
+(`SiteDomain`)|`__Optional__`|[Optional] Domain name of the maximo site. e.g. maximo.example.com. Valid FQDN required when using SSL.|Route 53 hosted zone ID
+(`Route53HostedZoneId`)|`__Optional__`|[Optional] Route53 hosted zone ID where DNS record for Maximo will be added.
+|===
+.Maximo files location
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Maximo files location
+(`MaximoFilesLocation`)|`**__Requires input__**`|Provide the S3 location of the downloaded maximo , WAS  and Oracle client files (please do not include the s3:// and the trailing forward slash). E.g., if the location is "s3://ibm-maximo-assets/instllation_files", then enter "ibm-maximo-assets/instllation_files". Refer to the deployment guide for more information on downloading the client files and obtaining the location.
+|===
+.Oracle RDS configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Oracle database version
+(`ORAVersion`)|`Standard-Edition-Two-18.0-License-Included`|Amazon RDS Oracle version.|Oracle database instance name
+(`DBInstanceIdentifier`)|`MXMORCL`|The database instance name.|Oracle database instance type
+(`DBInstanceClass`)|`db.m5.large`|Amazon RDS instance type for the Oracle database instance.|Oracle database name
+(`DBName`)|`maximo`|The database name.|Oracle database admin user name
+(`DBUser`)|`MXAdmin`|The database admin account user name.|Oracle database admin password
+(`DBPassword`)|`**__Requires input__**`|The database admin account password. Must be at least 8 characters containing letters, numbers only.|High availability (Multi-AZ) for Oracle RDS
+(`DBMultiZone`)|`true`|Choose false to disable high availability (Multi-AZ) configuration for Oracle RDS. More information is available here - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
+|===
+.AWS Quick Start configuration
+[width="100%",cols="16%,11%,73%",options="header",]
+|===
+|Parameter label (name) |Default value|Description|Quick Start S3 bucket name
+(`QSS3BucketName`)|`aws-quickstart`|S3 bucket name for the Quick Start assets. This string can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).|Quick Start S3 bucket Region
+(`QSS3BucketRegion`)|`us-east-1`|The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.|Quick Start S3 key prefix
+(`QSS3KeyPrefix`)|`quickstart-ibm-maximo/`|S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).
+|===
