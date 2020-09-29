@@ -321,6 +321,11 @@ Mappings:
       RHELHVM: ami-056efb42b219f9abb
     us-west-2:
       RHELHVM: ami-02deb4589e0f0d95e
+    us-gov-west-1:
+      RHELHVM: ami-5a740e3b
+    us-gov-east-1:
+      RHELHVM: ami-9ec32eef
+
 Resources:
   ELBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
