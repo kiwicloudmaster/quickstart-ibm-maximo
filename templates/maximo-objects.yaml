@@ -124,9 +124,9 @@ Resources:
             Service: lambda.amazonaws.com
           Action: 'sts:AssumeRole'
       ManagedPolicyArns:
-        - !Sub 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/AmazonEC2ReadOnlyAccess'
-        - !Sub 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/service-role/AWSLambdaBasicExecutionRole'
-        - !Sub 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/AmazonEC2ContainerRegistryFullAccess'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ReadOnlyAccess'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess'
         - !Ref MaximoSSMSendCommandPolicy
   RDSSchemasConfigDocument:
     Type: 'AWS::SSM::Document'
