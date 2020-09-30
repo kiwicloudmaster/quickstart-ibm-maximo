@@ -16,6 +16,11 @@ unzip -q awscliv2.zip
 mkdir /work
 cd /work
 
+REGION=$(curl -sq http://169.254.169.254/latest/meta-data/placement/availability-zone/)
+#ex: us-east-1a => us-east-1
+REGION=${REGION: :-1}
+export AWS_DEFAULT_REGION=${REGION}
+
 # Download the installer files from S3
 /usr/local/bin/aws s3 cp s3://$Maximos3location/IED_V1.8.8_Wins_Linux_86.zip .
 /usr/local/bin/aws s3 cp s3://$Maximos3location/WAS_ND_V9.0_MP_ML.zip .
