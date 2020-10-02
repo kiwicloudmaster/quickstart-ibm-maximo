@@ -124,9 +124,9 @@ Resources:
             Service: lambda.amazonaws.com
           Action: 'sts:AssumeRole'
       ManagedPolicyArns:
-        - 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/AmazonEC2ReadOnlyAccess'
-        - 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/service-role/AWSLambdaBasicExecutionRole'
-        - 'arn:${AWS::Partition}:iam::${AWS::Partition}:policy/AmazonEC2ContainerRegistryFullAccess'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ReadOnlyAccess'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole'
+        - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess'
         - !Ref MaximoSSMSendCommandPolicy
   RDSSchemasConfigDocument:
     Type: 'AWS::SSM::Document'
@@ -168,6 +168,10 @@ Resources:
             description: Endpoint port number of the primary database
             type: String
             default: !Ref EndpointPort
+          Region:
+            description: Region of deployment
+            type: String
+            default: !Ref "AWS::Region"
         mainSteps:
           - action: 'aws:runShellScript'
             name: downloadBasicclient
@@ -175,7 +179,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-              - !Sub 'aws s3 cp s3://{{MaximoFilesLocation}}/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip /home/ec2-user/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip'
+              - !Sub 'aws s3 cp --region {{Region}} s3://{{MaximoFilesLocation}}/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip /home/ec2-user/instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: downloadSqlclient
@@ -183,7 +187,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-              - !Sub 'aws s3 cp s3://{{MaximoFilesLocation}}/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip /home/ec2-user/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip'
+              - !Sub 'aws s3 cp --region {{Region}} s3://{{MaximoFilesLocation}}/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip /home/ec2-user/instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: downloadScriptFile
@@ -191,7 +195,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-              - !Sub 'aws s3 cp s3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_commands.sh /home/ec2-user/maximo_oracle_commands.sh'
+              - !Sub 'aws s3 cp --region {{Region}} s3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_commands.sh /home/ec2-user/maximo_oracle_commands.sh'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: downloadSqlscript
@@ -199,7 +203,7 @@ Resources:
             onFailure: Abort
             inputs:
               runCommand:
-              - !Sub 'aws s3 cp s3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_database_objects.sql /home/ec2-user/maximo_oracle_database_objects.sql'
+              - !Sub 'aws s3 cp --region {{Region}} s3://{{QSS3BucketName}}/{{QSS3KeyPrefix}}scripts/maximo_oracle_database_objects.sql /home/ec2-user/maximo_oracle_database_objects.sql'
               workingDirectory: '/home/ec2-user'
           - action: 'aws:runShellScript'
             name: setFilePermissions

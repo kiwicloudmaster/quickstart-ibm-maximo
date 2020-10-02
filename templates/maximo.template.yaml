@@ -15,7 +15,7 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: Network Configuration
+          default: Network configuration
         Parameters:
           - VPCID
           - PrivateSubnet1ID
@@ -24,13 +24,13 @@ Metadata:
           - PublicSubnet2ID
           - RemoteAccessCIDR
       - Label:
-          default: Bastion Host Configuration
+          default: Bastion host configuration
         Parameters:
           - KeyPairName
           - BastionAMIOS
           - BastionInstanceType
       - Label:
-          default: WAS Nodes Configuration
+          default: WAS nodes configuration
         Parameters:
           - WASInstanceType
           - WASNodesMinSize
@@ -39,13 +39,13 @@ Metadata:
           - WebAccessCIDR
           - DeployUtilities
       - Label:
-          default: SSL Configuration
+          default: SSL configuration
         Parameters:
           - ALBSSLCertificateARN
           - SiteDomain
           - Route53HostedZoneId
       - Label:
-          default : Location of the downloaded Maximo , Websphere and  Oracle client
+          default : Maximo files location
         Parameters:
           - MaximoFilesLocation
       - Label:
@@ -59,7 +59,7 @@ Metadata:
           - DBPassword
           - DBMultiZone
       - Label:
-          default: AWS Quick Start Configuration
+          default: AWS Quick Start configuration
         Parameters:
           - QSS3BucketName
           - QSS3BucketRegion
@@ -72,24 +72,24 @@ Metadata:
       Route53HostedZoneId:
         default: Route 53 hosted zone ID
       BastionAMIOS:
-        default: Bastion AMI Operating System
+        default: Bastion AMI operating system
       BastionInstanceType:
-        default: Bastion Instance Type
+        default: Bastion instance type
       KeyPairName:
-        default: Key Pair Name
+        default: Key pair name
       # WAS Parameters
       WASInstanceType:
-        default: WAS Server Instance Type
+        default: WAS server instance type
       WASNodesDesiredCapacity:
-        default: WAS Nodes Desired Capacity
+        default: WAS nodes desired capacity
       WASNodesMaxSize:
-        default: WAS Nodes Max Size
+        default: WAS nodes max size
       WASNodesMinSize:
-        default: WAS Nodes Min Size
+        default: WAS nodes min size
       WebAccessCIDR:
-        default: Allowed Maximo Web External Access CIDR
+        default: Maximo web excess CIDR
       DeployUtilities:
-        default: Deploy utilities modules along with Maximo ?
+        default: Deploy utilities modules
       # Oracle RDS Parameters
       ORAVersion:
         default: Oracle database version
@@ -104,44 +104,41 @@ Metadata:
       DBPassword:
         default: Oracle database admin password
       DBMultiZone:
-        default: High Availability (Multi-AZ) for Oracle RDS
+        default: High availability (Multi-AZ) for Oracle RDS
       # S3 Bucket  Parameters
       MaximoFilesLocation:
-        default: Location of the downloaded Maximo , Websphere and  Oracle client
+        default: Maximo files location
       QSS3BucketName:
-        default: Quick Start S3 Bucket Name
+        default: Quick Start S3 bucket name
       QSS3BucketRegion:
-        default: Quick Start S3 bucket region
+        default: Quick Start S3 bucket Region
       QSS3KeyPrefix:
-        default: Quick Start S3 Key Prefix
+        default: Quick Start S3 key prefix
       RemoteAccessCIDR:
-        default: Allowed Bastion External Access CIDR
+        default: Bastion external access CIDR
       PrivateSubnet1ID:
-        default: Private Subnet 1 ID
+        default: Private subnet 1 ID
       PrivateSubnet2ID:
-        default: Private Subnet 2 ID
+        default: Private subnet 2 ID
       PublicSubnet1ID:
-        default: Public Subnet 1 ID
+        default: Public subnet 1 ID
       PublicSubnet2ID:
-        default: Public Subnet 2 ID
+        default: Public subnet 2 ID
       VPCID:
         default: VPC ID
 Parameters:
   ALBSSLCertificateARN:
     Default: ''
-    Description: '[Optional] The ARN of the SSL certificate to be used for the Application
-      Load Balancer'
+    Description: '[Optional] The ARN of the SSL certificate to be used for the Application Load Balancer'
     Type: String
   SiteDomain:
-    Description:  "[Optional] Domain name of the maximo site. e.g. maximo.example.com.
-        Valid FQDN required when using SSL."
+    Description:  "[Optional] Domain name of the maximo site. e.g. maximo.example.com. Valid FQDN required when using SSL."
     AllowedPattern: (?!-)[a-zA-Z0-9-.]*(?<!-)
     ConstraintDescription: Must be a valid fully-qualified domain name.
     Type: String
     Default: ""
   Route53HostedZoneId:
-    Description:  "[Optional] Route53 Hosted Zone ID where DNS record for Maximo
-        will be added."
+    Description:  "[Optional] Route53 hosted zone ID where DNS record for Maximo will be added."
     Type: String
     Default: ""
   BastionAMIOS:
@@ -243,9 +240,9 @@ Parameters:
     AllowedValues:
       - 'Yes'
       - 'No'
-    ConstraintDescription: Select Yes to deploy utilities modules
+    ConstraintDescription: Choose Yes to deploy utilities modules
     Default: 'No'
-    Description: Select "Yes" to deploy a utilities modules, "No" to skip (default).
+    Description: Choose Yes to deploy utilities modules.
     Type: String
   PrivateSubnet1ID:
     Description: ID of private subnet 1 in Availability Zone 1 for the WAS (e.g.,
@@ -395,7 +392,6 @@ Resources:
         QSS3BucketName: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
         MaximoFilesLocation: !Ref MaximoFilesLocation
   BastionStack:
-    DependsOn: "MaximoIAMStack"
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL:
@@ -409,17 +405,14 @@ Resources:
         KeyPairName: !Ref 'KeyPairName'
         PublicSubnet1ID: !Ref 'PublicSubnet1ID'
         PublicSubnet2ID: !Ref 'PublicSubnet2ID'
-        QSS3BucketName: 'aws-quickstart'
-        QSS3BucketRegion: !Ref 'QSS3BucketRegion'
-        QSS3KeyPrefix: 'quickstart-linux-bastion/'
+        QSS3BucketName: !If [UsingDefaultBucket, !Sub "${QSS3BucketName}-${AWS::Region}", !Ref QSS3BucketName]
+        QSS3BucketRegion: !If [UsingDefaultBucket, !Ref "AWS::Region", !Ref QSS3BucketRegion]
+        QSS3KeyPrefix: !Sub ${QSS3KeyPrefix}submodules/quickstart-linux-bastion/
         RemoteAccessCIDR: !Ref 'RemoteAccessCIDR'
         VPCID: !Ref 'VPCID'
         AlternativeIAMRole: !GetAtt MaximoIAMStack.Outputs.BastionRole
   # Create the Oracle tablespaces and users for Maximo
   MaximoObjectCreation:
-    DependsOn:
-      - RDSStack
-      - BastionStack
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
