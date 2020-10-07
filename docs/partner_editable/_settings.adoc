@@ -5,7 +5,7 @@
 :doc-month: May
 :doc-year: 2020
 :partner-contributors: John Doe and Jane Doe - {partner-company-name}
-:quickstart-contributors: Jim Smith - AWS Global Partner SA, AWS + Joe Jones - Technical Product Manager, AWS
+:quickstart-contributors: Rajasekhar Gundugollu, Subrahmanyam Madduru, Vinod Shukla, Ranjan Banerji
 :deployment_time: 30 minutes / 1 hour
 :default_deployment_region: us-east-1
 // Uncomment these two attributes if you are leveraging
