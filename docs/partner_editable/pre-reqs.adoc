@@ -2,7 +2,15 @@
 
 ==== Prepare your AWS account
 
-_Describe any setup required in the AWS account prior to template launch_
+===== Key pair
+Make sure that at least one Amazon EC2 key pair exists in your AWS account in the
+Region where you are planning to deploy the Quick Start. Make note of the key pair
+name. You are prompted for this information during deployment. To create a key pair,
+follow the instructions in the AWS documentation.
+If you deploy the Quick Start for testing or proof-of-concept purposes, we recommend
+that you create a new key pair instead of specifying a key pair that’s already being used
+by a production instance.
+
 
 ==== Prepare your {partner-company-name} account
 
