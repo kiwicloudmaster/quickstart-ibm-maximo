@@ -22,8 +22,16 @@
   . instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip
   . instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip
 
-
-
+=== Launch the Quick Start
+. Sign in to your AWS account, and launch the AWS CloudFormation template.  The entire deployment process takes about 2 hours to complete
+. Check the AWS Region that’s displayed in the upper-right corner of the navigation bar and change it if necessary. This is where the network infrastructure for IBM Maximo is built. The template is launched in the US East (Virginia) Region by default.
+. On the *Select Template* page, keep the default setting for the template URL, and then choose *Next*
+. On the *Specify Details* page, change the stack name if needed. Review the parameters for the template. Provide values for the parameters that require input. For all other parameters, review the default settings and customize them as necessary.
+. On the *Options* page, you can specify tags (key value pairs) for resources in your stack and set advanced options. When you’re done, choose *Next*.
+. On the *Review* page, review and confirm the template settings. Under *Capabilities*, select the two check boxes to acknowledge that the template creates IAM resources and that it might require the capability to auto-expand macros.
+. Choose *Create* to deploy the stack.
+. Monitor the status of the stack. When the status is CREATE_COMPLETE, the IBM Maximo cluster is ready.
+. Check the stack’s *Outputs* tab to view the created resources.
 
 // Optional based on Marketplace listing. Not to be edited
 ifdef::marketplace_subscription[]
