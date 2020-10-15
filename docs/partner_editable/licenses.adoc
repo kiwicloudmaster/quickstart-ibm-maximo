@@ -5,11 +5,10 @@ These two paragraphs provide an example of the details you can provide. Provide 
 
 Example content below:
 
-_<license information>This Quick Start requires licenses for IBM Maximo.  If you already own licenses for IBM Maximo, you can use the Bring Your
-Own License model (BYOL).
+_This Quick Start requires licenses for IBM Maximo.  If you already own licenses for IBM Maximo, you can use the Bring Your
+Own License model (BYOL)._
 
-Otherwise, purchase IBM Maximo licenses from https://www.ibm.com/software/passportadvantage/index.html[Passport Advantage] or an https://www.ibm.com/products/filenet-content-manager[IBM representative]. For assistance with Passport Advantage, see the https://www.ibm.com/software/passportadvantage/pao_customer.html[Passport Advantage
-Online for customers] or https://www-112.ibm.com/software/howtobuy/passportadvantage/paocustomer/docs/en_US/ecare.html[eCustomer care] webpages.
+Otherwise, purchase IBM Maximo licenses from https://www.ibm.com/software/passportadvantage/index.html[Passport Advantage] or an https://www.ibm.com/products/maximo[IBM representative]. For assistance with Passport Advantage, see the https://www.ibm.com/software/passportadvantage/pao_customer.html[Passport Advantage
 
 The Quick Start templates provision an Oracle database instance using the License Included service model. Information about the costs associated with this 
 service model is available at https://docs.aws.amazon.com/whitepapers/latest/oracle-database-aws-best-practices/oracle-licensing-considerations.html[Oracle Licensing Considerations].
