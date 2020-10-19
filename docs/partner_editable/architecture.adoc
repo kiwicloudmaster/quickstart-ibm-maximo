@@ -22,3 +22,5 @@ As shown in Figure 1, the Quick Start sets up the following:
  ** {partner-product-short-name} application servers deployed across two availability zones offering high availabiliy.
  ** Amazon Relational Database Service (Amazon RDS) for Oracle as the database for {partner-product-short-name} also deployed across two availability zones.
 
+* Optionally, Amazon Route 53 as your public Domain Name System (DNS) for resolving your {partner-product-short-name} website’s domain name.
+
