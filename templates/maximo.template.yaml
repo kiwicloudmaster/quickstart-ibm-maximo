@@ -189,6 +189,7 @@ Parameters:
   WASAdminPassword:
     Description: The password of the WAS administrator
     Type: String
+    NoEcho: 'true'
     MinLength: '8'
     MaxLength: '41'
     AllowedPattern: '[a-zA-Z0-9]*'
