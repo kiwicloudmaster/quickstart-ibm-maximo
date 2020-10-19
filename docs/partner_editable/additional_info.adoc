@@ -4,18 +4,34 @@
 == Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
 
+. Go to the `WebsiteURL` as shown in the *Outputs* tab in <<cfn_outputs>>.
+. On the {partner-product-short-name} Enterprise Asset Management login page, enter default username/password as `maxadmin`.
+. Once logged in, choose *Help* icon and then choose *System Information*
+. In the *System Information* pop-up view, verify that {partner-product-short-name} Asset Management has been successfully installed as shown in <<testStep1>>.
+
+:xrefstyle: short
+[#testStep1]
+.{partner-product-short-name} system information
+[link=images/system-information.png]
+image::../images/system-information.png[image_placeholder,width=648,height=439]
+
 == Post deployment steps
-// If Post-deployment steps are required, add them here. If not, remove the heading
+
+IMPORTANT: It is recommended that you change the default password after installation.
+
+To change the default password, choose the *Profile* icon and then *Password Information*.
+On the *Password Information* pop-up view as shown in <<postDeployStep1>>, enter a new password and choose *OK*.
+
+:xrefstyle: short
+[#postDeployStep1]
+.{partner-product-short-name} change password
+[link=images/change-password.png]
+image::../images/change-password.png[image_placeholder,width=648,height=439]
 
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
 _Add any best practices for using the software._
-
-== Security
-// Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
-
-_Add any security-related information._
 
 == Other useful information
 //Provide any other information of interest to users, especially focusing on areas where AWS or cloud usage differs from on-premises usage.
