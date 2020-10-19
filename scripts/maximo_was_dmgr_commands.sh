@@ -6,6 +6,8 @@ Port=$2
 DBName=$3
 Maximos3location=$4
 DeployUtilities=$5
+WASAdminUsername=$6
+WASAdminPassword=$7
 
 
 
@@ -98,11 +100,11 @@ sh buildmaximo-xwar.sh
 
 
 # Create the DMGR profile and start the deployment manager
-sh $WAS_HOME/bin/manageprofiles.sh -create -templatePath $WAS_HOME/profileTemplates/management -hostName `hostname -f` -profileName mxDmgr01  -profilePath $WAS_HOME/profiles/mxDmgr01 -cellName mxCell01 -nodeName mxCellManager01 -enableAdminSecurity  "true" -adminUserName "wasadmin" -adminPassword "wasadmin"
+sh $WAS_HOME/bin/manageprofiles.sh -create -templatePath $WAS_HOME/profileTemplates/management -hostName `hostname -f` -profileName mxDmgr01  -profilePath $WAS_HOME/profiles/mxDmgr01 -cellName mxCell01 -nodeName mxCellManager01 -enableAdminSecurity  "true" -adminUserName "${WASAdminUsername}" -adminPassword "wasadmin"
 
 sh $WAS_HOME/profiles/mxDmgr01/bin/startManager.sh
 
-sh $WAS_HOME/profiles/mxDmgr01/bin/wsadmin.sh -lang jython -username "wasadmin" -password "wasadmin" -f /home/ec2-user/DeployApplications.py
+sh $WAS_HOME/profiles/mxDmgr01/bin/wsadmin.sh -lang jython -username "${WASAdminUsername}" -password "${WASAdminPassword}" -f /home/ec2-user/DeployApplications.py
 
 echo "Compelted admin config"
 
