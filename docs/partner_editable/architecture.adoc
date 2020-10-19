@@ -14,11 +14,11 @@ As shown in Figure 1, the Quick Start sets up the following:
 * In the public subnets:
  ** Managed network address translation (NAT) gateways to allow outbound internet access for resources in the private subnets.
  ** A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell(SSH) access to EC2 instances in public and private subnets.
- ** AWS Elastic Load Balancer to balance traffic between the IBM Maximo application servers
+ ** AWS Elastic Load Balancer to balance traffic between the {partner-product-short-name} application servers
 
 
 * In the private subnets:
 // Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram.
- ** IBM Maximo application servers deployed across two availability zones offering high availabiliy.
- ** Amazon Relational Database Service (Amazon RDS) for Oracle as the database for IBM Maximo also deployed across two availability zones.
+ ** {partner-product-short-name} application servers deployed across two availability zones offering high availabiliy.
+ ** Amazon Relational Database Service (Amazon RDS) for Oracle as the database for {partner-product-short-name} also deployed across two availability zones.
 

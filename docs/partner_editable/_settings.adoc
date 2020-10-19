@@ -4,10 +4,10 @@
 :partner-company-name: IBM
 :doc-month: October
 :doc-year: 2020
-:partner-contributors: John Doe and Jane Doe - {partner-company-name}
-:quickstart-contributors: Rajasekhar Gundugollu, Subrahmanyam Madduru, Vinod Shukla, Ranjan Banerji, Amazon Web Services
+:quickstart-contributors: Rajasekhar Gundugollu, Subrahmanyam Madduru, Vinod Shukla, and Ranjan Banerji, Amazon Web Services
 :deployment_time: 2 hours
 :default_deployment_region: us-east-1
+:parameters_as_appendix: true
 // Uncomment these two attributes if you are leveraging
 // - an AWS Marketplace listing.
 // Additional content will be auto-generated based on these attributes.
