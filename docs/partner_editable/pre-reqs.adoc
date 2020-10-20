@@ -17,7 +17,7 @@ and Oracle SQL client and JDBC driver.
 
 ==== Prepare for the deployment
 
-====== Download {partner-product-short-name} binaries and Oracle SQL client
+===== Download {partner-product-short-name} binaries and Oracle SQL client
 Download {partner-product-short-name} Asset Management V7.6.1 binaries from https://www.ibm.com/software/passportadvantage/index.html[Passport Advantage^]
 and then upload them to the S3 bucket you selected or created earlier.  The following {partner-product-short-name} files are required:
 
