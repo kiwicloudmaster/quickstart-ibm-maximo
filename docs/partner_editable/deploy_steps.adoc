@@ -25,10 +25,10 @@ NOTE: You are responsible for the cost of the AWS services used while running th
 [cols=2*]
 |===
 ^|http://qs_launch_link[Deploy {partner-product-short-name} into a new VPC on AWS^]
-^|http://qs_template_link[View template^]
+^|https://github.com/aws-quickstart/quickstart-ibm-maximo/blob/main/templates/maximo-main.template.yaml[View template^]
 
 ^|http://qs_launch_link[Deploy {partner-product-short-name} into an existing VPC on AWS^]
-^|http://qs_template_link[View template^]
+^|https://github.com/aws-quickstart/quickstart-ibm-maximo/blob/main/templates/maximo.template.yaml[View template^]
 |===
 
 WARNING: If you’re deploying {partner-product-short-name} into an existing VPC, make sure that your VPC has two private subnets in different Availability Zones for the workload instances, and that the subnets aren’t shared. This Quick Start doesn’t support https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html[shared subnets^]. These subnets require https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html[NAT gateways^] in their route tables, to allow the instances to download packages and software without exposing them to the internet.
