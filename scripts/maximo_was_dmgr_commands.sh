@@ -100,7 +100,7 @@ sh buildmaximo-xwar.sh
 
 
 # Create the DMGR profile and start the deployment manager
-sh $WAS_HOME/bin/manageprofiles.sh -create -templatePath $WAS_HOME/profileTemplates/management -hostName `hostname -f` -profileName mxDmgr01  -profilePath $WAS_HOME/profiles/mxDmgr01 -cellName mxCell01 -nodeName mxCellManager01 -enableAdminSecurity  "true" -adminUserName "${WASAdminUsername}" -adminPassword "wasadmin"
+sh $WAS_HOME/bin/manageprofiles.sh -create -templatePath $WAS_HOME/profileTemplates/management -hostName `hostname -f` -profileName mxDmgr01  -profilePath $WAS_HOME/profiles/mxDmgr01 -cellName mxCell01 -nodeName mxCellManager01 -enableAdminSecurity  "true" -adminUserName "${WASAdminUsername}" -adminPassword "${WASAdminPassword}"
 
 sh $WAS_HOME/profiles/mxDmgr01/bin/startManager.sh
 
