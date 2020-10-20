@@ -36,6 +36,8 @@ tests:
       ORAVersion: 'Standard-Edition-Two-18.0-License-Included'
       SiteDomain: ''
       Route53HostedZoneId:  ''
+      WASAdminUsername: wasadmin$[taskcat_genpass_4A]
+      WASAdminPassword: $[taskcat_genpass_8A]
 
     regions:
       - us-east-1

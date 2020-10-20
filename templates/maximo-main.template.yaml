@@ -181,6 +181,22 @@ Parameters:
     Description: The name of an existing public/private key pair, which allows you
       to securely connect to your instance after it launches
     Type: AWS::EC2::KeyPair::KeyName
+  WASAdminUsername:
+    Description: The user name of the WAS administrator
+    Default: wasadmin
+    Type: String
+    MinLength: '8'
+    MaxLength: '41'
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: must contain only alphanumeric characters.
+  WASAdminPassword:
+    Description: The password of the WAS administrator
+    Type: String
+    NoEcho: 'true'
+    MinLength: '8'
+    MaxLength: '41'
+    AllowedPattern: '[a-zA-Z0-9]*'
+    ConstraintDescription: must contain only alphanumeric characters.
   WASInstanceType:
     AllowedValues:
       - t2.micro
@@ -412,6 +428,8 @@ Resources:
         KeyPairName: !Ref 'KeyPairName'
         BastionAMIOS: !Ref 'BastionAMIOS'
         BastionInstanceType: !Ref 'BastionInstanceType'
+        WASAdminUsername: !Ref 'WASAdminUsername'
+        WASAdminPassword: !Ref 'WASAdminPassword'
         WASInstanceType: !Ref 'WASInstanceType'
         WASNodesDesiredCapacity: !Ref 'WASNodesDesiredCapacity'
         WASNodesMaxSize: !Ref 'WASNodesMaxSize'

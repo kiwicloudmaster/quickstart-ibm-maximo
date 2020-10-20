@@ -3,6 +3,8 @@
 # extract command-line options into variables.
 Maximos3location=$1
 DMGRAutoscalingGroup=$2
+WASAdminUsername=$3
+WASAdminPassword=$4
 
 
 
@@ -64,7 +66,7 @@ done;
 echo $dmgripaddress
 
 
-until sh $WAS_HOME/profiles/mxClusterAppSrv/bin/addNode.sh $dmgripaddress 8879 -username wasadmin -password wasadmin -noagent
+until sh $WAS_HOME/profiles/mxClusterAppSrv/bin/addNode.sh $dmgripaddress 8879 -username ${WASAdminUsername} -password ${WASAdminPassword} -noagent
 do
   sleep 5
 done
@@ -75,11 +77,11 @@ sh $WAS_HOME/profiles/mxClusterAppSrv/bin/startNode.sh
 sed -i "s/node_name/$nodeName/" /home/ec2-user/CreateAppServer.py
 
 
-sh $WAS_HOME/profiles/mxClusterAppSrv/bin/wsadmin.sh -lang jython -username "wasadmin" -password "wasadmin" -f /home/ec2-user/CreateAppServer.py
+sh $WAS_HOME/profiles/mxClusterAppSrv/bin/wsadmin.sh -lang jython -username "${WASAdminUsername}" -password "${WASAdminPassword}" -f /home/ec2-user/CreateAppServer.py
 sleep 10
 # restarting the app server
-sh $WAS_HOME/profiles/mxClusterAppSrv/bin/wsadmin.sh -lang jython -username "wasadmin" -password "wasadmin" -c "AdminControl.stopServer('appserver', '$nodeName', 'immediate')"
-sh $WAS_HOME/profiles/mxClusterAppSrv/bin/wsadmin.sh -lang jython -username "wasadmin" -password "wasadmin" -c "AdminControl.startServer('appserver', '$nodeName')"
+sh $WAS_HOME/profiles/mxClusterAppSrv/bin/wsadmin.sh -lang jython -username "${WASAdminUsername}" -password "${WASAdminPassword}" -c "AdminControl.stopServer('appserver', '$nodeName', 'immediate')"
+sh $WAS_HOME/profiles/mxClusterAppSrv/bin/wsadmin.sh -lang jython -username "${WASAdminUsername}" -password "${WASAdminPassword}" -c "AdminControl.startServer('appserver', '$nodeName')"
 
 
 
