@@ -286,9 +286,9 @@ Parameters:
     Description: Endpoint port number of the primary database
     Type: String
   MaximoFilesLocation:
-    Description: Provide the S3 location of the downloaded Oracle client files.
-      E.g., s3://ibm-fncm-assets/oracle_client_files
-      Refer to the deployment guide for more information on downloading the client files and obtaining the location
+    Description: Provide the S3 location of the downloaded Maximo, WAS, and Oracle client files (do not include the s3:// and the trailing forward slash).
+      E.g., if the location is "s3://ibm-maximo-assets/instllation_files", then enter "ibm-maximo-assets/instllation_files".
+      Refer to the deployment guide for more information on downloading the client files and obtaining the location.
     Type: String
   OracleServerAccessSecurityGroup:
     Description: ID of the bastion host security group to enable SSH connections (e.g.,
