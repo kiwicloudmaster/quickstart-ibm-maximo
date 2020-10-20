@@ -33,9 +33,9 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|ARN of ACM certificate for Application Load Balancer
-(`ALBSSLCertificateARN`)|`__Optional__`|[Optional] The ARN of the SSL certificate to be used for the Application Load Balancer|Maximo site domain
-(`SiteDomain`)|`__Optional__`|[Optional] Domain name of the maximo site. e.g. maximo.example.com. Valid FQDN required when using SSL.|Route 53 hosted zone ID
-(`Route53HostedZoneId`)|`__Optional__`|[Optional] Route53 hosted zone ID where DNS record for Maximo will be added.
+(`ALBSSLCertificateARN`)|`**__Blank string__**`|[Optional] The ARN of the SSL certificate to be used for the Application Load Balancer|Maximo site domain
+(`SiteDomain`)|`**__Blank string__**`|[Optional] Domain name of the maximo site. e.g. maximo.example.com. Valid FQDN required when using SSL.|Route 53 hosted zone ID
+(`Route53HostedZoneId`)|`**__Blank string__**`|[Optional] Route53 hosted zone ID where DNS record for Maximo will be added.
 |===
 .Maximo files location
 [width="100%",cols="16%,11%,73%",options="header",]
