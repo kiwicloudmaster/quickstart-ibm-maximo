@@ -3,29 +3,31 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|VPC ID
-(`VPCID`)|`**__Requires input__**`|ID of your existing VPC for deployment|Private subnet 1 ID
-(`PrivateSubnet1ID`)|`**__Requires input__**`|ID of private subnet 1 in Availability Zone 1 for the WAS (e.g., subnet-a0246dcd)|Private subnet 2 ID
-(`PrivateSubnet2ID`)|`**__Requires input__**`|ID of private subnet 2 in Availability Zone 2 for the WAS (e.g., subnet-b1f432cd)|Public subnet 1 ID
-(`PublicSubnet1ID`)|`**__Requires input__**`|ID of public subnet 1 in Availability Zone 1 for the ELB load balancer (e.g., subnet-9bc642ac)|Public subnet 2 ID
-(`PublicSubnet2ID`)|`**__Requires input__**`|ID of public subnet 2 in Availability Zone 2 for the ELB load balancer (e.g., subnet-e3246d8e)|Bastion external access CIDR
+(`VPCID`)|`**__Requires input__**`|ID of your existing VPC for deployment.|Private subnet 1 ID
+(`PrivateSubnet1ID`)|`**__Requires input__**`|ID of private subnet 1 in Availability Zone 1 for the WAS (e.g., subnet-a0246dcd).|Private subnet 2 ID
+(`PrivateSubnet2ID`)|`**__Requires input__**`|ID of private subnet 2 in Availability Zone 2 for the WAS (e.g., subnet-b1f432cd).|Public subnet 1 ID
+(`PublicSubnet1ID`)|`**__Requires input__**`|ID of public subnet 1 in Availability Zone 1 for the ELB load balancer (e.g., subnet-9bc642ac).|Public subnet 2 ID
+(`PublicSubnet2ID`)|`**__Requires input__**`|ID of public subnet 2 in Availability Zone 2 for the ELB load balancer (e.g., subnet-e3246d8e).|Bastion external access CIDR
 (`RemoteAccessCIDR`)|`**__Requires input__**`|The CIDR IP range that is permitted to access the bastions. We recommend that you set this value to a trusted IP range.
 |===
 .Bastion host configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|Key pair name
-(`KeyPairName`)|`**__Requires input__**`|The name of an existing public/private key pair, which allows you to securely connect to your instance after it launches|Bastion AMI operating system
-(`BastionAMIOS`)|`Amazon-Linux2-HVM`|The Linux distribution for the AMI to be used for the bastion instances|Bastion instance type
-(`BastionInstanceType`)|`t2.micro`|Amazon EC2 instance type for the bastion instances
+(`KeyPairName`)|`**__Requires input__**`|The name of an existing public/private key pair, which allows you to securely connect to your instance after it launches.|Bastion AMI operating system
+(`BastionAMIOS`)|`Amazon-Linux2-HVM`|The Linux distribution for the AMI to be used for the bastion instances.|Bastion instance type
+(`BastionInstanceType`)|`t2.micro`|Amazon EC2 instance type for the bastion instances.
 |===
 .WAS nodes configuration
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
-|Parameter label (name) |Default value|Description|WAS server instance type
-(`WASInstanceType`)|`m5.xlarge`|EC2 instance type for the WAS instances|WAS nodes min size
-(`WASNodesMinSize`)|`2`|The minimum size of the Auto Scaling group|WAS nodes max size
-(`WASNodesMaxSize`)|`4`|The maximum size of the Auto Scaling group|WAS nodes desired capacity
-(`WASNodesDesiredCapacity`)|`2`|The desired capacity for the WAS nodes Auto Scaling group|Maximo web excess CIDR
+|Parameter label (name) |Default value|Description|WAS admin user name
+(`WASAdminUsername`)|`wasadmin`|The user name of the WAS administrator, must be between 8-41 alphanumeric characters.|WAS admin password
+(`WASAdminPassword`)|`**__Requires input__**`|The password of the WAS administrator, must be between 8-41 alphanumeric characters.|WAS server instance type
+(`WASInstanceType`)|`m5.xlarge`|EC2 instance type for the WAS instances.|WAS nodes min size
+(`WASNodesMinSize`)|`2`|The minimum size of the Auto Scaling group.|WAS nodes max size
+(`WASNodesMaxSize`)|`4`|The maximum size of the Auto Scaling group.|WAS nodes desired capacity
+(`WASNodesDesiredCapacity`)|`2`|The desired capacity for the WAS nodes Auto Scaling group.|Maximo web excess CIDR
 (`WebAccessCIDR`)|`**__Requires input__**`|The CIDR IP range that is permitted to access the Maximo URL. We recommend that you set this value to a trusted IP range.|Deploy utilities modules
 (`DeployUtilities`)|`No`|Choose Yes to deploy utilities modules.
 |===
@@ -33,7 +35,7 @@
 [width="100%",cols="16%,11%,73%",options="header",]
 |===
 |Parameter label (name) |Default value|Description|ARN of ACM certificate for Application Load Balancer
-(`ALBSSLCertificateARN`)|`**__Blank string__**`|[Optional] The ARN of the SSL certificate to be used for the Application Load Balancer|Maximo site domain
+(`ALBSSLCertificateARN`)|`**__Blank string__**`|[Optional] The ARN of the SSL certificate to be used for the Application Load Balancer.|Maximo site domain
 (`SiteDomain`)|`**__Blank string__**`|[Optional] Domain name of the maximo site. e.g. maximo.example.com. Valid FQDN required when using SSL.|Route 53 hosted zone ID
 (`Route53HostedZoneId`)|`**__Blank string__**`|[Optional] Route53 hosted zone ID where DNS record for Maximo will be added.
 |===
