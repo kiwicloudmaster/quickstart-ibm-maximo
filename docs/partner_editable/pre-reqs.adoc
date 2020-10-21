@@ -2,12 +2,35 @@
 
 ==== Prepare your AWS account
 
-_Describe any setup required in the AWS account prior to template launch_
+===== Key pair
+Make sure that at least one Amazon EC2 key pair exists in your AWS account in the
+Region where you are planning to deploy the Quick Start. Make note of the key pair
+name. You are prompted for this information during deployment. To create a key pair,
+follow the instructions in the AWS documentation.
+If you deploy the Quick Start for testing or proof-of-concept purposes, we recommend
+that you create a new key pair instead of specifying a key pair that’s already being used
+by a production instance.
 
-==== Prepare your {partner-company-name} account
-
-_Describe any setup required in the partner portal/account prior to template launch_
+===== Amazon S3 bucket
+Choose an existing S3 bucket or create a new one to store the prerequisite {partner-product-short-name} binaries
+and Oracle SQL client and JDBC driver.
 
 ==== Prepare for the deployment
 
-_Describe any preparation required to complete the product build, such as obtaining licenses or placing files in S3_
+===== Download {partner-product-short-name} binaries and Oracle SQL client
+Download {partner-product-short-name} Asset Management V7.6.1 binaries from https://www.ibm.com/software/passportadvantage/index.html[Passport Advantage^]
+and then upload them to the S3 bucket you selected or created earlier.  The following {partner-product-short-name} files are required:
+
+ . IBM Enterprise Deployment (formerly known as IBM Installation Manager) binaries: IED_V1.8.8_Wins_Linux_86.zip
+ . {partner-product-short-name} Asset Management V7.6.1 binaries: MAM_7.6.1.0_LINUX64.tar.gz
+ . IBM WebSphere Application Server traditional V9 binaries: WAS_ND_V9.0_MP_ML.zip
+ . IBM Java SDK V8 binaries:
+  .. was.repo.9000.java8_part1.zip
+  .. was.repo.9000.java8_part2.zip
+  .. was.repo.9000.java8_part3.zip
+ . {partner-product-short-name} Utilities module binaries: MAXIMO_UTILITIES_7.6_MP_ML.zip
+ . Oracle sqlplus instant client:
+  .. instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip
+  .. instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip
+
+NOTE: Make sure you upload all the required files to the same prefix in the S3 bucket.
