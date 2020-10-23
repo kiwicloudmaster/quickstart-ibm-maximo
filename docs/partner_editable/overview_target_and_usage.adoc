@@ -6,4 +6,4 @@ This Quick Start reference deployment guide provides step-by-step instructions f
 spanning multiple Availability Zones for high availability.
 
 This Quick Start is for those who want to use Amazon Elastic Compute Cloud (Amazon EC2), Amazon Relational Database Service (RDS) for Oracle, and AWS CloudFormation to launch 
-{partner-product-short-name} base or with the Energy and Utlities extension.
+{partner-product-short-name} base or with the Energy and Utilities extension.
