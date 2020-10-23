@@ -2,40 +2,14 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-{partner-product-short-name} Asset Management is the world’s leading Enterprise Asset Management (EAM) product, providing clients with a comprehensive business solution for physical asset management.
-This flexible solution provides a unified, service oriented architecture (SOA) platform that delivers asset lifecycle and maintenance management from end-to-end, across the enterprise.
+This {partner-product-short-name} Quick Start uses a range of AWS services and features, including:
 
-{partner-product-short-name} for Utilities supports work and asset management for organizations focused on the transmission and distribution of water, gas and electric utilities.
-
-=== Key Benefits
-* Increased visibility into operations
-* Increase asset availability
-* Improve operational efficiencies
-* Improve asset management portfolio decisions
-* Improve work planning, scheduling and work execution
-* Improve responsiveness to customer requirements
-* Application consolidation and transparency of information
-* Application interoperability across the enterprise supported by the Maximo Integration Framework (MIF)
-* Improve asset reliability, productivity and safety
-
-=== Key Capabilities
-* Helps increase asset and resource effectiveness by providing a platform to support all types of asset classes and all types of work in water, gas and electric utilities
-* Creates detailed estimates with Compatible Unit Estimating (CUE) and a multilevel compatible unit library
-* Manages crew type and crew makeup, while tracking labor skills and certifications
-* Integrates work and asset management functionalities on a modern platform, including supply chain management, contact management, and SLA
-* Supports smart grids by tracking smart meters and new asset types, such as head-end equipment
-* Supports Regulatory Tracking and Reporting - NERC/CIP - by identifying critical assets and work orders associated with regulatory requirements
-* Receives meter alarms from MDMs via web services interfaces
-* Includes Maximo Spatial to support map-based user interfaces built on ESRI ArcGIS technology, which can interoperate with other GIS systems
-
-{partner-product-short-name} quick start uses a range of AWS services and features, including:
-
-- Security groups
-- Amazon EC2
-- Amazon EBS storage
-- Amazon RDS
-- AWS CloudFormation
-- Elastic Load Balancing
+* Security groups
+* Amazon EC2
+* Amazon EBS storage
+* Amazon RDS
+* AWS CloudFormation
+* Elastic Load Balancing (ELB)
 
 After deployment, {partner-product-short-name} can be configured and extended to your specific business applications and processes.
 For more information about Asset Management with {partner-product-short-name}, please visit https://www.ibm.com/products/maximo/asset-management[Asset management with Maximo^].
