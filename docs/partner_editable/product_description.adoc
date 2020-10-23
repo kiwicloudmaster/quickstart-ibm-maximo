@@ -2,25 +2,6 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-
-{partner-product-short-name} enterprise asset management (EAM) is crucial to obtaining the insights and visibility needed to maintain and control intelligent assets and equipment.
-Reimagine your operations with EAM solutions designed to optimize the quality and utilization of your assets throughout their lifecycle, increase 
-productive uptime through preventative and predictive maintenance, drive efficiency, and reduce operating costs.
-
-{partner-product-short-name} Application Suite helps drive operational resiliency and reliability with condition-based asset maintenance. With expanded access to computerized maintenance management systems (CMMS), EAM, and asset performance management (APM) applications, your teams can reach across the enterprise to unify operations and maintain business continuity, even under rapidly 
-changing or disruptive conditions.
-
-=== Key capabilities of Maximo Application Suite:
-
-* Integrated suite of applications
-* Simplified licensing, including single contract and pricing metric
-* Comprehensive view of your assets
-
-=== APM for Energy and Utilities
-
-Get a detailed, accurate understanding of historical and current asset and network performance through data integration, analytics, and visualization, to enhance 
-performance management, situational awareness, investment planning, and connectivity model verification.
-
 This {partner-product-short-name} Quick Start uses a range of AWS services and features, including:
 
 * Security groups
@@ -30,4 +11,6 @@ This {partner-product-short-name} Quick Start uses a range of AWS services and f
 * AWS CloudFormation
 * Elastic Load Balancing (ELB)
 
-After deployment, you can configure and extend {partner-product-short-name} for your specific business applications and use cases. For more information about {partner-product-short-name}, see https://www.ibm.com/products/maximo[{partner-product-short-name} Application Suite^].
+After deployment, {partner-product-short-name} can be configured and extended to your specific business applications and processes.
+For more information about Asset Management with {partner-product-short-name}, please visit https://www.ibm.com/products/maximo/asset-management[Asset management with Maximo^].
+For more information about other {partner-product-short-name} offerings, please visit https://www.ibm.com/products/maximo[{partner-product-short-name} Application Suite^].
