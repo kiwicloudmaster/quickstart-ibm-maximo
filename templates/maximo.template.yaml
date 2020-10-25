@@ -39,7 +39,7 @@ Metadata:
           - WASNodesMaxSize
           - WASNodesDesiredCapacity
           - WebAccessCIDR
-          - DeployUtilities
+          - DeployModules
       - Label:
           default: SSL configuration
         Parameters:
@@ -94,8 +94,8 @@ Metadata:
         default: WAS nodes min size
       WebAccessCIDR:
         default: Maximo web excess CIDR
-      DeployUtilities:
-        default: Deploy utilities modules
+      DeployModules:
+        default: Deploy Maximo modules
       # Oracle RDS Parameters
       ORAVersion:
         default: Oracle database version
@@ -258,13 +258,17 @@ Parameters:
     Description: The CIDR IP range that is permitted to access the Maximo URL. We recommend
       that you set this value to a trusted IP range.
     Type: String
-  DeployUtilities:
+  DeployModules:
     AllowedValues:
-      - 'Yes'
-      - 'No'
-    ConstraintDescription: Choose Yes to deploy utilities modules
-    Default: 'No'
-    Description: Choose Yes to deploy utilities modules.
+      - 'Core'
+      - 'HSE'
+      - 'Nuclear'
+      - 'Scheduler'
+      - 'Transportation'
+      - 'Utilities'
+    ConstraintDescription: Choose the IBM Maximo module to deploy.
+    Default: 'Core'
+    Description: Choose the IBM Maximo module to deploy.
     Type: String
   PrivateSubnet1ID:
     Description: ID of private subnet 1 in Availability Zone 1 for the WAS (e.g.,
@@ -467,7 +471,7 @@ Resources:
         WASAdminUsername: !Ref 'WASAdminUsername'
         WASAdminPassword: !Ref 'WASAdminPassword'
         WASInstanceType: !Ref 'WASInstanceType'
-        DeployUtilities:  !Ref 'DeployUtilities'
+        DeployModules:  !Ref 'DeployModules'
         WASNodesDesiredCapacity: !Ref 'WASNodesDesiredCapacity'
         WASNodesMaxSize: !Ref 'WASNodesMaxSize'
         WASNodesMinSize: !Ref 'WASNodesMinSize'
