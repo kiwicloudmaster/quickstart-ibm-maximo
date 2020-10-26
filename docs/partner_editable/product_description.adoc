@@ -6,11 +6,13 @@ This {partner-product-short-name} Quick Start uses a range of AWS services and f
 
 * Security groups
 * Amazon EC2
-* Amazon EBS storage
+* Amazon Elastic Block Store (Amazon EBS)
 * Amazon RDS
 * AWS CloudFormation
 * Elastic Load Balancing (ELB)
 
-After deployment, {partner-product-short-name} can be configured and extended to your specific business applications and processes.
-For more information about Asset Management with {partner-product-short-name}, please visit https://www.ibm.com/products/maximo/asset-management[Asset management with Maximo^].
-For more information about other {partner-product-short-name} offerings, please visit https://www.ibm.com/products/maximo[{partner-product-short-name} Application Suite^].
+After deployment, you can configure and extend {partner-product-short-name} to your specific business applications and processes.
+
+For more information about asset management with {partner-product-short-name}, see https://www.ibm.com/products/maximo/asset-management[Asset management with Maximo^].
+
+For more information about other {partner-product-short-name} offerings, see https://www.ibm.com/products/maximo[{partner-product-short-name} Application Suite^].
