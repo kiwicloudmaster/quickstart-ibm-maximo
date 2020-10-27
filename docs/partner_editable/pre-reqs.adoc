@@ -7,8 +7,7 @@ Make sure that at least one Amazon EC2 key pair exists in your AWS account in th
 Region where you are planning to deploy the Quick Start. Make note of the key pair
 name. You are prompted for this information during deployment. To create a key pair,
 follow the instructions in the AWS documentation.
-If you deploy the Quick Start for testing or proof-of-concept purposes, we recommend
-that you create a new key pair instead of specifying a key pair that’s already being used
+If you deploy the Quick Start for testing or proof-of-concept purposes, create a new key pair instead of specifying a key pair that’s already being used
 by a production instance.
 
 ===== Amazon S3 bucket
@@ -19,7 +18,7 @@ and Oracle SQL client and JDBC driver.
 
 ===== Download {partner-product-short-name} binaries and Oracle SQL client
 Download {partner-product-short-name} Asset Management V7.6.1 binaries from https://www.ibm.com/software/passportadvantage/index.html[Passport Advantage^]
-and then upload them to the S3 bucket you selected or created earlier.  The following {partner-product-short-name} files are required:
+and then upload them to the S3 bucket you selected or created earlier. The following {partner-product-short-name} files are required:
 
  . IBM Enterprise Deployment (formerly known as IBM Installation Manager) binaries: IED_V1.8.8_Wins_Linux_86.zip
  . {partner-product-short-name} Asset Management V7.6.1 binaries: MAM_7.6.1.0_LINUX64.tar.gz

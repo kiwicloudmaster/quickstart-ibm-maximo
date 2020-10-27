@@ -790,12 +790,7 @@ p.footer-text a{color:#d7d8d8}
 <div id="toctitle"></div>
 <ul class="sectlevel1">
 <li><a href="#_overview">Overview</a></li>
-<li><a href="#_ibm_maximo_on_aws">IBM Maximo on AWS</a>
-<ul class="sectlevel2">
-<li><a href="#_key_benefits">Key Benefits</a></li>
-<li><a href="#_key_capabilities">Key Capabilities</a></li>
-</ul>
-</li>
+<li><a href="#_ibm_maximo_on_aws">IBM Maximo on AWS</a></li>
 <li><a href="#_cost">Cost</a></li>
 <li><a href="#_software_licenses">Software licenses</a></li>
 <li><a href="#_architecture">Architecture</a></li>
@@ -814,7 +809,7 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#_test_the_deployment">Test the deployment</a></li>
 <li><a href="#_post_deployment_steps">Post deployment steps</a></li>
 <li><a href="#_best_practices_for_using_ibm_maximo_on_aws">Best practices for using IBM Maximo on AWS</a></li>
-<li><a href="#_faq">FAQ</a></li>
+<li><a href="#_frequently_asked_questions">Frequently Asked Questions</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a>
 <ul class="sectlevel2">
 <li><a href="#_parameters_for_deploying_into_a_new_vpc">Parameters for deploying into a new VPC</a></li>
@@ -839,7 +834,7 @@ p.footer-text a{color:#d7d8d8}
 </div>
 </div>
 <div class="paragraph text-center">
-<p><strong>October 2020</strong><br>
+<p><strong>November 2020</strong><br>
 <em>Rajasekhar Gundugollu, Subrahmanyam Madduru, Vinod Shukla, and Ranjan Banerji, Amazon Web Services</em></p>
 </div>
 <div class="admonitionblock tip text-left">
@@ -864,12 +859,10 @@ report bugs, or submit feature ideas for this Quick Start.
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This Quick Start reference deployment guide provides step-by-step instructions for deploying IBM Maximo on the AWS Cloud into a virtual private cloud (VPC)
-spanning multiple Availability Zones for high availability.</p>
+<p>This Quick Start reference deployment guide provides step-by-step instructions for deploying IBM Maximo on the AWS Cloud into a virtual private cloud (VPC) spanning multiple Availability Zones for high availability.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start is for those who want to use Amazon Elastic Compute Cloud (Amazon EC2), Amazon Relational Database Service (RDS) for Oracle, and AWS CloudFormation to launch
-IBM Maximo base or with the Energy and Utlities extension.</p>
+<p>This Quick Start is for those who want to use Amazon Elastic Compute Cloud (Amazon EC2), Amazon Relational Database Service (RDS) for Oracle, and AWS CloudFormation to launch IBM Maximo base or with the Energy and Utilities extension.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -878,9 +871,7 @@ IBM Maximo base or with the Energy and Utlities extension.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Amazon may share who uses AWS
-Quick Starts with the AWS Partner Network (APN) Partner that
-collaborated with AWS on the content of the Quick Start.
+Amazon may share user-deployment information with the AWS Partner that collaborated with AWS on the Quick Start.
 </td>
 </tr>
 </table>
@@ -891,78 +882,7 @@ collaborated with AWS on the content of the Quick Start.
 <h2 id="_ibm_maximo_on_aws">IBM Maximo on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>IBM Maximo Asset Management is the world’s leading Enterprise Asset Management (EAM) product, providing clients with a comprehensive business solution for physical asset management.
-This flexible solution provides a unified, service oriented architecture (SOA) platform that delivers asset lifecycle and maintenance management from end-to-end, across the enterprise.</p>
-</div>
-<div class="paragraph">
-<p>IBM Maximo for Utilities supports work and asset management for organizations focused on the transmission and distribution of water, gas and electric utilities.</p>
-</div>
-<div class="sect2">
-<h3 id="_key_benefits">Key Benefits</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Increased visibility into operations</p>
-</li>
-<li>
-<p>Increase asset availability</p>
-</li>
-<li>
-<p>Improve operational efficiencies</p>
-</li>
-<li>
-<p>Improve asset management portfolio decisions</p>
-</li>
-<li>
-<p>Improve work planning, scheduling and work execution</p>
-</li>
-<li>
-<p>Improve responsiveness to customer requirements</p>
-</li>
-<li>
-<p>Application consolidation and transparency of information</p>
-</li>
-<li>
-<p>Application interoperability across the enterprise supported by the Maximo Integration Framework (MIF)</p>
-</li>
-<li>
-<p>Improve asset reliability, productivity and safety</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_key_capabilities">Key Capabilities</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Helps increase asset and resource effectiveness by providing a platform to support all types of asset classes and all types of work in water, gas and electric utilities</p>
-</li>
-<li>
-<p>Creates detailed estimates with Compatible Unit Estimating (CUE) and a multilevel compatible unit library</p>
-</li>
-<li>
-<p>Manages crew type and crew makeup, while tracking labor skills and certifications</p>
-</li>
-<li>
-<p>Integrates work and asset management functionalities on a modern platform, including supply chain management, contact management, and SLA</p>
-</li>
-<li>
-<p>Supports smart grids by tracking smart meters and new asset types, such as head-end equipment</p>
-</li>
-<li>
-<p>Supports Regulatory Tracking and Reporting - NERC/CIP - by identifying critical assets and work orders associated with regulatory requirements</p>
-</li>
-<li>
-<p>Receives meter alarms from MDMs via web services interfaces</p>
-</li>
-<li>
-<p>Includes Maximo Spatial to support map-based user interfaces built on ESRI ArcGIS technology, which can interoperate with other GIS systems</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>IBM Maximo quick start uses a range of AWS services and features, including:</p>
+<p>This IBM Maximo Quick Start uses a range of AWS services and features, including:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -973,7 +893,7 @@ This flexible solution provides a unified, service oriented architecture (SOA) p
 <p>Amazon EC2</p>
 </li>
 <li>
-<p>Amazon EBS storage</p>
+<p>Amazon Elastic Block Store (Amazon EBS)</p>
 </li>
 <li>
 <p>Amazon RDS</p>
@@ -982,15 +902,18 @@ This flexible solution provides a unified, service oriented architecture (SOA) p
 <p>AWS CloudFormation</p>
 </li>
 <li>
-<p>Elastic Load Balancing</p>
+<p>Elastic Load Balancing (ELB)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>After deployment, IBM Maximo can be configured and extended to your specific business applications and processes.
-For more information about Asset Management with IBM Maximo, please visit <a href="https://www.ibm.com/products/maximo/asset-management" target="_blank" rel="noopener">Asset management with Maximo</a>.
-For more information about other IBM Maximo offerings, please visit <a href="https://www.ibm.com/products/maximo" target="_blank" rel="noopener">IBM Maximo Application Suite</a>.</p>
+<p>After deployment, you can configure and extend IBM Maximo to your specific business applications and processes.</p>
 </div>
+<div class="paragraph">
+<p>For more information about asset management with IBM Maximo, see <a href="https://www.ibm.com/products/maximo/asset-management" target="_blank" rel="noopener">Asset management with Maximo</a>.</p>
+</div>
+<div class="paragraph">
+<p>For more information about other IBM Maximo offerings, see <a href="https://www.ibm.com/products/maximo" target="_blank" rel="noopener">IBM Maximo Application Suite</a>.</p>
 </div>
 </div>
 </div>
@@ -1026,15 +949,13 @@ After you deploy the Quick Start, <a href="https://docs.aws.amazon.com/awsaccoun
 <h2 id="_software_licenses">Software licenses</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><em>This Quick Start requires licenses for IBM Maximo.  If you already own licenses for IBM Maximo, you can use the Bring Your
-Own License model (BYOL).</em></p>
+<p>This Quick Start requires licenses for IBM Maximo. If you already own licenses for IBM Maximo, you can use the Bring Your Own License (BYOL) model.</p>
 </div>
 <div class="paragraph">
-<p>Otherwise, purchase IBM Maximo licenses from <a href="https://www.ibm.com/software/passportadvantage/index.html" target="_blank" rel="noopener">Passport Advantage</a> or an <a href="https://www.ibm.com/products/maximo" target="_blank" rel="noopener">IBM representative</a>. For assistance with Passport Advantage, see the <a href="https://www.ibm.com/software/passportadvantage/pao_customer.html" target="_blank" rel="noopener">Passport Advantage Online for customers</a>.</p>
+<p>Otherwise, purchase IBM Maximo licenses from <a href="https://www.ibm.com/software/passportadvantage/index.html" target="_blank" rel="noopener">Passport Advantage</a> or an <a href="https://www.ibm.com/products/maximo" target="_blank" rel="noopener">IBM representative</a>. For assistance with Passport Advantage, see <a href="https://www.ibm.com/software/passportadvantage/pao_customer.html" target="_blank" rel="noopener">Passport Advantage Online for customers</a>.</p>
 </div>
 <div class="paragraph">
-<p>The Quick Start templates provision an Oracle database instance using the License Included service model. Information about the costs associated with this
-service model is available at <a href="https://docs.aws.amazon.com/whitepapers/latest/oracle-database-aws-best-practices/oracle-licensing-considerations.html" target="_blank" rel="noopener">Oracle Licensing Considerations</a>.</p>
+<p>The Quick Start templates provision an Oracle database instance using the License Included service model. Information about the costs associated with this service model is available at <a href="https://docs.aws.amazon.com/whitepapers/latest/oracle-database-aws-best-practices/oracle-licensing-considerations.html" target="_blank" rel="noopener">Oracle Licensing Considerations</a>.</p>
 </div>
 </div>
 </div>
@@ -1043,13 +964,13 @@ service model is available at <a href="https://docs.aws.amazon.com/whitepapers/l
 <div class="sectionbody">
 <div class="paragraph">
 <p>Deploying this Quick Start for a new virtual private cloud (VPC) with
-default parameters builds the following <em>IBM Maximo</em> environment in the AWS Cloud.</p>
+default parameters builds the following IBM Maximo environment in the AWS Cloud.</p>
 </div>
 <div id="architecture1" class="imageblock">
 <div class="content">
-<a class="image" href="images/architecture_diagram.png"><img src="images/architecture_diagram.png" alt="Architecture" width="648" height="439"></a>
+<a class="image" href="images/maximo-architecture-diagram.png"><img src="images/maximo-architecture-diagram.png" alt="Architecture" width="648" height="439"></a>
 </div>
-<div class="title">Figure 1. Quick Start architecture for <em>IBM Maximo</em> on AWS</div>
+<div class="title">Figure 1. Quick Start architecture for IBM Maximo on AWS</div>
 </div>
 <div class="paragraph">
 <p>As shown in Figure 1, the Quick Start sets up the following:</p>
@@ -1070,10 +991,10 @@ default parameters builds the following <em>IBM Maximo</em> environment in the A
 <p>Managed network address translation (NAT) gateways to allow outbound internet access for resources in the private subnets.</p>
 </li>
 <li>
-<p>A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell(SSH) access to EC2 instances in public and private subnets.</p>
+<p>A Linux bastion host in an Auto Scaling group to allow inbound Secure Shell (SSH) access to EC2 instances in public and private subnets.</p>
 </li>
 <li>
-<p>AWS Elastic Load Balancer to balance traffic between the IBM Maximo application servers</p>
+<p>Elastic Load Balancing (ELB) to balance traffic between the IBM Maximo application servers.</p>
 </li>
 </ul>
 </div>
@@ -1083,21 +1004,24 @@ default parameters builds the following <em>IBM Maximo</em> environment in the A
 <div class="ulist">
 <ul>
 <li>
-<p>IBM Maximo application servers deployed across two Availability Zones offering high availability.</p>
+<p>IBM Maximo application servers deployed across two Availability Zones, offering high availability.</p>
 </li>
 <li>
-<p>A deployment manager in an Auto Scaling group with its desired capacity set to one instance. It is used for configuration tasks during deployment and manages application servers.</p>
+<p>A deployment manager in an Auto Scaling group used for configuring tasks during deployment and managing application servers. The desired capacity should be set to one instance.</p>
 </li>
 <li>
-<p>Amazon Relational Database Service (Amazon RDS) for Oracle as the database for IBM Maximo also deployed across two Availability Zones.</p>
+<p>Amazon RDS for Oracle as the database for IBM Maximo, also deployed across two Availability Zones.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>Optionally, Amazon Route 53 as your public Domain Name System (DNS) for resolving your IBM Maximo website’s domain name.</p>
+<p>(Optional) Amazon Route 53 as your public Domain Name System (DNS) for resolving your IBM Maximo website’s domain name.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>*The template that deploys the Quick Start into an existing VPC skips the components marked by asterisks and prompts you for your existing VPC configuration.</p>
 </div>
 </div>
 </div>
@@ -1134,9 +1058,9 @@ Cloud.</p>
 <p>Before you launch the Quick Start, your account must be configured as specified in the following table. Otherwise, deployment might fail.</p>
 </div>
 <div class="sect3">
-<h4 id="_resource_limits">Resource limits</h4>
+<h4 id="_resource_quotas">Resource quotas</h4>
 <div class="paragraph">
-<p>If necessary, request <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">service quota increases</a> for the following resources. You might need to request increases if your existing deployment currently uses these resources, and this Quick Start deployment could result in exceeding the default quotas. The <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">Service Quotas console</a> displays your usage and quotas for some aspects of some services. For more information, see the <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html" target="_blank" rel="noopener">AWS documentation</a>.</p>
+<p>If necessary, request <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">service quota increases</a> for the following resources. You might need to request increases if your existing deployment currently uses these resources and if this Quick Start deployment could result in exceeding the default quotas. The <a href="https://console.aws.amazon.com/servicequotas/home?region=us-east-2#!/" target="_blank" rel="noopener">Service Quotas console</a> displays your usage and quotas for some aspects of some services. For more information, see <a href="https://docs.aws.amazon.com/servicequotas/latest/userguide/intro.html" target="_blank" rel="noopener">What is Service Quotas?</a> and <a href="https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html" target="_blank" rel="noopener">AWS service quotas</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1258,7 +1182,7 @@ Cloud.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Also the following AWS GovCloud regions are supported by this Quick Start.</p>
+<p>Also the following AWS GovCloud Regions are supported by this Quick Start.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1286,7 +1210,7 @@ Certain Regions are available on an opt-in basis. See <a href="https://docs.aws.
 <div class="sect3">
 <h4 id="_ec2_key_pairs">EC2 key pairs</h4>
 <div class="paragraph">
-<p>Make sure that at least one <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html" target="_blank" rel="noopener">Amazon EC2 key pair</a> exists in your AWS account in the Region where you plan to deploy the Quick Start. Make note of the key pair name. You need it during deployment. To create a key pair, follow the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html" target="_blank" rel="noopener">instructions in the AWS documentation</a>.</p>
+<p>Make sure that at least one <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html" target="_blank" rel="noopener">Amazon EC2 key pair</a> exists in your AWS account in the Region where you plan to deploy the Quick Start. Make note of the key pair name. You need it during deployment. To create a key pair, see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html" target="_blank" rel="noopener">Amazon EC2 key pairs and Linux instances</a>.</p>
 </div>
 <div class="paragraph">
 <p>For testing or proof-of-concept purposes, we recommend creating a new key pair instead of using one that’s already being used by a production instance.</p>
@@ -1295,10 +1219,7 @@ Certain Regions are available on an opt-in basis. See <a href="https://docs.aws.
 <div class="sect3">
 <h4 id="_iam_permissions">IAM permissions</h4>
 <div class="paragraph">
-<p>Before launching the Quick Start, you must sign in to the AWS Management Console with <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_job-functions.html" target="_blank" rel="noopener">IAM permissions</a> for the resources that the templates deploy.</p>
-</div>
-<div class="paragraph">
-<p>The <em>AdministratorAccess</em> managed policy within IAM provides sufficient permissions, although your organization may choose to use a custom policy with more restrictions.</p>
+<p>Before launching the Quick Start, you must sign in to the AWS Management Console with IAM permissions for the resources that the templates deploy. The <em>AdministratorAccess</em> managed policy within IAM provides sufficient permissions, although your organization may choose to use a custom policy with more restrictions. For more information, see <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_job-functions.html" target="_blank" rel="noopener">AWS managed policies for job functions</a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1310,8 +1231,7 @@ Certain Regions are available on an opt-in basis. See <a href="https://docs.aws.
 Region where you are planning to deploy the Quick Start. Make note of the key pair
 name. You are prompted for this information during deployment. To create a key pair,
 follow the instructions in the AWS documentation.
-If you deploy the Quick Start for testing or proof-of-concept purposes, we recommend
-that you create a new key pair instead of specifying a key pair that’s already being used
+If you deploy the Quick Start for testing or proof-of-concept purposes, create a new key pair instead of specifying a key pair that’s already being used
 by a production instance.</p>
 </div>
 </div>
@@ -1329,7 +1249,7 @@ and Oracle SQL client and JDBC driver.</p>
 <h5 id="_download_ibm_maximo_binaries_and_oracle_sql_client">Download IBM Maximo binaries and Oracle SQL client</h5>
 <div class="paragraph">
 <p>Download IBM Maximo Asset Management V7.6.1 binaries from <a href="https://www.ibm.com/software/passportadvantage/index.html" target="_blank" rel="noopener">Passport Advantage</a>
-and then upload them to the S3 bucket you selected or created earlier.  The following IBM Maximo files are required:</p>
+and then upload them to the S3 bucket you selected or created earlier. The following IBM Maximo files are required:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1443,11 +1363,11 @@ You are responsible for the cost of the AWS services used while running this Qui
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_link" target="_blank" rel="noopener">Deploy IBM Maximo into a new VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/kKA8J" target="_blank" rel="noopener">Deploy IBM Maximo into a new VPC on AWS</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/aws-quickstart/quickstart-ibm-maximo/blob/main/templates/maximo-main.template.yaml" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://qs_launch_link" target="_blank" rel="noopener">Deploy IBM Maximo into an existing VPC on AWS</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://fwd.aws/vWGKM" target="_blank" rel="noopener">Deploy IBM Maximo into an existing VPC on AWS</a></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://github.com/aws-quickstart/quickstart-ibm-maximo/blob/main/templates/maximo.template.yaml" target="_blank" rel="noopener">View template</a></p></td>
 </tr>
 </tbody>
@@ -1465,7 +1385,7 @@ If you’re deploying IBM Maximo into an existing VPC, make sure that your VPC h
 </table>
 </div>
 <div class="paragraph">
-<p>Also, make sure that the domain name option in the DHCP options is configured as explained in the <a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_DHCP_Options.html" target="_blank" rel="noopener">Amazon VPC documentation</a>. You provide your VPC settings when you launch the Quick Start.</p>
+<p>Also, make sure that the domain name option in the DHCP options is configured as explained in <a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_DHCP_Options.html" target="_blank" rel="noopener">DHCP options sets</a> in the AWS documentation. You provide your VPC settings when you launch the Quick Start.</p>
 </div>
 <div class="paragraph">
 <p>Each deployment takes about 2 hours to complete.</p>
@@ -1473,7 +1393,7 @@ If you’re deploying IBM Maximo into an existing VPC, make sure that your VPC h
 <div class="olist arabic">
 <ol class="arabic" start="2">
 <li>
-<p>Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for IBM Maximo will be built. The template is launched in the us-east-1 Region by default.</p>
+<p>Check the AWS Region that’s displayed in the upper-right corner of the navigation bar, and change it if necessary. This is where the network infrastructure for IBM Maximo is built. The template is launched in the us-east-1 Region by default.</p>
 </li>
 </ol>
 </div>
@@ -1487,23 +1407,10 @@ If you’re deploying IBM Maximo into an existing VPC, make sure that your VPC h
 </li>
 </ol>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Unless you are customizing the Quick Start templates for your own deployment projects, we recommend that you keep the default settings for the parameters labeled <code>Quick Start S3 bucket name</code>, <code>Quick Start S3 bucket
-Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
-</td>
-</tr>
-</table>
-</div>
 <div class="olist arabic">
 <ol class="arabic" start="5">
 <li>
-<p>On the options page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you’re done, choose <strong>Next</strong>.</p>
+<p>On the <strong>Configure stack options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you’re finished, choose <strong>Next</strong>.</p>
 </li>
 <li>
 <p>On the <strong>Review</strong> page, review and confirm the template settings. Under <strong>Capabilities</strong>, select the two check boxes to acknowledge that the template creates IAM resources and might require the ability to automatically expand macros.</p>
@@ -1534,16 +1441,16 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Go to the <code>WebsiteURL</code> as shown in the <strong>Outputs</strong> tab in <a href="#cfn_outputs">Figure 2</a>.</p>
+<p>Navigate to the website URL that is as shown in the <strong>WebsiteURL</strong> row in the <strong>Outputs</strong> tab in <a href="#cfn_outputs">Figure 2</a>.</p>
 </li>
 <li>
-<p>On the IBM Maximo Enterprise Asset Management login page, enter default username/password as <code>maxadmin</code>.</p>
+<p>On the IBM Maximo Enterprise Asset Management login page, provide the default username/password as <code>maxadmin</code>.</p>
 </li>
 <li>
-<p>Once logged in, choose <strong>Help</strong> icon and then choose <strong>System Information</strong></p>
+<p>Once logged in, choose the <strong>Help</strong> icon and then choose <strong>System Information</strong>.</p>
 </li>
 <li>
-<p>In the <strong>System Information</strong> pop-up view, verify that IBM Maximo Asset Management has been successfully installed as shown in <a href="#testStep1">Figure 3</a>.</p>
+<p>In the <strong>System Information</strong> pop-up window, verify that IBM Maximo Asset Management has been successfully installed, as shown in <a href="#testStep1">Figure 3</a>:</p>
 </li>
 </ol>
 </div>
@@ -1565,14 +1472,14 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-It is recommended that you change the default password after installation.
+Be sure to change the default password after installation.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
 <p>To change the default password, choose the <strong>Profile</strong> icon and then <strong>Password Information</strong>.
-On the <strong>Password Information</strong> pop-up view as shown in <a href="#postDeployStep1">Figure 4</a>, enter a new password and choose <strong>OK</strong>.</p>
+On the <strong>Password Information</strong> pop-up window, enter a new password and choose <strong>OK</strong>, as shown in <a href="#postDeployStep1">Figure 4</a>.</p>
 </div>
 <div id="postDeployStep1" class="imageblock">
 <div class="content">
@@ -1586,18 +1493,18 @@ On the <strong>Password Information</strong> pop-up view as shown in <a href="#p
 <h2 id="_best_practices_for_using_ibm_maximo_on_aws">Best practices for using IBM Maximo on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Refer to <a href="https://www.ibm.com/support/pages/sites/default/files/inline-files/$FILE/Maximo%20Best%20Practices%20for%20System%20Performance%207.6.x.pdf" target="_blank" rel="noopener">IBM Maximo best practices for system performance</a>.</p>
+<p>See <a href="https://www.ibm.com/support/pages/sites/default/files/inline-files/$FILE/Maximo%20Best%20Practices%20for%20System%20Performance%207.6.x.pdf" target="_blank" rel="noopener">IBM Maximo best practices for system performance</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_faq">FAQ</h2>
+<h2 id="_frequently_asked_questions">Frequently Asked Questions</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><strong>Q.</strong> I encountered a <strong>CREATE_FAILED</strong> error when I launched the Quick Start.</p>
 </div>
 <div class="paragraph">
-<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, we recommend that you relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. (This setting is under <strong>Advanced</strong> in the AWS CloudFormation console, <strong>Options</strong> page.) With this setting, the stack’s state is retained and the instance is left running, so you can troubleshoot the issue. (For Windows, look at the log files in %ProgramFiles%\Amazon\EC2ConfigService and C:\cfn\log.)</p>
+<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. (This setting is under <strong>Advanced</strong> in the AWS CloudFormation console on the <strong>Options</strong> page.) With this setting, the stack’s state is retained, and the instance is left running, so you can troubleshoot the issue. (For Windows, look at the log files in %ProgramFiles%\Amazon\EC2ConfigService and C:\cfn\log.)</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1606,7 +1513,7 @@ On the <strong>Password Information</strong> pop-up view as shown in <a href="#p
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, you continue to incur AWS charges for this stack. Please make sure to delete the stack when you finish troubleshooting.
+When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, you continue to incur AWS charges for this stack. Be sure to delete the stack when you finish troubleshooting.
 </td>
 </tr>
 </table>
@@ -1618,13 +1525,26 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <p><strong>Q.</strong> I encountered a size limitation error when I deployed the AWS CloudFormation templates.</p>
 </div>
 <div class="paragraph">
-<p><strong>A.</strong> We recommend that you launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template size limitations. For more information about AWS CloudFormation quotas, see the <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html" target="_blank" rel="noopener">AWS documentation</a>.</p>
+<p><strong>A.</strong> Launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a location other than an S3 bucket, you might encounter template size limitations. For more information, see <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html" target="_blank" rel="noopener">AWS CloudFormation quotas</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_parameter_reference">Parameter reference</h2>
 <div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Unless you are customizing the Quick Start templates for your own deployment projects, we recommend that you keep the default settings for the parameters labeled <code>Quick Start S3 bucket name</code>, <code>Quick Start S3 bucket
+Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parameter settings automatically updates code references to point to a new Quick Start location. For more information, see the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">AWS Quick Start Contributor’s Guide</a>.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="_parameters_for_deploying_into_a_new_vpc">Parameters for deploying into a new VPC</h3>
 <table class="tableblock frame-all grid-all stretch">
@@ -1716,7 +1636,7 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bastion instance type
 (<code>BastionInstanceType</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t2.micro</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t3.micro</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Amazon EC2 instance type for the bastion instances.</p></td>
 </tr>
 </tbody>
@@ -1779,10 +1699,10 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the Maximo URL. We recommend that you set this value to a trusted IP range.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Deploy utilities modules
-(<code>DeployUtilities</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>No</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose Yes to deploy utilities modules.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deploy Maximo modules
+(<code>DeployModules</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Core</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose the IBM Maximo module to deploy.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2024,7 +1944,7 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bastion instance type
 (<code>BastionInstanceType</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t2.micro</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t3.micro</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Amazon EC2 instance type for the bastion instances.</p></td>
 </tr>
 </tbody>
@@ -2087,10 +2007,10 @@ When you set <strong>Rollback on failure</strong> to <strong>Disabled</strong>, 
 <td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the Maximo URL. We recommend that you set this value to a trusted IP range.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Deploy utilities modules
-(<code>DeployUtilities</code>)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>No</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose Yes to deploy utilities modules.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deploy Maximo modules
+(<code>DeployModules</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Core</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose the IBM Maximo module to deploy.</p></td>
 </tr>
 </tbody>
 </table>

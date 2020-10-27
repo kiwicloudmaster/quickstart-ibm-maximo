@@ -16,7 +16,7 @@
 |Parameter label (name) |Default value|Description|Key pair name
 (`KeyPairName`)|`**__Requires input__**`|The name of an existing public/private key pair, which allows you to securely connect to your instance after it launches.|Bastion AMI operating system
 (`BastionAMIOS`)|`Amazon-Linux2-HVM`|The Linux distribution for the AMI to be used for the bastion instances.|Bastion instance type
-(`BastionInstanceType`)|`t2.micro`|Amazon EC2 instance type for the bastion instances.
+(`BastionInstanceType`)|`t3.micro`|Amazon EC2 instance type for the bastion instances.
 |===
 .WAS nodes configuration
 [width="100%",cols="16%,11%,73%",options="header",]
@@ -28,8 +28,8 @@
 (`WASNodesMinSize`)|`2`|The minimum size of the Auto Scaling group.|WAS nodes max size
 (`WASNodesMaxSize`)|`4`|The maximum size of the Auto Scaling group.|WAS nodes desired capacity
 (`WASNodesDesiredCapacity`)|`2`|The desired capacity for the WAS nodes Auto Scaling group.|Maximo web excess CIDR
-(`WebAccessCIDR`)|`**__Requires input__**`|The CIDR IP range that is permitted to access the Maximo URL. We recommend that you set this value to a trusted IP range.|Deploy utilities modules
-(`DeployUtilities`)|`No`|Choose Yes to deploy utilities modules.
+(`WebAccessCIDR`)|`**__Requires input__**`|The CIDR IP range that is permitted to access the Maximo URL. We recommend that you set this value to a trusted IP range.|Deploy Maximo modules
+(`DeployModules`)|`Core`|Choose the IBM Maximo module to deploy.
 |===
 .SSL configuration
 [width="100%",cols="16%,11%,73%",options="header",]

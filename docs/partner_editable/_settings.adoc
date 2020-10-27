@@ -2,7 +2,7 @@
 :partner-product-name: IBM Maximo
 :partner-product-short-name: IBM Maximo
 :partner-company-name: IBM
-:doc-month: October
+:doc-month: November
 :doc-year: 2020
 :quickstart-contributors: Rajasekhar Gundugollu, Subrahmanyam Madduru, Vinod Shukla, and Ranjan Banerji, Amazon Web Services
 :deployment_time: 2 hours
