@@ -508,6 +508,11 @@ Resources:
                 Resource: !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/maximo-*'
                 Effect: Allow
               - Action:
+                  - ssm:GetParameter
+                  - ssm:PutParameter
+                Resource: !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${WASSSMParameter}'
+                Effect: Allow
+              - Action:
                   - ec2:Describe*
                   - elasticloadbalancing:Describe*
                   - autoscaling:Describe*
@@ -561,7 +566,6 @@ Resources:
   WASSSMParameter:
     Type: AWS::SSM::Parameter
     Properties:
-      Name: 'maximo-admin-db'
       Type: String 
       Value:  'Started'
       Description:  'Parameter store keys related to maximo deployment'
@@ -612,7 +616,7 @@ Resources:
           commands:
             '01_create_Server':
               command: !Sub |
-                sudo sh /home/ec2-user/maximo_was_dmgr_commands.sh  ${EndpointAddress} ${EndpointPort} ${DBName} ${MaximoFilesLocation} ${DeployModules} ${WASAdminUsername} ${WASAdminPassword} &> /tmp/install.txt
+                sudo sh /home/ec2-user/maximo_was_dmgr_commands.sh  ${EndpointAddress} ${EndpointPort} ${DBName} ${MaximoFilesLocation} ${DeployModules} ${WASAdminUsername} ${WASAdminPassword} ${WASSSMParameter} &> /tmp/install.txt
     Properties:
       KeyName: !Ref 'KeyPairName'
       ImageId: !FindInMap

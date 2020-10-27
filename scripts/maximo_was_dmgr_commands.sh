@@ -8,6 +8,7 @@ Maximos3location=$4
 DeployModules=$5
 WASAdminUsername=$6
 WASAdminPassword=$7
+WASSSMParameter=$8
 
 
 
@@ -106,7 +107,7 @@ cp /opt/IBM/SMP/maximo/applications/maximo/properties/maximo.properties.orig/max
 sed -i "s/^[[:blank:]]*mxe.db.url=jdbc:oracle:thin:/mxe.db.url=jdbc:oracle:thin:@$Endpoint:$Port:$DBName/" /opt/IBM/SMP/maximo/applications/maximo/properties/maximo.properties
 
 
-ssmParameterValue=`/usr/local/bin/aws ssm get-parameter --name "maximo-admin-db" --query Parameter.Value --output text`
+ssmParameterValue=`/usr/local/bin/aws ssm get-parameter --name "${WASSSMParameter}" --query Parameter.Value --output text`
 echo $ssmParameterValue
 
 if [ $ssmParameterValue != "Installed" ];
@@ -114,7 +115,7 @@ then
   # Deploy the empty database schema and tables
   cd /opt/IBM/SMP/maximo/tools/maximo
   ./maxinst.sh -sMAXINDEX -tMAXDATA -imaximo
-  /usr/local/bin/aws ssm put-parameter --name "maximo-admin-db" --type "String" --value "Installed" --overwrite
+  /usr/local/bin/aws ssm put-parameter --name "${WASSSMParameter}" --type "String" --value "Installed" --overwrite
 fi
 
 # Generate the maximo ear files
