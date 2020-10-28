@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
-  This  template  deploys  bastion host and a WAS cluster behind
-  an ELB. The cluster is configured to use an S3 bucket for storage  **WARNING** This
+  This template deploys a bastion host and a WebSphere Application Server cluster behind
+  an ELB load balancer. The cluster is configured to use an S3 bucket for storage  **WARNING** This
   template creates EC2 instances and related resources. You will be billed for the
   AWS resources used if you create a stack from this template. (qs-1r4dcoih9)
 Metadata:
@@ -30,7 +30,7 @@ Metadata:
           - BastionAMIOS
           - BastionInstanceType
       - Label:
-          default: WAS nodes configuration
+          default: WebSphere Application Server nodes configuration
         Parameters:
           - WASAdminUsername
           - WASAdminPassword
@@ -47,11 +47,11 @@ Metadata:
           - SiteDomain
           - Route53HostedZoneId
       - Label:
-          default : Maximo files location
+          default : IBM Maximo files location
         Parameters:
           - MaximoFilesLocation
       - Label:
-          default: Oracle RDS configuration
+          default: Amazon RDS for Oracle configuration
         Parameters:
           - ORAVersion
           - DBInstanceIdentifier
@@ -70,7 +70,7 @@ Metadata:
       ALBSSLCertificateARN:
         default: ARN of ACM certificate for Application Load Balancer
       SiteDomain:
-        default: Maximo site domain
+        default: IBM Maximo site domain
       Route53HostedZoneId:
         default: Route 53 hosted zone ID
       BastionAMIOS:
@@ -81,19 +81,19 @@ Metadata:
         default: Key pair name
       # WAS Parameters
       WASAdminUsername:
-        default: WAS admin user name
+        default: WebSphere Application Server administrator user name
       WASAdminPassword:
-        default: WAS admin password
+        default: WebSphere Application Server administrator password
       WASInstanceType:
-        default: WAS server instance type
+        default: WebSphere Application Server server instance type
       WASNodesDesiredCapacity:
-        default: WAS nodes desired capacity
+        default: WebSphere Application Server nodes desired capacity
       WASNodesMaxSize:
-        default: WAS nodes max size
+        default: WebSphere Application Server nodes maximum size
       WASNodesMinSize:
-        default: WAS nodes min size
+        default: WebSphere Application Server nodes minimum size
       WebAccessCIDR:
-        default: Maximo web excess CIDR
+        default: IBM Maximo web excess CIDR
       DeployUtilities:
         default: Deploy utilities modules
       # Oracle RDS Parameters
@@ -113,7 +113,7 @@ Metadata:
         default: High availability (Multi-AZ) for Oracle RDS
       # S3 Bucket  Parameters
       MaximoFilesLocation:
-        default: Maximo files location
+        default: IBM Maximo files location
       QSS3BucketName:
         default: Quick Start S3 bucket name
       QSS3BucketRegion:
@@ -135,16 +135,16 @@ Metadata:
 Parameters:
   ALBSSLCertificateARN:
     Default: ''
-    Description: '[Optional] The ARN of the SSL certificate to be used for the Application Load Balancer.'
+    Description: '(Optional) Amazon Resource Name (ARN) of the SSL certificate to be used for the Application Load Balancer.'
     Type: String
   SiteDomain:
-    Description:  "[Optional] Domain name of the maximo site. e.g. maximo.example.com. Valid FQDN required when using SSL."
+    Description:  "(Optional) Domain name of the Maximo site (example: maximo.example.com). Valid fully qualified domain name (FQDN) required when using SSL."
     AllowedPattern: (?!-)[a-zA-Z0-9-.]*(?<!-)
     ConstraintDescription: Must be a valid fully-qualified domain name.
     Type: String
     Default: ""
   Route53HostedZoneId:
-    Description:  "[Optional] Route53 hosted zone ID where DNS record for Maximo will be added."
+    Description:  "(Optional) Amazon Route 53 hosted zone ID where DNS record for Maximo will be added."
     Type: String
     Default: ""
   BastionAMIOS:
@@ -155,7 +155,7 @@ Parameters:
       - Ubuntu-Server-14.04-LTS-HVM
       - Ubuntu-Server-16.04-LTS-HVM
     Default: Amazon-Linux2-HVM
-    Description: The Linux distribution for the AMI to be used for the bastion instances.
+    Description: The Linux distribution for the Amazon Machine Image (AMI) to be used for the bastion instances.
     Type: String
   BastionInstanceType:
     AllowedValues:
@@ -185,21 +185,21 @@ Parameters:
       to securely connect to your instance after it launches.
     Type: AWS::EC2::KeyPair::KeyName
   WASAdminUsername:
-    Description: The user name of the WAS administrator, must be between 8-41 alphanumeric characters.
+    Description: The user name of the WebSphere Application Server administrator. Must be between 8-41 alphanumeric characters.
     Default: wasadmin
     Type: String
     MinLength: '8'
     MaxLength: '41'
     AllowedPattern: '[a-zA-Z0-9]*'
-    ConstraintDescription: must contain only alphanumeric characters.
+    ConstraintDescription: Must contain only alphanumeric characters.
   WASAdminPassword:
-    Description: The password of the WAS administrator, must be between 8-41 alphanumeric characters.
+    Description: The password of the WebSphere Application Server administrator. Must be between 8-41 alphanumeric characters.
     Type: String
     NoEcho: 'true'
     MinLength: '8'
     MaxLength: '41'
     AllowedPattern: '[a-zA-Z0-9]*'
-    ConstraintDescription: must contain only alphanumeric characters.
+    ConstraintDescription: Must contain only alphanumeric characters.
   WASInstanceType:
     AllowedValues:
       - t2.micro
@@ -236,13 +236,13 @@ Parameters:
       - c5.12xlarge
       - c5.18xlarge
       - c5.24xlarge
-    ConstraintDescription: Must contain valid instance type
+    ConstraintDescription: Must contain valid instance type.
     Default: m5.xlarge
-    Description: EC2 instance type for the WAS instances.
+    Description: EC2 instance type for the WebSphere Application Server instances.
     Type: String
   WASNodesDesiredCapacity:
     Default: '2'
-    Description: The desired capacity for the WAS nodes Auto Scaling group.
+    Description: The desired capacity for the WebSphere Application Server nodes Auto Scaling group.
     Type: String
   WASNodesMaxSize:
     Default: '4'
@@ -254,70 +254,60 @@ Parameters:
     Type: String
   WebAccessCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
-    Description: The CIDR IP range that is permitted to access the Maximo URL. We recommend
-      that you set this value to a trusted IP range.
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x.
+    Description: The CIDR IP range that is permitted to access the IBM Maximo URL. Set this value to a trusted IP range.
     Type: String
   DeployUtilities:
     AllowedValues:
       - 'Yes'
       - 'No'
-    ConstraintDescription: Choose Yes to deploy utilities modules
+    ConstraintDescription: Choose "Yes" to deploy utilities modules.
     Default: 'No'
-    Description: Choose Yes to deploy utilities modules.
+    Description: Choose "Yes" to deploy utilities modules.
     Type: String
   PrivateSubnet1ID:
-    Description: ID of private subnet 1 in Availability Zone 1 for the WAS (e.g.,
-      subnet-a0246dcd).
+    Description: ID of private subnet 1 in Availability Zone 1 for WebSphere Application Server (for example, subnet-a0246dcd).
     Type: AWS::EC2::Subnet::Id
   PrivateSubnet2ID:
-    Description: ID of private subnet 2 in Availability Zone 2 for the WAS (e.g.,
-      subnet-b1f432cd).
+    Description: ID of private subnet 2 in Availability Zone 2 for WebSphere Application Server (for example, subnet-b1f432cd).
     Type: AWS::EC2::Subnet::Id
   PublicSubnet1ID:
-    Description: ID of public subnet 1 in Availability Zone 1 for the ELB load balancer
-      (e.g., subnet-9bc642ac).
+    Description: ID of public subnet 1 in Availability Zone 1 for the ELB load balancer (for example, subnet-9bc642ac).
     Type: AWS::EC2::Subnet::Id
   PublicSubnet2ID:
-    Description: ID of public subnet 2 in Availability Zone 2 for the ELB load balancer
-      (e.g., subnet-e3246d8e).
+    Description: ID of public subnet 2 in Availability Zone 2 for the ELB load balancer (for example, subnet-e3246d8e).
     Type: AWS::EC2::Subnet::Id
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
-    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+    ConstraintDescription: The Quick Start bucket name can include numbers, lowercase
       letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
       (-).
     Default: aws-quickstart
-    Description: S3 bucket name for the Quick Start assets. This string can include
-      numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start
-      or end with a hyphen (-).
+    Description: S3 bucket that you created for your copy of Quick Start assets. Use this if you decide to customize the Quick Start. This bucket name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). Unless you are customizing the template, keep the default setting. Changing this setting updates code references to point to a new Quick Start location. See https://aws-quickstart.github.io/option1.html.
     Type: String
   QSS3BucketRegion:
     Default: 'us-east-1'
-    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
+    Description: 'AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value. Unless you are customizing the template, keep the default setting. Changing this setting updates code references to point to a new Quick Start location. See https://aws-quickstart.github.io/option1.html.'
     Type: String
   QSS3KeyPrefix:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
     ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
       uppercase letters, hyphens (-), and forward slash (/).
     Default: quickstart-ibm-maximo/
-    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
-      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
-      forward slash (/).
+    Description: S3 key prefix that is used to simulate a directory for your copy of Quick Start assets. Use this if you decide to customize the Quick Start. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html. Unless you are customizing the template, keep the default setting. Changing this setting updates code references to point to a new Quick Start location. See https://aws-quickstart.github.io/option1.html.
     Type: String
   RemoteAccessCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$
-    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x
-    Description: The CIDR IP range that is permitted to access the bastions. We recommend
-      that you set this value to a trusted IP range.
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x.
+    Description: The CIDR IP range that is permitted to access the bastions. Set this value to a trusted IP range.
     Type: String
   VPCID:
-    Description: ID of your existing VPC for deployment.
+    Description: The ID of your existing VPC for deployment.
     Type: AWS::EC2::VPC::Id
   MaximoFilesLocation:
-    Description: Provide the S3 location of the downloaded maximo , WAS  and Oracle client files (please do not include the s3:// and the trailing forward slash).
-        E.g., if the location is "s3://ibm-maximo-assets/instllation_files", then enter "ibm-maximo-assets/instllation_files".
-        Refer to the deployment guide for more information on downloading the client files and obtaining the location.
+    Description: Provide the S3 location of the downloaded IBM Maximo, WebSphere Application Server, and Oracle client files (do not include the s3:// and the trailing forward slash).
+        For example, if the location is "s3://ibm-maximo-assets/installation_files,"" enter "ibm-maximo-assets/installation_files.""
+        Refer to the deployment guide for more information about downloading the client files and obtaining the location.
     Type: String
    # Oracle RDS Database Parameters
   ORAVersion:
@@ -346,7 +336,7 @@ Parameters:
     MinLength: '1'
     MaxLength: '8'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
-    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
   DBName:
     Default: maximo
     Description: The database name.
@@ -354,26 +344,26 @@ Parameters:
     MinLength: '1'
     MaxLength: '8'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
-    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
   DBUser:
     Default: MXAdmin
-    Description: The database admin account user name.
+    Description: The database administrator account user name.
     Type: String
     MinLength: '1'
     MaxLength: '16'
     AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
-    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+    ConstraintDescription: Must begin with a letter and contain only alphanumeric characters.
   DBPassword:
     NoEcho: 'true'
-    Description: The database admin account password. Must be at least 8 characters containing letters, numbers only.
+    Description: The database administrator account password. Must be at least 8 characters containing only letters and numbers.
     Type: String
     MinLength: '8'
     MaxLength: '41'
     AllowedPattern: '[a-zA-Z0-9]*'
-    ConstraintDescription: must contain only alphanumeric characters.
+    ConstraintDescription: Must contain only alphanumeric characters.
   DBMultiZone:
-    Description: Choose false to disable high availability (Multi-AZ) configuration for Oracle RDS.
-        More information is available here - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
+    Description: Choose "false" to disable high availability (Multi-AZ) configuration for Oracle RDS.
+        More information is available at https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html
     Type: String
     AllowedValues:
       - 'true'
@@ -493,7 +483,7 @@ Resources:
 
 Outputs:
   WebsiteURL:
-    Description: URL for newly created WAS stack
+    Description: URL for newly created WebSphere Application Server stack
     Value: !GetAtt 'WASStack.Outputs.WebsiteURL'
   PrimaryJDBCConnectionString:
     Description: JDBC connection string for the primary database
