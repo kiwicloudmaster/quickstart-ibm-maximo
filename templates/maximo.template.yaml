@@ -39,7 +39,7 @@ Metadata:
           - WASNodesMaxSize
           - WASNodesDesiredCapacity
           - WebAccessCIDR
-          - DeployUtilities
+          - DeployModules
       - Label:
           default: SSL configuration
         Parameters:
@@ -94,8 +94,8 @@ Metadata:
         default: WebSphere Application Server nodes minimum size
       WebAccessCIDR:
         default: IBM Maximo web excess CIDR
-      DeployUtilities:
-        default: Deploy utilities modules
+      DeployModules:
+        default: Deploy Maximo modules
       # Oracle RDS Parameters
       ORAVersion:
         default: Oracle database version
@@ -159,25 +159,22 @@ Parameters:
     Type: String
   BastionInstanceType:
     AllowedValues:
+      - t2.nano
       - t2.micro
       - t2.small
       - t2.medium
-      - m3.large
-      - m3.xlarge
-      - m3.2xlarge
-      - c4.large
-      - c4.xlarge
-      - c4.2xlarge
-      - c4.4xlarge
-      - c4.8xlarge
-      - c3.large
-      - c3.xlarge
-      - c3.2xlarge
-      - c3.4xlarge
-      - c3.8xlarge
-      - r3.large
-      - r3.xlarge
-    Default: t2.micro
+      - t2.large
+      - t3.micro
+      - t3.small
+      - t3.medium
+      - t3.large
+      - t3.xlarge
+      - t3.2xlarge
+      - m4.large
+      - m4.xlarge
+      - m4.2xlarge
+      - m4.4xlarge
+    Default: t3.micro
     Description: Amazon EC2 instance type for the bastion instances.
     Type: String
   KeyPairName:
@@ -257,13 +254,17 @@ Parameters:
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/x.
     Description: The CIDR IP range that is permitted to access the IBM Maximo URL. Set this value to a trusted IP range.
     Type: String
-  DeployUtilities:
+  DeployModules:
     AllowedValues:
-      - 'Yes'
-      - 'No'
-    ConstraintDescription: Choose "Yes" to deploy utilities modules.
-    Default: 'No'
-    Description: Choose "Yes" to deploy utilities modules.
+      - 'Core'
+      - 'HSE'
+      - 'Nuclear'
+      - 'Scheduler'
+      - 'Transportation'
+      - 'Utilities'
+    ConstraintDescription: Choose the IBM Maximo module to deploy.
+    Default: 'Core'
+    Description: Choose the IBM Maximo module to deploy.
     Type: String
   PrivateSubnet1ID:
     Description: ID of private subnet 1 in Availability Zone 1 for WebSphere Application Server (for example, subnet-a0246dcd).
@@ -457,7 +458,7 @@ Resources:
         WASAdminUsername: !Ref 'WASAdminUsername'
         WASAdminPassword: !Ref 'WASAdminPassword'
         WASInstanceType: !Ref 'WASInstanceType'
-        DeployUtilities:  !Ref 'DeployUtilities'
+        DeployModules:  !Ref 'DeployModules'
         WASNodesDesiredCapacity: !Ref 'WASNodesDesiredCapacity'
         WASNodesMaxSize: !Ref 'WASNodesMaxSize'
         WASNodesMinSize: !Ref 'WASNodesMinSize'
