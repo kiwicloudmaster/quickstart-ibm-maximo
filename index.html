@@ -1504,7 +1504,7 @@ On the <strong>Password Information</strong> pop-up window, enter a new password
 <p><strong>Q.</strong> I encountered a <strong>CREATE_FAILED</strong> error when I launched the Quick Start.</p>
 </div>
 <div class="paragraph">
-<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. (This setting is under <strong>Advanced</strong> in the AWS CloudFormation console on the <strong>Options</strong> page.) With this setting, the stack’s state is retained, and the instance is left running, so you can troubleshoot the issue. (For Windows, look at the log files in %ProgramFiles%\Amazon\EC2ConfigService and C:\cfn\log.)</p>
+<p><strong>A.</strong> If AWS CloudFormation fails to create the stack, relaunch the template with <strong>Rollback on failure</strong> set to <strong>Disabled</strong>. This setting is under <strong>Advanced</strong> in the AWS CloudFormation console on the <strong>Options</strong> page. With this setting, the stack’s state is retained, and the instance is left running, so you can troubleshoot the issue. (For Windows, look at the log files in %ProgramFiles%\Amazon\EC2ConfigService and C:\cfn\log.)</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1572,7 +1572,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">VPC CIDR
 (<code>VPCCIDR</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>10.0.0.0/16</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CIDR block for the VPC.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR block for the VPC.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet 1 CIDR
@@ -1602,7 +1602,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bastion external access CIDR
 (<code>RemoteAccessCIDR</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the bastions. We recommend that you set this value to a trusted IP range.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the bastions. Set this value to a trusted IP range.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1631,7 +1631,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bastion AMI operating system
 (<code>BastionAMIOS</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Amazon-Linux2-HVM</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Linux distribution for the AMI to be used for the bastion instances.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Linux distribution for the Amazon Machine Image (AMI) to be used for the bastion instances.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bastion instance type
@@ -1642,7 +1642,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. WAS nodes configuration</caption>
+<caption class="title">Table 3. WebSphere Application Server nodes configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1657,46 +1657,46 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS admin user name
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server administrator user name
 (<code>WASAdminUsername</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>wasadmin</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The user name of the WAS administrator, must be between 8-41 alphanumeric characters.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user name of the WebSphere Application Server administrator. Must be between 8-41 alphanumeric characters.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS admin password
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server administrator password
 (<code>WASAdminPassword</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password of the WAS administrator, , must be between 8-41 alphanumeric characters.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password of the WebSphere Application Server administrator. Must be between 8-41 alphanumeric characters.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS server instance type
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server server instance type
 (<code>WASInstanceType</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.xlarge</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 instance type for the WAS instances.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 instance type for the WebSphere Application Server instances.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS nodes min size
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server nodes minimum size
 (<code>WASNodesMinSize</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The minimum size of the Auto Scaling group.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS odes max size
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server nodes maximum size
 (<code>WASNodesMaxSize</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>4</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum size of the Auto Scaling group.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS nodes desired capacity
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server nodes desired capacity
 (<code>WASNodesDesiredCapacity</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The desired capacity for the WAS nodes Auto Scaling group.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The desired capacity for the WebSphere Application Server nodes Auto Scaling group.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximo web access CIDR
+<td class="tableblock halign-left valign-top"><p class="tableblock">IBM Maximo web access CIDR
 (<code>WebAccessCIDR</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the Maximo URL. We recommend that you set this value to a trusted IP range.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the IBM Maximo URL. Set this value to a trusted IP range.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Deploy Maximo modules
@@ -1725,19 +1725,19 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">ALB SSL certificate ARN
 (<code>ALBSSLCertificateARN</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[Optional] ARN of the SSL certificate to be used for the Application Load Balancer.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Amazon Resource Name (ARN) of the SSL certificate to be used for the Application Load Balancer.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximo site domain
+<td class="tableblock halign-left valign-top"><p class="tableblock">IBM Maximo site domain
 (<code>SiteDomain</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[Optional] Domain name of the maximo site. e.g. maximo.example.com. Valid FQDN required when using SSL.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Domain name of the Maximo site (example: maximo.example.com). Valid fully qualified domain name (FQDN) required when using SSL.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Route 53 hosted zone ID
 (<code>Route53HostedZoneId</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[Optional] Route53 hosted zone ID where DNS record for Maximo will be added.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Amazon Route 53 hosted zone ID where DNS record for IBM Maximo will be added.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1760,12 +1760,12 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maximo files location
 (<code>MaximoFilesLocation</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Provide the S3 location of the downloaded Maximo, WAS, and Oracle client files (do not include the s3:// and the trailing forward slash). E.g., if the location is "s3://ibm-maximo-assets/instllation_files", then enter "ibm-maximo-assets/instllation_files". Refer to the deployment guide for more information on downloading the client files and obtaining the location.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provide the S3 location of the downloaded IBM Maximo, WebSphere Application Server, and Oracle client files (do not include the s3:// and the trailing forward slash). For example, if the location is "s3://ibm-maximo-assets/installation_files,"" enter "ibm-maximo-assets/installation_files."" Refer to the deployment guide for more information about downloading the client files and obtaining the location.</p></td>
 </tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Oracle RDS configuration</caption>
+<caption class="title">Table 6. Amazon RDS for Oracle configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1804,22 +1804,22 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">The database name.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Oracle database admin user name
+<td class="tableblock halign-left valign-top"><p class="tableblock">Oracle database administrator user name
 (<code>DBUser</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Admin</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The database admin account user name.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The database administrator account user name.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Oracle database admin password
+<td class="tableblock halign-left valign-top"><p class="tableblock">Oracle database administrator password
 (<code>DBPassword</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The database admin account password. Must be at least 8 characters containing letters, numbers only.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The database administrator account password. Must be at least 8 characters containing only letters and numbers.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">High availability (Multi-AZ) for Oracle RDS
+<td class="tableblock halign-left valign-top"><p class="tableblock">High availability (Multi-AZ) for Amazon RDS for Oracle
 (<code>DBMultiZone</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose false to disable high availability (Multi-AZ) configuration for Oracle RDS. More information is available here - <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html" class="bare">https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose "false" to disable high availability (Multi-AZ) configuration for Oracle RDS. More information is available at <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html" class="bare">https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html</a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1842,19 +1842,19 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
 (<code>QSS3BucketName</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket name for the Quick Start assets. This string can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket that you created for your copy of Quick Start assets. Use this if you decide to customize the Quick Start. This bucket name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). Unless you are customizing the template, keep the default setting. Changing this setting updates code references to point to a new Quick Start location. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket Region
 (<code>QSS3BucketRegion</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value. Unless you are customizing the template, keep the default setting. Changing this setting updates code references to point to a new Quick Start location. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 key prefix
 (<code>QSS3KeyPrefix</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-ibm-maximo/</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix that is used to simulate a directory for your copy of Quick Start assets. Use this if you decide to customize the Quick Start. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" class="bare">https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html</a>. Unless you are customizing the template, keep the default setting. Changing this setting updates code references to point to a new Quick Start location. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1880,37 +1880,37 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">VPC ID
 (<code>VPCID</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ID of your existing VPC for deployment.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The ID of your existing VPC for deployment.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet 1 ID
 (<code>PrivateSubnet1ID</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ID of private subnet 1 in Availability Zone 1 for the WAS (e.g., subnet-a0246dcd).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of private subnet 1 in Availability Zone 1 for WebSphere Application Server (for example, subnet-a0246dcd).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Private subnet 2 ID
 (<code>PrivateSubnet2ID</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ID of private subnet 2 in Availability Zone 2 for the WAS (e.g., subnet-b1f432cd).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of private subnet 2 in Availability Zone 2 for WebSphere Application Server (for example, subnet-b1f432cd).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Public subnet 1 ID
 (<code>PublicSubnet1ID</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ID of public subnet 1 in Availability Zone 1 for the ELB load balancer (e.g., subnet-9bc642ac).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of public subnet 1 in Availability Zone 1 for the ELB load balancer (for example, subnet-9bc642ac).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Public subnet 2 ID
 (<code>PublicSubnet2ID</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ID of public subnet 2 in Availability Zone 2 for the ELB load balancer (e.g., subnet-e3246d8e).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ID of public subnet 2 in Availability Zone 2 for the ELB load balancer (for example, subnet-e3246d8e).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bastion external access CIDR
 (<code>RemoteAccessCIDR</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the bastions. We recommend that you set this value to a trusted IP range.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the bastions. Set this value to a trusted IP range.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1939,7 +1939,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bastion AMI operating system
 (<code>BastionAMIOS</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Amazon-Linux2-HVM</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The Linux distribution for the AMI to be used for the bastion instances.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The Linux distribution for the Amazon Machine Image (AMI) to be used for the bastion instances.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bastion instance type
@@ -1950,7 +1950,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. WAS nodes configuration</caption>
+<caption class="title">Table 10. WebSphere Application Server nodes configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -1965,46 +1965,46 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS admin user name
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server administrator user name
 (<code>WASAdminUsername</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>wasadmin</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The user name of the WAS administrator, must be between 8-41 alphanumeric characters.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The user name of the WebSphere Application Server administrator. Must be between 8-41 alphanumeric characters.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS admin password
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server administrator password
 (<code>WASAdminPassword</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The password of the WAS administrator, must be between 8-41 alphanumeric characters.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The password of the WebSphere Application Server administrator. Must be between 8-41 alphanumeric characters.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS server instance type
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server server instance type
 (<code>WASInstanceType</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>m5.xlarge</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 instance type for the WAS instances.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EC2 instance type for the WebSphere Application Server instances.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS nodes min size
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server nodes minimum size
 (<code>WASNodesMinSize</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The minimum size of the Auto Scaling group.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS nodes max size
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server nodes maximum size
 (<code>WASNodesMaxSize</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>4</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The maximum size of the Auto Scaling group.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WAS nodes desired capacity
+<td class="tableblock halign-left valign-top"><p class="tableblock">WebSphere Application Server nodes desired capacity
 (<code>WASNodesDesiredCapacity</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>2</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The desired capacity for the WAS nodes Auto Scaling group.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The desired capacity for the WebSphere Application Server nodes Auto Scaling group.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximo web excess CIDR
+<td class="tableblock halign-left valign-top"><p class="tableblock">IBM Maximo web excess CIDR
 (<code>WebAccessCIDR</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the Maximo URL. We recommend that you set this value to a trusted IP range.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The CIDR IP range that is permitted to access the IBM Maximo URL. Set this value to a trusted IP range.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Deploy Maximo modules
@@ -2033,24 +2033,24 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">ARN of ACM certificate for Application Load Balancer
 (<code>ALBSSLCertificateARN</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[Optional] The ARN of the SSL certificate to be used for the Application Load Balancer.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Amazon Resource Name (ARN) of the SSL certificate to be used for the Application Load Balancer.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximo site domain
+<td class="tableblock halign-left valign-top"><p class="tableblock">IBM Maximo site domain
 (<code>SiteDomain</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[Optional] Domain name of the maximo site. e.g. maximo.example.com. Valid FQDN required when using SSL.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Domain name of the Maximo site (example: maximo.example.com). Valid fully qualified domain name (FQDN) required when using SSL.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Route 53 hosted zone ID
 (<code>Route53HostedZoneId</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Blank string</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">[Optional] Route53 hosted zone ID where DNS record for Maximo will be added.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) Amazon Route 53 hosted zone ID where DNS record for Maximo will be added.</p></td>
 </tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Maximo files location</caption>
+<caption class="title">Table 12. IBM Maximo files location</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -2065,15 +2065,15 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximo files location
+<td class="tableblock halign-left valign-top"><p class="tableblock">IBM Maximo files location
 (<code>MaximoFilesLocation</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Provide the S3 location of the downloaded maximo , WAS  and Oracle client files (please do not include the s3:// and the trailing forward slash). E.g., if the location is "s3://ibm-maximo-assets/instllation_files", then enter "ibm-maximo-assets/instllation_files". Refer to the deployment guide for more information on downloading the client files and obtaining the location.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provide the S3 location of the downloaded IBM Maximo, WebSphere Application Server, and Oracle client files (do not include the s3:// and the trailing forward slash). For example, if the location is "s3://ibm-maximo-assets/installation_files,"" enter "ibm-maximo-assets/installation_files."" Refer to the deployment guide for more information about downloading the client files and obtaining the location.</p></td>
 </tr>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Oracle RDS configuration</caption>
+<caption class="title">Table 13. Amazon RDS for Oracle configuration</caption>
 <colgroup>
 <col style="width: 16%;">
 <col style="width: 11%;">
@@ -2115,19 +2115,19 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">Oracle database admin user name
 (<code>DBUser</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>MXAdmin</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The database admin account user name.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The database administrator account user name.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Oracle database admin password
 (<code>DBPassword</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><strong><em>Requires input</em></strong></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The database admin account password. Must be at least 8 characters containing letters, numbers only.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The database administrator account password. Must be at least 8 characters containing only letters and numbers.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">High availability (Multi-AZ) for Oracle RDS
 (<code>DBMultiZone</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose false to disable high availability (Multi-AZ) configuration for Oracle RDS. More information is available here - <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html" class="bare">https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose "false" to disable high availability (Multi-AZ) configuration for Oracle RDS. More information is available at <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html" class="bare">https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -2150,19 +2150,19 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket name
 (<code>QSS3BucketName</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>aws-quickstart</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket name for the Quick Start assets. This string can include numbers, lowercase letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen (-).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 bucket that you created for your copy of Quick Start assets. Use this if you decide to customize the Quick Start. This bucket name can include numbers, lowercase letters, uppercase letters, and hyphens, but do not start or end with a hyphen (-). Unless you are customizing the template, keep the default setting. Changing this setting updates code references to point to a new Quick Start location. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 bucket Region
 (<code>QSS3BucketRegion</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>us-east-1</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value. Unless you are customizing the template, keep the default setting. Changing this setting updates code references to point to a new Quick Start location. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 key prefix
 (<code>QSS3KeyPrefix</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>quickstart-ibm-maximo/</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix for the Quick Start assets. Quick Start key prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slash (/).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 key prefix that is used to simulate a directory for your copy of Quick Start assets. Use this if you decide to customize the Quick Start. This prefix can include numbers, lowercase letters, uppercase letters, hyphens (-), and forward slashes (/). See <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" class="bare">https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html</a>. Unless you are customizing the template, keep the default setting. Changing this setting updates code references to point to a new Quick Start location. See <a href="https://aws-quickstart.github.io/option1.html" class="bare">https://aws-quickstart.github.io/option1.html</a>.</p></td>
 </tr>
 </tbody>
 </table>
