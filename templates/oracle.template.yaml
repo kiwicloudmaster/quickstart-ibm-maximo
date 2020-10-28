@@ -157,6 +157,44 @@ Mappings:
       Family: oracle-se2-18
 
 Resources:
+  EncryptionKey:
+    DeletionPolicy: Retain
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: !Ref AWS::StackName
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Action: 'kms:*'
+            Resource: '*'
+          - Effect: Allow
+            Principal:
+              AWS: '*'
+            Action:
+              - 'kms:Encrypt'
+              - 'kms:Decrypt'
+              - 'kms:ReEncrypt*'
+              - 'kms:GenerateDataKey*'
+              - 'kms:CreateGrant'
+              - 'kms:ListGrants'
+              - 'kms:DescribeKey'
+            Resource: '*'
+            Condition:
+              StringEquals:
+                'kms:CallerAccount': !Ref 'AWS::AccountId'
+                'kms:ViaService': !Sub 'rds.${AWS::Region}.amazonaws.com'
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+  EncryptionKeyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: !Sub "alias/${AWS::StackName}"
+      TargetKeyId: !Ref EncryptionKey
   OracleServerAccessSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -255,6 +293,8 @@ Resources:
       MasterUsername: !Ref 'DBUser'
       MasterUserPassword: !Ref 'DBPassword'
       MultiAZ: !Ref 'DBMultiZone'
+      StorageEncrypted: true
+      KmsKeyId: !GetAtt EncryptionKey.Arn
       VPCSecurityGroups: !Split [ ",", !Join [ ",", [!Ref OracleServerAccessSecurityGroup, !Ref OracleServerSecurityGroup, !Ref OracleServersSecurityGroup, !Ref NodeSecurityGroupID, !Ref ControlPlaneSecurityGroupID] ] ]
   MaximoDBParamGroup:
     Type: AWS::RDS::DBParameterGroup
