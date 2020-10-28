@@ -92,7 +92,7 @@ elif [ $DeployModules = "Transportation"  ]; then
   /usr/local/bin/aws s3 cp s3://$Maximos3location/Max_Transportation_762IFR3.zip .
   unzip -q Max_Transportation_762IFR3.zip
   sed -i 's/c:\\Launchpad\\TransportationInstallerRepository.zip/\/Launchpad\/transportation\/TransportationInstallerRepository.zip/g' Transportation_Silent_ResponseFile.xml
-  /opt/IBM/InstallationManager/eclipse/tools/imcl input /Launchpad/Transportation/Transportation_Silent_ResponseFile.xml -log /tmp/ModulesInstall_log.xml -acceptLicense
+  /opt/IBM/InstallationManager/eclipse/tools/imcl input /Launchpad/transportation/Transportation_Silent_ResponseFile.xml -log /tmp/ModulesInstall_log.xml -acceptLicense
 elif [ $DeployModules = "HSE"  ]; then
   mkdir /Launchpad/hse
   cd /Launchpad/hse
