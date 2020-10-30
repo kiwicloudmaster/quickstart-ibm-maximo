@@ -168,7 +168,7 @@ Resources:
           - Effect: Allow
             Principal:
               AWS:
-                - !Sub "arn:aws:iam::${AWS::AccountId}:root"
+                - !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:root"
             Action: 'kms:*'
             Resource: '*'
           - Effect: Allow
@@ -186,7 +186,7 @@ Resources:
             Condition:
               StringEquals:
                 'kms:CallerAccount': !Ref 'AWS::AccountId'
-                'kms:ViaService': !Sub 'rds.${AWS::Region}.amazonaws.com'
+                'kms:ViaService': !Sub 'rds.${AWS::Region}.${AWS::URLSuffix}'
       Tags:
         - Key: Name
           Value: !Ref AWS::StackName
