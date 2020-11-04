@@ -22,7 +22,7 @@ The following Regions are currently supported by this Quick Start.
 - Middle East (Bahrain)	me-south-1
 - South America (São Paulo)	sa-east-1
 
-Also the following AWS GovCloud regions are supported by this Quick Start.
+Also the following AWS GovCloud Regions are supported by this Quick Start.
 
 - AWS GovCloud West us-gov-west-1
 - AWS GovCloud East us-gov-east-1

@@ -17,30 +17,59 @@ project:
     - ap-southeast-1
     - ap-southeast-2
   s3_bucket: ''
-tests:
-  maximo-1:
-    parameters:
-      AvailabilityZones: $[taskcat_genaz_3]
-      DBPassword: $[taskcat_genpass_8A]
-      KeyPairName:  $[taskcat_getkeypair]
-      MaximoFilesLocation: override
-      QSS3BucketName: $[taskcat_autobucket]
-      QSS3BucketRegion: $[taskcat_current_region]
-      RemoteAccessCIDR: 10.0.0.0/16
-      WebAccessCIDR:  override
-      ALBSSLCertificateARN: override
-      DeployUtilities: 'Yes'
-      WASNodesMinSize:  '2'
-      WASNodesMaxSize:  '4'
-      WASNodesDesiredCapacity:  '2'
-      ORAVersion: 'Standard-Edition-Two-18.0-License-Included'
-      SiteDomain: ''
-      Route53HostedZoneId:  ''
-      WASAdminUsername: wasadmin$[taskcat_genpass_4A]
-      WASAdminPassword: $[taskcat_genpass_8A]
+  parameters:
+    AvailabilityZones: $[taskcat_genaz_3]
+    DBPassword: $[taskcat_genpass_8A]
+    KeyPairName:  $[taskcat_getkeypair]
+    MaximoFilesLocation: override
+    QSS3BucketName: $[taskcat_autobucket]
+    QSS3BucketRegion: $[taskcat_current_region]
+    RemoteAccessCIDR: 10.0.0.0/16
+    WebAccessCIDR:  10.0.0.0/16
+    ALBSSLCertificateARN: ''
+    WASNodesMinSize:  '2'
+    WASNodesMaxSize:  '4'
+    WASNodesDesiredCapacity:  '2'
+    ORAVersion: 'Standard-Edition-Two-18.0-License-Included'
+    SiteDomain: ''
+    Route53HostedZoneId:  ''
+    WASAdminUsername: wasadmin$[taskcat_genpass_4A]
+    WASAdminPassword: $[taskcat_genpass_8A]
 
+tests:
+  maximo-core:
+    parameters:
+      DeployModules: 'Core'
     regions:
       - us-east-1
+    template: templates/maximo-main.template.yaml
+  maximo-hse:
+    parameters:
+      DeployModules: 'HSE'
+    regions:
       - us-east-2
-    s3_bucket: ''
+    template: templates/maximo-main.template.yaml
+  maximo-nuclear:
+    parameters:
+      DeployModules: 'Nuclear'
+    regions:
+      - us-west-2
+    template: templates/maximo-main.template.yaml
+  maximo-scheduler:
+    parameters:
+      DeployModules: 'Scheduler'
+    regions:
+      - eu-west-1
+    template: templates/maximo-main.template.yaml
+  maximo-transport:
+    parameters:
+      DeployModules: 'Transportation'
+    regions:
+      - eu-west-2
+    template: templates/maximo-main.template.yaml
+  maximo-utilities:
+    parameters:
+      DeployModules: 'Utilities'
+    regions:
+      - eu-central-1
     template: templates/maximo-main.template.yaml

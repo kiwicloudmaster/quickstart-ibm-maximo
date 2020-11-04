@@ -2,31 +2,19 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-{partner-product-short-name} Asset Management is the world’s leading Enterprise Asset Management (EAM) product, providing clients with a comprehensive business solution for physical asset management.
-This flexible solution provides a unified, service oriented architecture (SOA) platform that delivers asset lifecycle and maintenance management from end-to-end, across the enterprise.
+Using this Quick Start, you can launch {partner-product-name}  base or with the Energy and Utilities, Nuclear, Transportation, and/or Scheduler extensions.
 
-Using this Quick Start, you can launch IBM Maximo base or with the Energy and Utilities, Nuclear, Transportation, and/or Scheduler extensions.
+The {partner-product-short-name} Quick Start uses a range of AWS services and features, including:
 
-=== Key Benefits
-* Increased visibility into operations
-* Increase asset availability
-* Improve operational efficiencies
-* Improve asset management portfolio decisions
-* Improve work planning, scheduling and work execution
-* Improve responsiveness to customer requirements
-* Application consolidation and transparency of information
-* Application interoperability across the enterprise supported by the Maximo Integration Framework (MIF)
-* Improve asset reliability, productivity and safety
+* Security groups
+* Amazon EC2
+* Amazon Elastic Block Store (Amazon EBS)
+* Amazon RDS
+* AWS CloudFormation
+* Elastic Load Balancing (ELB)
 
-{partner-product-short-name} quick start uses a range of AWS services and features, including:
+After deployment, you can configure and extend {partner-product-short-name} to your specific business applications and processes.
 
-- Security groups
-- Amazon EC2
-- Amazon EBS storage
-- Amazon RDS
-- AWS CloudFormation
-- Elastic Load Balancing
-
-After deployment, {partner-product-short-name} can be configured and extended to your specific business applications and processes.
 For more information about Asset Management with {partner-product-short-name}, please visit https://www.ibm.com/products/maximo/asset-management[Asset management with Maximo^].
+
 For more information about other {partner-product-short-name} offerings, please visit https://www.ibm.com/products/maximo[{partner-product-short-name} Application Suite^].
