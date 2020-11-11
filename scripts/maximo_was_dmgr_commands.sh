@@ -64,7 +64,7 @@ tar -xf MAM_7.6.1.0_LINUX64.tar.gz
 export BYPASS_PRS=True # Bypass the prechecks
 /opt/IBM/InstallationManager/eclipse/tools/imcl input /Launchpad/SilentResponseFiles/Unix/ResponseFile_MAM_Install_Unix.xml -log /tmp/MAM_Install_log.xml -acceptLicense
 
-if [ $DeployModules = "Utilities" ];
+if [ $DeployModules = "Energy-and-Utilities" ];
 then
   mkdir /Launchpad/utilities
   cd /Launchpad/utilities

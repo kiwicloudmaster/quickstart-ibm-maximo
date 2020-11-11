@@ -266,14 +266,15 @@ Parameters:
   DeployModules:
     AllowedValues:
       - 'Core'
+      - 'Energy-and-Utilities'
       - 'HSE'
       - 'Nuclear'
       - 'Scheduler'
       - 'Transportation'
-      - 'Utilities'
     ConstraintDescription: Choose the IBM Maximo module to deploy.
     Default: 'Core'
-    Description: Choose the IBM Maximo module to deploy.
+    Description: Choose the IBM Maximo module to deploy. The respective binaries must be placed in the root key prefix as defined by MaximoFilesLocation.
+      In addition, for HSE module to work, you must additionally upload the latest hotfix to s3://MaximoFilesLocation/HSE/latest_hotfix.zip.
     Type: String
   PrivateSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$

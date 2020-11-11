@@ -257,14 +257,15 @@ Parameters:
   DeployModules:
     AllowedValues:
       - 'Core'
+      - 'Energy-and-Utilities'
       - 'HSE'
       - 'Nuclear'
       - 'Scheduler'
       - 'Transportation'
-      - 'Utilities'
     ConstraintDescription: Choose the IBM Maximo module to deploy.
     Default: 'Core'
-    Description: Choose the IBM Maximo module to deploy.
+    Description: Choose the IBM Maximo module to deploy. The respective binaries must be placed in the root key prefix as defined by MaximoFilesLocation.
+      In addition, for HSE module to work, you must additionally upload the latest hotfix to s3://MaximoFilesLocation/HSE/latest_hotfix.zip.
     Type: String
   PrivateSubnet1ID:
     Description: ID of private subnet 1 in Availability Zone 1 for WebSphere Application Server (for example, subnet-a0246dcd).
