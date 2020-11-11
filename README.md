@@ -1,4 +1,4 @@
-## IBM Maximo on the AWS Cloud—Quick Start
+## IBM Maximo EAM 7.6.1 on the AWS Cloud—Quick Start
 
 For architectural details, step-by-step instructions, and customization options, see the [deployment guide](https://aws-quickstart.github.io/quickstart-ibm-maximo/).
 
