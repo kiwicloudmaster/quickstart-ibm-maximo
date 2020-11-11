@@ -27,9 +27,15 @@ and then upload them to the S3 bucket you selected or created earlier. The follo
   .. was.repo.9000.java8_part1.zip
   .. was.repo.9000.java8_part2.zip
   .. was.repo.9000.java8_part3.zip
- . {partner-product-short-name} Utilities module binaries: MAXIMO_UTILITIES_7.6_MP_ML.zip
  . Oracle sqlplus instant client:
   .. instantclient-sqlplus-linux.x64-19.6.0.0.0dbru.zip
   .. instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip
+ . If you are installing a module, you need one of the following binaries.
+  .. {partner-product-short-name} Energy and Utilities module binaries: MAXIMO_UTILITIES_7.6_MP_ML.zip
+  .. {partner-product-short-name} Nuclear module binaries: MAX_NUCLEAR_POWER_7.6.1.zip
+  .. {partner-product-short-name} Scheduler module binaries: MAM_Scheduler_7.6.7.zip
+  .. {partner-product-short-name} Transportation module binaries: Max_Transportation_762IFR3.zip
+  .. {partner-product-short-name} HSE module binaries: Max_HSEM_V761.zip
+   ... Additionally, for the HSE module, you also need to download the latest hotfix and upload it to `s3://MaximoFilesLocation/HSE/latest_hotfix.zip`.
 
-NOTE: Make sure you upload all the required files to the same prefix in the S3 bucket.
+NOTE: Make sure you upload all the required files with the names as specified above to the same prefix in the S3 bucket, for example at `s3://MaximoFilesLocation/`, where `MaximoFilesLocation` is an input parameter in the CloudFormation templates.

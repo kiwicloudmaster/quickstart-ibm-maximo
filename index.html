@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>IBM Maximo on the AWS Cloud</title>
+<title>IBM Maximo EAM 7.6.1 on the AWS Cloud</title>
 <style>
 
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -790,7 +790,7 @@ p.footer-text a{color:#d7d8d8}
 <div id="toctitle"></div>
 <ul class="sectlevel1">
 <li><a href="#_overview">Overview</a></li>
-<li><a href="#_ibm_maximo_on_aws">IBM Maximo on AWS</a></li>
+<li><a href="#_ibm_maximo_eam_7_6_1_on_aws">IBM Maximo EAM 7.6.1 on AWS</a></li>
 <li><a href="#_cost">Cost</a></li>
 <li><a href="#_software_licenses">Software licenses</a></li>
 <li><a href="#_architecture">Architecture</a></li>
@@ -807,7 +807,7 @@ p.footer-text a{color:#d7d8d8}
 </ul>
 </li>
 <li><a href="#_test_the_deployment">Test the deployment</a></li>
-<li><a href="#_post_deployment_steps">Post deployment steps</a></li>
+<li><a href="#_post_deployment_steps">Post-deployment steps</a></li>
 <li><a href="#_best_practices_for_using_ibm_maximo_on_aws">Best practices for using IBM Maximo on AWS</a></li>
 <li><a href="#_frequently_asked_questions">Frequently Asked Questions</a></li>
 <li><a href="#_parameter_reference">Parameter reference</a>
@@ -826,7 +826,7 @@ p.footer-text a{color:#d7d8d8}
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<h2 id="_ibm_maximo_on_the_aws_cloud" class="discrete text-center">IBM Maximo on the AWS Cloud</h2>
+<h2 id="_ibm_maximo_eam_7_6_1_on_the_aws_cloud" class="discrete text-center">IBM Maximo EAM 7.6.1 on the AWS Cloud</h2>
 <h2 id="_quick_start_reference_deployment" class="discrete text-left text-center">Quick Start Reference Deployment</h2>
 <div class="imageblock text-center">
 <div class="content">
@@ -859,10 +859,10 @@ report bugs, or submit feature ideas for this Quick Start.
 <h2 id="_overview">Overview</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This Quick Start reference deployment guide provides step-by-step instructions for deploying IBM Maximo on the AWS Cloud into a virtual private cloud (VPC) spanning multiple Availability Zones for high availability.</p>
+<p>This Quick Start reference deployment guide provides step-by-step instructions for deploying IBM Maximo EAM 7.6.1 on the AWS Cloud into a virtual private cloud (VPC) spanning multiple Availability Zones for high availability.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start is for those who want to use Amazon Elastic Compute Cloud (Amazon EC2), Amazon Relational Database Service (RDS) for Oracle, and AWS CloudFormation to launch IBM Maximo base or with the Energy and Utilities extension.</p>
+<p>This Quick Start uses Amazon Elastic Compute Cloud (Amazon EC2), Amazon Relational Database Service (RDS) for Oracle, Elastic Load Balancing (ELB), and AWS Cloud Formation to launch IBM Maximo EAM 7.6.1 with Utilities, Nuclear, Transportation, Healthy, Safety, and Environment (HSE), or Scheduler extensions.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -879,10 +879,13 @@ Amazon may share user-deployment information with the AWS Partner that collabora
 </div>
 </div>
 <div class="sect1">
-<h2 id="_ibm_maximo_on_aws">IBM Maximo on AWS</h2>
+<h2 id="_ibm_maximo_eam_7_6_1_on_aws">IBM Maximo EAM 7.6.1 on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Using this Quick Start, you can launch IBM Maximo  base or with the Energy and Utilities, Nuclear, Transportation, and/or Scheduler extensions.</p>
+<p>IBM Maximo is a comprehensive solution for physical asset management, providing customers with a unified, service oriented architecture (SOA) platform that delivers asset lifecycle and maintenance from end-to-end, across the enterprise. Using IBM Maximo, you can optimize the quality and usage of your assets throughout their lifecycle, drive efficiency, reduce operating costs, and increase productive uptime through preventative maintenance.</p>
+</div>
+<div class="paragraph">
+<p>Using this Quick Start, you can launch IBM Maximo EAM 7.6.1  base or with the Health, Safety and Environment (HSE), Energy and Utilities, Nuclear, Transportation, or Scheduler extensions.</p>
 </div>
 <div class="paragraph">
 <p>The IBM Maximo Quick Start uses a range of AWS services and features, including:</p>
@@ -1276,9 +1279,6 @@ and then upload them to the S3 bucket you selected or created earlier. The follo
 </div>
 </li>
 <li>
-<p>IBM Maximo Utilities module binaries: MAXIMO_UTILITIES_7.6_MP_ML.zip</p>
-</li>
-<li>
 <p>Oracle sqlplus instant client:</p>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
@@ -1287,6 +1287,35 @@ and then upload them to the S3 bucket you selected or created earlier. The follo
 </li>
 <li>
 <p>instantclient-basiclite-linux.x64-19.6.0.0.0dbru.zip</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>If you are installing a module, you need one of the following binaries.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>IBM Maximo Energy and Utilities module binaries: MAXIMO_UTILITIES_7.6_MP_ML.zip</p>
+</li>
+<li>
+<p>IBM Maximo Nuclear module binaries: MAX_NUCLEAR_POWER_7.6.1.zip</p>
+</li>
+<li>
+<p>IBM Maximo Scheduler module binaries: MAM_Scheduler_7.6.7.zip</p>
+</li>
+<li>
+<p>IBM Maximo Transportation module binaries: Max_Transportation_762IFR3.zip</p>
+</li>
+<li>
+<p>IBM Maximo HSE module binaries: Max_HSEM_V761.zip</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>Additionally, for the HSE module, you also need to download the latest hotfix and upload it to <code>s3://MaximoFilesLocation/HSE/latest_hotfix.zip</code>.</p>
+</li>
+</ol>
+</div>
 </li>
 </ol>
 </div>
@@ -1300,7 +1329,7 @@ and then upload them to the S3 bucket you selected or created earlier. The follo
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Make sure you upload all the required files to the same prefix in the S3 bucket.
+Make sure you upload all the required files with the names as specified above to the same prefix in the S3 bucket, for example at <code>s3://MaximoFilesLocation/</code>, where <code>MaximoFilesLocation</code> is an input parameter in the CloudFormation templates.
 </td>
 </tr>
 </table>
@@ -1460,7 +1489,7 @@ If you’re deploying IBM Maximo into an existing VPC, make sure that your VPC h
 </div>
 </div>
 <div class="sect1">
-<h2 id="_post_deployment_steps">Post deployment steps</h2>
+<h2 id="_post_deployment_steps">Post-deployment steps</h2>
 <div class="sectionbody">
 <div class="admonitionblock important">
 <table>
@@ -1489,6 +1518,18 @@ On the <strong>Password Information</strong> pop-up window, enter a new password
 <div class="sect1">
 <h2 id="_best_practices_for_using_ibm_maximo_on_aws">Best practices for using IBM Maximo on AWS</h2>
 <div class="sectionbody">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+After deploying the Quick Start, install the latest fix packs and interim fixes for the IBM Maximo and any modules you chose to deploy. Visit <a href="https://www.ibm.com/support/pages/download-maximo-fix-packs-and-interim-fixes" target="_blank" rel="noopener">Download Maximo, Fix Packs and Interim Fixes</a> for details. This Quick Start deploys a deployment manager that you can use to install fix packs and interim fixes.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>See <a href="https://www.ibm.com/support/pages/sites/default/files/inline-files/$FILE/Maximo%20Best%20Practices%20for%20System%20Performance%207.6.x.pdf" target="_blank" rel="noopener">IBM Maximo best practices for system performance</a>.</p>
 </div>
@@ -1699,7 +1740,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">Deploy Maximo modules
 (<code>DeployModules</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Core</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose the IBM Maximo module to deploy.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose the IBM Maximo module to deploy. The respective binaries must be placed in the root key prefix as defined by MaximoFilesLocation. In addition, for HSE module to work, you must additionally upload the latest hotfix to s3://MaximoFilesLocation/HSE/latest_hotfix.zip.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2007,7 +2048,7 @@ Region</code>, and <code>Quick Start S3 key prefix</code>. Changing these parame
 <td class="tableblock halign-left valign-top"><p class="tableblock">Deploy Maximo modules
 (<code>DeployModules</code>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Core</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Choose the IBM Maximo module to deploy.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Choose the IBM Maximo module to deploy. The respective binaries must be placed in the root key prefix as defined by MaximoFilesLocation. In addition, for HSE module to work, you must additionally upload the latest hotfix to s3://MaximoFilesLocation/HSE/latest_hotfix.zip.</p></td>
 </tr>
 </tbody>
 </table>

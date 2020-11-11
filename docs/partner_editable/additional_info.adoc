@@ -15,7 +15,7 @@
 [link=images/system-information.png]
 image::../images/system-information.png[image_placeholder,width=648,height=439]
 
-== Post deployment steps
+== Post-deployment steps
 
 IMPORTANT: Be sure to change the default password after installation.
 
@@ -30,5 +30,7 @@ image::../images/change-password.png[image_placeholder,width=648,height=439]
 
 == Best practices for using {partner-product-short-name} on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
+
+TIP: After deploying the Quick Start, install the latest fix packs and interim fixes for the {partner-product-short-name} and any modules you chose to deploy. Visit https://www.ibm.com/support/pages/download-maximo-fix-packs-and-interim-fixes[Download Maximo, Fix Packs and Interim Fixes^] for details. This Quick Start deploys a deployment manager that you can use to install fix packs and interim fixes.
 
 See https://www.ibm.com/support/pages/sites/default/files/inline-files/$FILE/Maximo%20Best%20Practices%20for%20System%20Performance%207.6.x.pdf[IBM Maximo best practices for system performance^].

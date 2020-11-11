@@ -29,7 +29,7 @@
 (`WASNodesMaxSize`)|`4`|The maximum size of the Auto Scaling group.|WebSphere Application Server nodes desired capacity
 (`WASNodesDesiredCapacity`)|`2`|The desired capacity for the WebSphere Application Server nodes Auto Scaling group.|IBM Maximo web excess CIDR
 (`WebAccessCIDR`)|`**__Requires input__**`|The CIDR IP range that is permitted to access the IBM Maximo URL. Set this value to a trusted IP range.|Deploy Maximo modules
-(`DeployModules`)|`Core`|Choose the IBM Maximo module to deploy.
+(`DeployModules`)|`Core`|Choose the IBM Maximo module to deploy. The respective binaries must be placed in the root key prefix as defined by MaximoFilesLocation. In addition, for HSE module to work, you must additionally upload the latest hotfix to s3://MaximoFilesLocation/HSE/latest_hotfix.zip.
 |===
 .SSL configuration
 [width="100%",cols="16%,11%,73%",options="header",]
