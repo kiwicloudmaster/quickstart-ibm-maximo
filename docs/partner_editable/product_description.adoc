@@ -2,7 +2,10 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-Using this Quick Start, you can launch {partner-product-name}  base or with the Energy and Utilities, Nuclear, Transportation, and/or Scheduler extensions.
+{partner-product-name} provides customers with a comprehensive business solution for physical asset management. This solution provides a unified, service oriented architecture (SOA)
+platform that delivers asset lifecycle and maintenance from end-to-end, across the enterprise.
+
+Using this Quick Start, you can launch {partner-product-name}  base or with the Health, Safety and Environment (HSE), Energy and Utilities, Nuclear, Transportation, or Scheduler extensions.
 
 The {partner-product-short-name} Quick Start uses a range of AWS services and features, including:
 
