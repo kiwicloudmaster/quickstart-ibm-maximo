@@ -1,5 +1,5 @@
 :quickstart-project-name: quickstart-ibm-maximo
-:partner-product-name: IBM Maximo
+:partner-product-name: IBM Maximo EAM 7.6.1
 :partner-product-short-name: IBM Maximo
 :partner-company-name: IBM
 :doc-month: November
