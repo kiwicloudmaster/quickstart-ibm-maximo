@@ -2,8 +2,7 @@
 // Briefly describe the software. Use consistent and clear branding. 
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-{partner-product-name} provides customers with a comprehensive business solution for physical asset management. This solution provides a unified, service oriented architecture (SOA)
-platform that delivers asset lifecycle and maintenance from end-to-end, across the enterprise.
+{partner-product-short-name} is a comprehensive solution for physical asset management, providing customers with a unified, service oriented architecture (SOA) platform that delivers asset lifecycle and maintenance from end-to-end, across the enterprise. Using {partner-product-short-name}, you can optimize the quality and usage of your assets throughout their lifecycle, drive efficiency, reduce operating costs, and increase productive uptime through preventative maintenance.
 
 Using this Quick Start, you can launch {partner-product-name}  base or with the Health, Safety and Environment (HSE), Energy and Utilities, Nuclear, Transportation, or Scheduler extensions.
 
