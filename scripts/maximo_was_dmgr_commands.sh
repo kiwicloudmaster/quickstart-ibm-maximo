@@ -64,7 +64,7 @@ tar -xf MAM_7.6.1.0_LINUX64.tar.gz
 export BYPASS_PRS=True # Bypass the prechecks
 /opt/IBM/InstallationManager/eclipse/tools/imcl input /Launchpad/SilentResponseFiles/Unix/ResponseFile_MAM_Install_Unix.xml -log /tmp/MAM_Install_log.xml -acceptLicense
 
-if [ $DeployModules = "Utilities" ];
+if [ $DeployModules = "Energy-and-Utilities" ];
 then
   mkdir /Launchpad/utilities
   cd /Launchpad/utilities
@@ -97,10 +97,14 @@ elif [ $DeployModules = "HSE"  ]; then
   mkdir /Launchpad/hse
   cd /Launchpad/hse
   /usr/local/bin/aws s3 cp s3://$Maximos3location/Max_HSEM_V761.zip .
+  /usr/local/bin/aws s3 cp s3://$Maximos3location/HSE/latest_hotfix.zip .
   unzip -q Max_HSEM_V761.zip
   unzip -q hse_7.6.1_launchpad.zip
   sed -i 's/c:\\Launchpad\\HSEInstallerRepository.zip/\/Launchpad\/hse\/HSEInstallerRepository.zip/g' HSE_Silent_ResponseFile.xml
   /opt/IBM/InstallationManager/eclipse/tools/imcl input /Launchpad/hse/HSE_Silent_ResponseFile.xml -log /tmp/ModulesInstall_log.xml -acceptLicense
+  cd /opt/IBM/SMP/maximo
+  unzip -qo /Launchpad/hse/latest_hotfix.zip
+  cd -
 fi
 
 cp /opt/IBM/SMP/maximo/applications/maximo/properties/maximo.properties.orig/maximo.properties /opt/IBM/SMP/maximo/applications/maximo/properties/
@@ -115,6 +119,8 @@ then
   # Deploy the empty database schema and tables
   cd /opt/IBM/SMP/maximo/tools/maximo
   ./maxinst.sh -sMAXINDEX -tMAXDATA -imaximo
+  cd /opt/IBM/SMP/maximo/tools/maximo
+  ./updatedb.sh
   /usr/local/bin/aws ssm put-parameter --name "${WASSSMParameter}" --type "String" --value "Installed" --overwrite
 fi
 
