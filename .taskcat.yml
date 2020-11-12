@@ -69,7 +69,7 @@ tests:
     template: templates/maximo-main.template.yaml
   maximo-utilities:
     parameters:
-      DeployModules: 'Utilities'
+      DeployModules: 'Energy-and-Utilities'
     regions:
       - eu-central-1
     template: templates/maximo-main.template.yaml
