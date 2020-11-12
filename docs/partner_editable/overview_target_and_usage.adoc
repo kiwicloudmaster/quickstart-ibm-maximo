@@ -4,4 +4,4 @@
 
 This Quick Start reference deployment guide provides step-by-step instructions for deploying {partner-product-name} on the AWS Cloud into a virtual private cloud (VPC) spanning multiple Availability Zones for high availability.
 
-This Quick Start uses Amazon Elastic Compute Cloud (Amazon EC2), Amazon Relational Database Service (RDS) for Oracle, Elastic Load Balancing (ELB), and AWS Cloud Formation to launch {partner-product-name} with Utilities, Nuclear, Transportation, Healthy, Safety, and Environment (HSE), or Scheduler extensions.
+This Quick Start uses Amazon Elastic Compute Cloud (Amazon EC2), Amazon Relational Database Service (RDS) for Oracle, Elastic Load Balancing (ELB), and AWS CloudFormation to launch {partner-product-name} with Utilities, Nuclear, Transportation, Healthy, Safety, and Environment (HSE), or Scheduler extensions.
