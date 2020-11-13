@@ -19,7 +19,7 @@ As shown in Figure 1, the Quick Start sets up the following:
 
 * In the private subnets:
 // Add bullet points for any additional components that are included in the deployment. Make sure that the additional components are also represented in the architecture diagram.
- ** {partner-product-short-name} application servers deployed across two Availability Zones, offering high availability.
+ ** {partner-product-short-name} application servers in an Auto Scaling group used for deploying across two Availability Zones, offering high availability.
  ** A deployment manager in an Auto Scaling group used for configuring tasks during deployment and managing application servers. The desired capacity should be set to one instance. 
  ** Amazon RDS for Oracle as the database for {partner-product-short-name}, also deployed across two Availability Zones.
 

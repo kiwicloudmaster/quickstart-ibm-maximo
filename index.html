@@ -862,7 +862,7 @@ report bugs, or submit feature ideas for this Quick Start.
 <p>This Quick Start reference deployment guide provides step-by-step instructions for deploying IBM Maximo EAM 7.6.1 on the AWS Cloud into a virtual private cloud (VPC) spanning multiple Availability Zones for high availability.</p>
 </div>
 <div class="paragraph">
-<p>This Quick Start uses Amazon Elastic Compute Cloud (Amazon EC2), Amazon Relational Database Service (RDS) for Oracle, Elastic Load Balancing (ELB), and AWS Cloud Formation to launch IBM Maximo EAM 7.6.1 with Utilities, Nuclear, Transportation, Healthy, Safety, and Environment (HSE), or Scheduler extensions.</p>
+<p>This Quick Start uses Amazon Elastic Compute Cloud (Amazon EC2), Amazon Relational Database Service (RDS) for Oracle, Elastic Load Balancing (ELB), and AWS CloudFormation to launch IBM Maximo EAM 7.6.1 with Utilities, Nuclear, Transportation, Healthy, Safety, and Environment (HSE), or Scheduler extensions.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1010,7 +1010,7 @@ default parameters builds the following IBM Maximo environment in the AWS Cloud.
 <div class="ulist">
 <ul>
 <li>
-<p>IBM Maximo application servers deployed across two Availability Zones, offering high availability.</p>
+<p>IBM Maximo application servers in an Auto Scaling group used for deploying across two Availability Zones, offering high availability.</p>
 </li>
 <li>
 <p>A deployment manager in an Auto Scaling group used for configuring tasks during deployment and managing application servers. The desired capacity should be set to one instance.</p>
