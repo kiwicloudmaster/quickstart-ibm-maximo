@@ -40,36 +40,48 @@ tests:
   maximo-core:
     parameters:
       DeployModules: 'Core'
+      DBName: 'maxcore'
+      DBInstanceIdentifier: 'MAXCORE'
     regions:
       - us-east-1
     template: templates/maximo-main.template.yaml
   maximo-hse:
     parameters:
       DeployModules: 'HSE'
+      DBName: 'maxhse'
+      DBInstanceIdentifier: 'MAXHSE'
     regions:
       - us-east-2
     template: templates/maximo-main.template.yaml
   maximo-nuclear:
     parameters:
       DeployModules: 'Nuclear'
+      DBName: 'maxnuc'
+      DBInstanceIdentifier: 'MAXNUC'
     regions:
       - us-west-2
     template: templates/maximo-main.template.yaml
   maximo-scheduler:
     parameters:
       DeployModules: 'Scheduler'
+      DBName: 'maxsched'
+      DBInstanceIdentifier: 'MAXSCHED'
     regions:
       - eu-west-1
     template: templates/maximo-main.template.yaml
   maximo-transport:
     parameters:
       DeployModules: 'Transportation'
+      DBName: 'maxtxp'
+      DBInstanceIdentifier: 'MAXTXP'
     regions:
       - eu-west-2
     template: templates/maximo-main.template.yaml
   maximo-utilities:
     parameters:
       DeployModules: 'Energy-and-Utilities'
+      DBName: 'maxene'
+      DBInstanceIdentifier: 'MAXENE'
     regions:
       - eu-central-1
     template: templates/maximo-main.template.yaml
