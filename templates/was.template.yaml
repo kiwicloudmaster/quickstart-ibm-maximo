@@ -328,6 +328,8 @@ Mappings:
       RHELHVM: ami-031290b4bd9eaa715
     ap-southeast-2:
       RHELHVM: ami-06d2821bfc76dcda3
+    ca-central-1:
+      RHELHVM: ami-0a43efe505004e592
     eu-central-1:
       RHELHVM: ami-0fc86555914f6a9f2
     eu-west-1:
