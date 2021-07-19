@@ -1,5 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Deploys IAM roles and policies required for the IBM Maximo Quick Start (qs-1r4dcoihh)
+Metadata:
+  cfn-lint: { config: { ignore_checks: [W9002, W9003, W9006] } }
 Parameters:
   MaximoFilesLocation:
     Description: Provide the S3 location of the downloaded maximo , WAS  and Oracle client files (please do not include the s3:// and the trailing forward slash).
@@ -55,8 +57,7 @@ Resources:
                 Action:
                   - ec2:AssociateAddress
                   - ec2:DescribeAddresses
-                  - eks:ListClusters
-                Resource: "*"
+                Resource: !Sub "arn:${AWS::Partition}:ec2:${AWS::Region}:${AWS::AccountId}:*"
       ManagedPolicyArns:
         - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore'
         - !Sub 'arn:${AWS::Partition}:iam::aws:policy/CloudWatchAgentServerPolicy'

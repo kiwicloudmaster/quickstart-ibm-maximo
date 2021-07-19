@@ -116,9 +116,11 @@ echo $ssmParameterValue
 
 if [ $ssmParameterValue != "Installed" ];
 then
-  # Deploy the empty database schema and tables
+  # Deploy the demo database schema and tables
+  cd /opt/IBM/SMP/maximo/tools/maximo/en
+  unzip maxdemo.ora.zip
   cd /opt/IBM/SMP/maximo/tools/maximo
-  ./maxinst.sh -sMAXINDEX -tMAXDATA -imaximo
+  ./maxinst.sh -sMAXINDEX -tMAXDATA -imaxdemo
   cd /opt/IBM/SMP/maximo/tools/maximo
   ./updatedb.sh
   /usr/local/bin/aws ssm put-parameter --name "${WASSSMParameter}" --type "String" --value "Installed" --overwrite

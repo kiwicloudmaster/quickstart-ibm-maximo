@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Oracle Database Template. (qs-1r4dcoii7)'
 Metadata:
+  cfn-lint: { config: { ignore_checks: [W9002, W9003, W9006] } }
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -56,10 +57,10 @@ Parameters:
   ORAVersion:
     AllowedValues:
       - Enterprise-Edition-12.2-BYOL
-      - Enterprise-Edition-18.0-BYOL
+      - Enterprise-Edition-19.0-BYOL
       - Standard-Edition-Two-12.2-License-Included
-      - Standard-Edition-Two-18.0-License-Included
-    Default: Standard-Edition-Two-18.0-License-Included
+      - Standard-Edition-Two-19.0-License-Included
+    Default: Standard-Edition-Two-19.0-License-Included
     Description: Amazon RDS Oracle version
     Type: String
   DBInstanceClass:
@@ -140,25 +141,37 @@ Parameters:
 Mappings:
   OracleDetailsMap:
     Enterprise-Edition-12.2-BYOL:
-      Version: 12.2.0.1.ru-2020-04.rur-2020-04.r1
+      Version: 12.2.0.1.ru-2021-01.rur-2021-01.r1
       Engine: oracle-ee
       Family: oracle-ee-12.2
-    Enterprise-Edition-18.0-BYOL:
-      Version: 18.0.0.0.ru-2020-04.rur-2020-04.r1
+      License: bring-your-own-license
+    Enterprise-Edition-19.0-BYOL:
+      Version: 19.0.0.0.ru-2021-04.rur-2021-04.r1
       Engine: oracle-ee
-      Family: oracle-ee-18
+      Family: oracle-ee-19
+      License: bring-your-own-license
     Standard-Edition-Two-12.2-License-Included:
-      Version: 12.2.0.1.ru-2020-04.rur-2020-04.r1
+      Version: 12.2.0.1.ru-2021-01.rur-2021-01.r1
       Engine: oracle-se2
       Family: oracle-se2-12.2
-    Standard-Edition-Two-18.0-License-Included:
-      Version: 18.0.0.0.ru-2020-04.rur-2020-04.r1
+      License: license-included
+    Standard-Edition-Two-19.0-License-Included:
+      Version: 19.0.0.0.ru-2021-04.rur-2021-04.r1
       Engine: oracle-se2
-      Family: oracle-se2-18
+      Family: oracle-se2-19
+      License: license-included
 
 Resources:
   EncryptionKey:
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - EIAMPolicyActionWildcard
+          ignore_reasons:
+            EIAMPolicyActionWildcard: The first statement is the default key policy allowing administrators to administer the CMK. See https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default-allow-root-enable-iam.
     DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Type: AWS::KMS::Key
     Properties:
       KeyPolicy:
@@ -177,8 +190,12 @@ Resources:
             Action:
               - 'kms:Encrypt'
               - 'kms:Decrypt'
-              - 'kms:ReEncrypt*'
-              - 'kms:GenerateDataKey*'
+              - 'kms:ReEncryptTo'
+              - 'kms:ReEncryptFrom'
+              - "kms:GenerateDataKeyWithoutPlaintext"
+              - "kms:GenerateDataKey"
+              - "kms:GenerateDataKeyPairWithoutPlaintext"
+              - "kms:GenerateDataKeyPair"
               - 'kms:CreateGrant'
               - 'kms:ListGrants'
               - 'kms:DescribeKey'
@@ -289,11 +306,12 @@ Resources:
       DBSubnetGroupName: !Ref 'MaximoDBSubnetGroup'
       Engine: !FindInMap [OracleDetailsMap, !Ref ORAVersion, Engine]
       EngineVersion: !FindInMap [OracleDetailsMap, !Ref ORAVersion, Version]
-      LicenseModel: bring-your-own-license
+      LicenseModel: !FindInMap [OracleDetailsMap, !Ref ORAVersion, License]
       MasterUsername: !Ref 'DBUser'
       MasterUserPassword: !Ref 'DBPassword'
       MultiAZ: !Ref 'DBMultiZone'
       StorageEncrypted: true
+      StorageType: gp2
       KmsKeyId: !GetAtt EncryptionKey.Arn
       VPCSecurityGroups: !Split [ ",", !Join [ ",", [!Ref OracleServerAccessSecurityGroup, !Ref OracleServerSecurityGroup, !Ref OracleServersSecurityGroup, !Ref NodeSecurityGroupID, !Ref ControlPlaneSecurityGroupID] ] ]
   MaximoDBParamGroup:

@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Oracle Database Objects Template. (qs-1r4dcoihu)'
 Metadata:
+  cfn-lint: { config: { ignore_checks: [W9002, W9003, W9006] } }
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -106,7 +107,7 @@ Resources:
           - Action:
               - 'ssm:SendCommand'
             Effect: Allow
-            Resource: '*'
+            Resource: !Sub "arn:${AWS::Partition}:ssm:*:*:document/*"
           - Action:
               - 'ssm:SendCommand'
             Effect: Allow
@@ -129,6 +130,14 @@ Resources:
         - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess'
         - !Ref MaximoSSMSendCommandPolicy
   RDSSchemasConfigDocument:
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - E9101
+            - W1020
+          ignore_reasons:
+            E9101: Abort is a keyword
     Type: 'AWS::SSM::Document'
     Properties:
       DocumentType: Command
@@ -223,6 +232,13 @@ Resources:
               workingDirectory: '/home/ec2-user'
   ExecuteRDSSchemasDocumentLambda:
     Type: 'AWS::Lambda::Function'
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - W1020
+          ignore_reasons:
+            W1020: 'Keeping Fn::Sub for extensibility'
     Properties:
       Handler: index.lambda_handler
       Runtime: python3.7
@@ -268,11 +284,18 @@ Resources:
           		logging.error('Exception: %s' % e, exc_info=True)
           		status = cfnresponse.FAILED
           		cfnresponse.send(event, context, status, {}, None)
-      Description: Executes Oracle Schema creation SQL script on Bastion host
+      Description: Runs Oracle Schema creation SQL script on Bastion host
       MemorySize: 320
       Timeout: 180
       Role: !GetAtt MaximoSSMSendCommandLambdaRole.Arn
   ExecuteRDSObjectsDocument:
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - E9101
+          ignore_reasons:
+            E9101: Execute is part of the resource name
     Type: 'Custom::ExecuteRDSObjectsDocument'
     Version: '1.0'
     Properties:

@@ -6,6 +6,7 @@ Description: >-
   template creates EC2 instances and related resources. You will be billed for the
   AWS resources used if you create a stack from this template. (qs-1r4dcoie9)
 Metadata:
+  cfn-lint: { config: { ignore_checks: [W9002, W9003, W9006] } }
   QuickStartDocumentation:
     EntrypointName: "Parameters for deploying into a new VPC"
     Order: "1"
@@ -339,10 +340,10 @@ Parameters:
   ORAVersion:
     AllowedValues:
       - Enterprise-Edition-12.2-BYOL
-      - Enterprise-Edition-18.0-BYOL
+      - Enterprise-Edition-19.0-BYOL
       - Standard-Edition-Two-12.2-License-Included
-      - Standard-Edition-Two-18.0-License-Included
-    Default: Standard-Edition-Two-18.0-License-Included
+      - Standard-Edition-Two-19.0-License-Included
+    Default: Standard-Edition-Two-19.0-License-Included
     Description: Amazon RDS Oracle version.
     Type: String
   DBInstanceClass:
