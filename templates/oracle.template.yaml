@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Oracle Database Template. (qs-1r4dcoii7)'
 Metadata:
+  cfn-lint: { config: { ignore_checks: [W9002, W9003, W9006] } }
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -162,7 +163,15 @@ Mappings:
 
 Resources:
   EncryptionKey:
+    Metadata:
+      cfn-lint:
+        config:
+          ignore_checks:
+            - EIAMPolicyActionWildcard
+          ignore_reasons:
+            EIAMPolicyActionWildcard: The first statement is the default key policy allowing administrators to administer the CMK. See https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default-allow-root-enable-iam.
     DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Type: AWS::KMS::Key
     Properties:
       KeyPolicy:
@@ -181,8 +190,12 @@ Resources:
             Action:
               - 'kms:Encrypt'
               - 'kms:Decrypt'
-              - 'kms:ReEncrypt*'
-              - 'kms:GenerateDataKey*'
+              - 'kms:ReEncryptTo'
+              - 'kms:ReEncryptFrom'
+              - "kms:GenerateDataKeyWithoutPlaintext"
+              - "kms:GenerateDataKey"
+              - "kms:GenerateDataKeyPairWithoutPlaintext"
+              - "kms:GenerateDataKeyPair"
               - 'kms:CreateGrant'
               - 'kms:ListGrants'
               - 'kms:DescribeKey'

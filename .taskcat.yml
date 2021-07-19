@@ -30,7 +30,7 @@ project:
     WASNodesMinSize:  '2'
     WASNodesMaxSize:  '4'
     WASNodesDesiredCapacity:  '2'
-    ORAVersion: 'Standard-Edition-Two-18.0-License-Included'
+    ORAVersion: 'Standard-Edition-Two-19.0-License-Included'
     SiteDomain: ''
     Route53HostedZoneId:  ''
     WASAdminUsername: wasadmin$[taskcat_genpass_4A]
